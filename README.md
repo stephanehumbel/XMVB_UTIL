@@ -1,2 +1,2 @@
 # XMVB_UTIL
-routiunes for handling XMVB files
+routines for handling XMVB files
