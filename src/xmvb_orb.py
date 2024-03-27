@@ -4,7 +4,7 @@ import sys
 import os
 
 class Orb:
-    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]):
+    def __init__(self, zeta : int=0, coeffs : list[list[str]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]):
         self.zeta = zeta
         self.coeffs = coeffs
         self.indices = indices
@@ -40,7 +40,7 @@ def readorb(file_name):
                  toread=len(values)//2
                  for i in range(toread):
                  #   print(i,end='')
-                    coef.append(float(values[2*i]))  # add the last to vectors
+                    coef.append(str(values[2*i]))  # add the last to vectors
                     ao.append(int(values[2*i+1]))
 
       # last orb must be updated
@@ -87,14 +87,14 @@ def change_zeta_coeffs(orb_data, new_zeta):
             for j in range (0, len (old_coeffs[i]), 1):
                 if compteur == old_zeta:
                     while compteur < new_zeta:
-                        stock.append(str(0.0000000000))
+                        stock.append(str("0.0000000000"))
                         compteur += 1
                     stock.append(old_coeffs[i][j])
                     compteur = 1
                 else:
                     stock.append(old_coeffs[i][j])
                     compteur += 1
-            stock.append(str(0.0000000000))
+            stock.append(str("0.0000000000"))
             new_coeffs.append(stock)
     if new_zeta < old_zeta:
         for i in range (0, len(old_coeffs), 1):
@@ -193,11 +193,14 @@ def write_orb_file(filename, new_orb_data):
             f.write(f"   {len(new_orb_values[i])}   ")
         f.write("\n")
         for i in range(len(new_indices)):
-            f.write(f"# ORBITAL          {i}  NAO =      {len(new_orb_values[i])}\n")
+            f.write(f"# ORBITAL          {i+1}  NAO =      {len(new_orb_values[i])}\n")
+            count = 0   
             for j in range(len(new_orb_values[i])):
                 f.write(f"   {new_orb_values[i][j]}   {str(new_indices[i][j])}   ")
-                if (j + 1) % new_zeta == 0:
+                count += 1
+                if (j+1) % 4 == 0 and j != len(new_orb_values[i])-1:
                     f.write("\n")
+            f.write("\n")
 
 
 #function which allows the user to input the name of the file to be read
