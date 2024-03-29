@@ -187,13 +187,13 @@ def write_orb_file(filename, new_orb_data):
     new_indices = new_orb_data.indices
     with open(filename, 'w') as f: 
         for i in range(len(new_indices)):
-            f.write(f"   {len(new_orb_values[i])}   ")
+            f.write(f"{len(new_orb_values[i]):4d}")
         f.write("\n")
         for i in range(len(new_indices)):
             f.write(f"# ORBITAL          {i+1}  NAO =      {len(new_orb_values[i])}\n")
             count = 0   
             for j in range(len(new_orb_values[i])):
-                f.write(f"   {new_orb_values[i][j]}   {str(new_indices[i][j])}   ")
+                f.write(f"{float(new_orb_values[i][j]):13.10f}{(new_indices[i][j]):4d}  ")
                 count += 1
                 if (j+1) % 4 == 0 and j != len(new_orb_values[i])-1:
                     f.write("\n")
@@ -233,31 +233,44 @@ def main(input_file, zeta, new_zeta, sym):
     return output_file
 
 
-if len(sys.argv) == 4:
-    file = sys.argv[1]
-    if sys.argv[2] .isdigit():
-        zeta = sys.argv[2]
-        new_zeta = sys.argv[3]
-        symmetry = None
-    else:
-        zeta = sys.argv[2]
-        symmetry = sys.argv[2]
-        new_zeta = None
-    output_file = main(file, zeta, new_zeta, symmetry)
-    print (f"New file {output_file} created.")
-elif len(sys.argv) == 5:
-    file = sys.argv[1]
-    zeta = sys.argv[2]
-    new_zeta = sys.argv[3]
-    symmetry = sys.argv[4]
-    output_file = main(file, zeta, new_zeta, symmetry)
-    print (f"New file {output_file} created.")
-else:
-    print("No argument provided. Please provide an argument.")
-    print("Usage: python3 xmvbtz.py <input_file> <zeta> <new_zeta> <symmetry>")
-    print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4 sym.txt")
-    print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4")
-    print("sym.txt is a file containing the symmetry of the molecule. It is optional.")
-    print("If sym.txt is not provided, the program will only change the zeta value.")
-    print("Example of sym.txt for permutation: 1  2  3  4 ")
-    print("The first number is the old atom number. The second number is the new atom number.")
+if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
+
+   if len(sys.argv) == 2:
+       zeta=1
+       numatoms=[]
+       input_file = sys.argv[1]
+       input_file_name, input_file_ext = get_file_extension(input_file)
+       print(input_file_name, input_file_ext)
+       coeffs, indices = readorb(input_file)
+       output_file=input_file_name+".neworb"
+       orb_data = Orb(zeta, coeffs, indices, numatoms)
+       write_orb_file(output_file, orb_data)
+       sys.exit() 
+   if len(sys.argv) == 4:
+       file = sys.argv[1]
+       if sys.argv[2] .isdigit():
+           zeta = sys.argv[2]
+           new_zeta = sys.argv[3]
+           symmetry = None
+       else:
+           zeta = sys.argv[2]
+           symmetry = sys.argv[2]
+           new_zeta = None
+       output_file = main(file, zeta, new_zeta, symmetry)
+       print (f"New file {output_file} created.")
+   elif len(sys.argv) == 5:
+       file = sys.argv[1]
+       zeta = sys.argv[2]
+       new_zeta = sys.argv[3]
+       symmetry = sys.argv[4]
+       output_file = main(file, zeta, new_zeta, symmetry)
+       print (f"New file {output_file} created.")
+   else:
+       print("No argument provided. Please provide an argument.")
+       print("Usage: python3 xmvbtz.py <input_file> <zeta> <new_zeta> <symmetry>")
+       print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4 sym.txt")
+       print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4")
+       print("sym.txt is a file containing the symmetry of the molecule. It is optional.")
+       print("If sym.txt is not provided, the program will only change the zeta value.")
+       print("Example of sym.txt for permutation: 1  2  3  4 ")
+       print("The first number is the old atom number. The second number is the new atom number.")
