@@ -50,8 +50,6 @@ def readorb(file_name):
     #print('rr',len(all_coeffs),all_aos,all_coeffs)
     return all_coeffs, all_aos
 
-#def read_inp(file_name):
-
 
 def make_numatoms(aos, zeta):
     numatoms = []
@@ -185,7 +183,6 @@ def write_new_indices(numatoms,zeta):
     return new_indices  
 
 def write_orb_file(filename, new_orb_data):
-    new_zeta = int(new_orb_data.zeta)
     new_orb_values = new_orb_data.coeffs
     new_indices = new_orb_data.indices
     with open(filename, 'w') as f: 
@@ -230,7 +227,6 @@ def main(input_file, zeta, new_zeta, sym):
             new_aos = change_zeta_aos(orb_data, new_zeta)
             #print (new_aos)
             new_orb_data = Orb(new_zeta, new_coeffs, new_aos, numatoms)
-
         write_orb_file(output_file, new_orb_data)
     else:
         print("The input file must be a .orb file.")
