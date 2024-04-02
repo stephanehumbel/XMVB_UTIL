@@ -182,20 +182,21 @@ def write_new_indices(numatoms,zeta):
             new_indices.append(indi)
     return new_indices  
 
-def write_orb_file(filename, new_orb_data):
-    new_orb_values = new_orb_data.coeffs
-    new_indices = new_orb_data.indices
+def write_orb_file(filename, coeffs, indices):
+    #new_orb_values = new_orb_data.coeffs
+    #new_indices = new_orb_data.indices
+    #print (coeffs)
     with open(filename, 'w') as f: 
-        for i in range(len(new_indices)):
-            f.write(f"{len(new_orb_values[i]):4d}")
+        for i in range(len(indices)):
+            f.write(f"{len(coeffs[i]):4d}")
         f.write("\n")
-        for i in range(len(new_indices)):
-            f.write(f"# ORBITAL {i+1:4d}  NAO = {len(new_orb_values[i]):4d}\n")
+        for i in range(len(indices)):
+            f.write(f"# ORBITAL {i+1:4d}  NAO = {len(coeffs[i]):4d}\n")
             count = 0   
-            for j in range(len(new_orb_values[i])):
-                f.write(f"{new_orb_values[i][j]:13.10f}{(new_indices[i][j]):4d}  ")
+            for j in range(len(coeffs [i])):
+                f.write(f"{coeffs[i][j]:13.10f}{(indices[i][j]):4d}  ")
                 count += 1
-                if (j+1) % 4 == 0 and j != len(new_orb_values[i])-1:
+                if (j+1) % 4 == 0 and j != len(coeffs[i])-1:
                     f.write("\n")
             f.write("\n")
 
@@ -217,17 +218,18 @@ def main(input_file, zeta, new_zeta, sym):
         numatoms = make_numatoms(indices, zeta)
         #print (numatoms)
         orb_data = Orb(zeta, coeffs, indices, numatoms)
+        #print ("c",orb_data.coeffs[1])
         if sym is not None:
             new_numatoms = symm_numatoms(sym, orb_data)
             new_indices = write_new_indices(new_numatoms, zeta)
-            new_orb_data = Orb(zeta, coeffs, new_indices, new_numatoms)
-        if new_zeta is not None or new_zeta != zeta:
+            orb_data = Orb(zeta, coeffs, new_indices, new_numatoms)
+        if new_zeta is not None and new_zeta != zeta:
             new_coeffs = change_zeta_coeffs(orb_data, new_zeta)
             #print (new_coeffs)
             new_aos = change_zeta_aos(orb_data, new_zeta)
             #print (new_aos)
-            new_orb_data = Orb(new_zeta, new_coeffs, new_aos, numatoms)
-        write_orb_file(output_file, new_orb_data)
+            orb_data = Orb(new_zeta, new_coeffs, new_aos, numatoms)
+        write_orb_file(output_file, orb_data.coeffs, orb_data.indices)
     else:
         print("The input file must be a .orb file.")
     return output_file
@@ -244,7 +246,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
        coeffs, indices = readorb(input_file)
        output_file=input_file_name+".neworb"
        orb_data = Orb(zeta, coeffs, indices, numatoms)
-       write_orb_file(output_file, orb_data)
+       write_orb_file(output_file, orb_data.coeffs, orb_data.indices)
        sys.exit() 
    if len(sys.argv) == 4:
        file = sys.argv[1]
