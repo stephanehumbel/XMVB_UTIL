@@ -6,11 +6,16 @@ import re
                         
 
 class Orb:
-    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]):
+    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list[list[int]]=[]):
         self.zeta = zeta
         self.coeffs = coeffs
         self.indices = indices
         self.numatoms = numatoms
+
+def file_extension(file_name):
+    fname, extension = os.path.splitext(file_name)
+    return fname, extension
+
 
 def detect_keyword(file_path, keyword, start_line):
     '''
@@ -23,6 +28,7 @@ def detect_keyword(file_path, keyword, start_line):
     Returns:
         type: returns the line number (lin_num) of the *last* occurence of keyword or -1 if keyword is not found
     '''
+#    print('detect_keyword',file_path,keyword,start_line)
     with open(file_path, 'r') as file:
         for line_num, line in enumerate(file, 1):  
             if line_num >= start_line and keyword in line:
@@ -89,21 +95,27 @@ def compte_AO(vect):
     Returns:
         nao, tab_ao
     ''' 
+    #tableau est le tableau des OM, sur les OA, mais tout demarre à tableau[0][0]
+    tableau=[[val for val in pair[1]] for pair in vect]
     # Initialisation du compteur de AO non nuls et de la liste des AO
-    nao = 0
     tab_ao = []
-        
-    # Parcours du vecteur MO
-    for i in range(len(vect)):
-        # Si le coefficient du AO est non nul
-        if vect[i] != 0.:
-            # Ajouter l'indice du AO à la liste des AO non nuls
-            tab_ao.append(i)
-            # Incrémenter le compteur de AO non nuls
-            nao += 1
+    ##print('compte_AO',len(tableau),vect[3],len(tableau[0]))
+    # Parcours du vecteur MO  tous les vecteurs du tableau on la meme taille?
+    for i in range(len(tableau)):
+        tab_ao.append([])
+        for j in range(len(tableau[i])):
+            nao = 0
+            #print('bcl',i,len(tableau[i]),end='')     
+            if tableau[i][j] != 0.:
+                # Ajouter l'indice du AO a la liste des AO non nuls
+                tab_ao[i].append(j)
+#                tab_ao[i][nao]=j
+                # Incrémenter le compteur de AO non nuls
+                nao += 1
+    #print('l',nao,tab_ao,len(tab_ao[0]),len(tab_ao[1]))
       
     # Retourner le nombre total de AO non nuls et la liste des AO non nuls
-    return nao, tab_ao  
+    return tab_ao  
         
 
 # READ_VEC
@@ -128,6 +140,7 @@ def read_vec(file_path,vectors,start_line):
 
     prev_vector_number=1
     item=1
+#    print('read_vec',file_path,start_line)
     with open(file_path, 'r') as file:
         values = []
         for line_num, line in enumerate(file, start=1):
@@ -136,19 +149,19 @@ def read_vec(file_path,vectors,start_line):
 
             if line.strip() == '$END':
                 vectors.append((item, np.array(values)))  # add the last to vectors
-                print('>last',item,line[0:2],len(values),values[0:12])
+#                print('>last',item,line[0:2],len(values),values[0:12])
                 break  # stop reading after $END
 
             # get from format (I2,I3,5F15.8)
             vector_number = int(line[0:2])
-            print('values',vector_number,')',prev_vector_number,values)
+#            print('values',vector_number,')',prev_vector_number,values)
             if vector_number == prev_vector_number:
                toread = (len(line) - 1 - 5) // 15 # skip 5 (+1) digits and get n (number of float nF15.8)
                for i in range(toread):            # so partially filled lines are read
                    start_index = 5 + i * 15       # skip 5 digits and the already read floats
                    end_index = start_index + 15   # field as nF15.8
                    values.append(float(line[start_index:end_index]))
-               print('######',vector_number,'stored',values ))')
+#               print('######', vector_number, 'stored', values)
             else:
                vectors.append((item, np.array(values)))  # add to vectors
                item=item+1
@@ -159,7 +172,9 @@ def read_vec(file_path,vectors,start_line):
                    start_index = 5 + i * 15       # skip 5 digits and the already read floats
                    end_index = start_index + 15   # field as nF15.8
                    values.append(float(line[start_index:end_index]))
-    return vectors
+#        print('read_vec',vectors)
+    return vectors,vector_number
+
 
 
 
@@ -170,7 +185,7 @@ def write_vec(vectors, deb, fin, file_path):
     Args:
         parameter (vectors): the MO's vectors(i,array(NAO's))
         parameter (deb, fin): beginning and end of the printing
-        parameter (file_path): path to the output file
+        parameter (file_path): path to the output file ; "screen" for screen output
 
     Returns:
         None
@@ -178,21 +193,52 @@ def write_vec(vectors, deb, fin, file_path):
     if deb < 1 or fin > len(vectors) + 1:
         print('Error: Invalid limits in write_vec', deb, fin, len(vectors))
         sys.exit(1)
-
-    with open(file_path, 'w') as output_file:
-        output_file.write(' $VEC')
+    if file_path == 'screen':
+        print('$VEC ',end='')
         for vector_number, values in enumerate(vectors):
             line_number = 1
             indice = vectors[vector_number][0]
             if deb <= indice <= fin:
                 for i in range(0, len(values[1])):
                     if i % 5 == 0:
-                        output_file.write('\n')
-                        output_file.write(f"{indice % 100:2d}{line_number:3d}")
+                        print(f"\n{indice % 100:2d}{line_number:3d}",end='')
                         line_number += 1
-                    output_file.write(f"{values[1][i]:15.8E}")
+                    print(f"{values[1][i]:15.8E}",end='')
+        print('\n$END')
+    else:
+        with open(file_path, 'w') as output_file:
+             output_file.write(' $VEC')
+             for vector_number, values in enumerate(vectors):
+                 line_number = 1
+                 indice = vectors[vector_number][0]
+                 if deb <= indice <= fin:
+                     for i in range(0, len(values[1])):
+                         if i % 5 == 0:
+                             output_file.write('\n')
+                             output_file.write(f"{indice % 100:2d}{line_number:3d}")
+                             line_number += 1
+                         output_file.write(f"{values[1][i]:15.8E}")
 
-        output_file.write('\n $END')
-        output_file.write('\n')
+             output_file.write('\n $END')
+             output_file.write('\n')
 
 
+def write_orb(filename, coeffs, indices):
+    #new_orb_values = new_orb_data.coeffs
+    #new_indices = new_orb_data.indices
+    #print (coeffs)
+    print('write_orb',filename,len(coeffs),len(indices))
+    with open(filename, 'w') as f: 
+        for i in range(len(indices)):
+            f.write(f"{len(indices[i]):4d}")
+        f.write("\n")
+        for i in range(len(indices)):
+            f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}\n")
+            count = 0   
+            for j in range(len(indices [i])):
+                print(' coeffs(',i,',',j,')=',coeffs[i][1][indices[i][j]],end='')
+                f.write(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j]):4d}  ")
+                count += 1
+                if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
+                    f.write("\n")
+            f.write("\n")
