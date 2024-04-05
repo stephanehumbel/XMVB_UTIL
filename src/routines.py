@@ -179,7 +179,7 @@ def read_vec(file_path,vectors,start_line):
 
 
 # PRINT_VEC
-def write_vec(vectors, deb, fin, file_path):
+def write_vec(file_path, vectors, deb, fin):
     '''
     Description : write MO's as $VEC to a file.
     Args:
@@ -227,18 +227,32 @@ def write_orb(filename, coeffs, indices):
     #new_orb_values = new_orb_data.coeffs
     #new_indices = new_orb_data.indices
     #print (coeffs)
-    print('write_orb',filename,len(coeffs),len(indices))
-    with open(filename, 'w') as f: 
+#    print('write_orb',filename,len(coeffs),len(indices))
+    if filename == 'screen':
         for i in range(len(indices)):
-            f.write(f"{len(indices[i]):4d}")
-        f.write("\n")
+            print(f"{len(indices[i]):4d}",end='')
+        print()
         for i in range(len(indices)):
-            f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}\n")
-            count = 0   
-            for j in range(len(indices [i])):
-                print(' coeffs(',i,',',j,')=',coeffs[i][1][indices[i][j]],end='')
-                f.write(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j]):4d}  ")
+            print(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}")
+            count = 0
+            for j in range(len(indices[i])):
+                print(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ",end='')
                 count += 1
                 if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
-                    f.write("\n")
+                    print()
+            print()
+    else:        
+        with open(filename, 'w') as f: 
+            for i in range(len(indices)):
+                f.write(f"{len(indices[i]):4d}")
             f.write("\n")
+            for i in range(len(indices)):
+                f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}\n")
+                count = 0   
+                for j in range(len(indices [i])):
+#                    print(' coeffs(',i,',',j,')=',coeffs[i][1][indices[i][j]],end='')
+                    f.write(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ")
+                    count += 1
+                    if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
+                        f.write("\n")
+                f.write("\n")
