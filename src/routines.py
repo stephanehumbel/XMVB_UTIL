@@ -238,7 +238,7 @@ def write_orb(filename, coeffs, indices):
             for j in range(len(indices[i])):
                 print(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ",end='')
                 count += 1
-                if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
+                if (j+1) % 4 == 0 and j != len(indices[i])-1:
                     print()
             print()
     else:        

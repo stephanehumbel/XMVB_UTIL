@@ -19,8 +19,7 @@ def main(input_file):
 
 
 if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
-
-   if len(sys.argv) == 2:
+ if len(sys.argv) >= 2: 
        zeta=1
        numatoms=[]
        coeffs=[]
@@ -52,6 +51,11 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
            #    ccoeffs.append(coeffs[i][1][indices[i][j]])
 #            print(i,'-----------')
 #            #print('ccoeffs',ccoeffs)    
+       if len(sys.argv) == 4:
+           xmvb_input_file=sys.argv[2]
+           xmvb_orb_file=sys.argv[3]
+           print('xmvb_input_file',xmvb_input_file,'xmvb_orb_file',xmvb_orb_file)
+           vb_orb_coeffs,vb_orb_indices=routines.read_orb(xmvb_orb_file)
        routines.write_orb("screen",coeffs,indices)
-       routines.write_orb(output_file_name,coeffs,indices)
+       routines.write_orb("screen",vb_orb_coeffs,vb_orb_indices)
        sys.exit() 
