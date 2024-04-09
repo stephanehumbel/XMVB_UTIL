@@ -121,37 +121,6 @@ def change_zeta_aos(orb_data, new_zeta):
         new_aos.append(stock)
     return new_aos
 
-    if new_zeta > old_zeta:
-        for j in range(len(atomsnum)):
-            for k in range(1, new_zeta+1, 1):
-                new_indices.append(new_zeta*(atomsnum[j]-1)+k)
-        #print (new_indices)
-        for l, item in enumerate(old_coeffs):
-            new_coeffs.append(item)
-            if (l+1) % old_zeta == 0:
-                for k in range(1, new_zeta-old_zeta+1, 1):
-                    new_coeffs.append(0.00)
-        new_orb_data = Orb(new_zeta, numorb, new_nao_count, new_coeffs, new_indices, atomsnum)
-        return new_orb_data
-    if new_zeta < old_zeta:
-        duke = 1
-        for j in range(len(atomsnum)):
-            for k in range(1, new_zeta+1, 1):
-                new_indices.append(new_zeta*(atomsnum[j]-1)+k)
-        while duke < len(old_coeffs):
-            if duke % (old_zeta) == 0:
-                duke += (old_zeta-new_zeta)
-                #print ('bloup')
-                continue
-            else:
-                new_coeffs.append(old_coeffs[duke-1])
-                #print ('blip')
-                duke += 1
-        #print (new_coeffs)
-        new_orb_data = Orb(new_zeta, numorb, new_nao_count, new_coeffs, new_indices, atomsnum)
-    #else:
-        #print("The orbital data is already in TZ format.")
-        return new_orb_data
 
 def symm_numatoms(file_path,orb_data):
     numatoms = orb_data.numatoms
@@ -159,27 +128,31 @@ def symm_numatoms(file_path,orb_data):
     with open(file_path) as f:
         for line in f:
             numbers = line.split()
-            for i in range(0, len(numbers), 2):
-                num1 = numbers[i]
-                num2 = numbers[i+1]
-                for j in range(0, len(numatoms), 1):
-                    new_nums = []
-                    for k in range(0, len(numatoms[j]), 1):
-                        if numatoms[j][k] == int(num1):
-                            new_nums.append(int(num2))
-                        elif numatoms[j][k] == int(num2):
-                            new_nums.append(int(num1))
-                    new_numatoms.append(new_numatoms)
+            for i in range(0, len(numatoms), 1):
+                new_num = []
+                for j in range (0, len(numatoms[i]), 1):
+                    new_num.append(0)
+                for k in range(0, len(numbers), 2):
+                    num1 = numbers[k]
+                    num2 = numbers[k+1]
+                    for l in range(0, len(numatoms[i]), 1):
+                        if numatoms[i][l] == int(num1):
+                            new_num[l] = int(num2)
+                        #elif numatoms[i][l] == int(num2):
+                            #new_num[l] = int(num1)
+                new_numatoms.append(new_num)
     return new_numatoms
 
 def write_new_indices(numatoms,zeta):
+    zeta = int(zeta)
     new_indices = []
     for i in range (0, len(numatoms), 1):
-        for j in range (0, len(numatoms[i]), 1):
-            indi = []
+        indi = []
+        for l in range (0, len(numatoms[i]), 1):
             for k in range(1, zeta+1, 1):
-                indi.append(zeta*(numatoms[i][j]-1)+k)  
-            new_indices.append(indi)
+                indi.append(zeta*(numatoms[i][l]-1)+k)  
+        new_indices.append(indi)
+    #print (new_indices)
     return new_indices  
 
 def write_orb_file(filename, coeffs, indices):
@@ -274,5 +247,6 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
        print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4")
        print("sym.txt is a file containing the symmetry of the molecule. It is optional.")
        print("If sym.txt is not provided, the program will only change the zeta value.")
-       print("Example of sym.txt for permutation: 1  2  3  4 ")
+       print("Example of sym.txt for permutation: 1 2 2 1 3 4 4 3")
+       print("Example of sym.txt for shifting: 1 2 2 3 3 4 4 1")")
        print("The first number is the old atom number. The second number is the new atom number.")
