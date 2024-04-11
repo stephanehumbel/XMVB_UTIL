@@ -132,9 +132,9 @@ def symm_numatoms(file_path,orb_data):
                 new_num = []
                 for j in range (0, len(numatoms[i]), 1):
                     new_num.append(0)
-                for k in range(0, len(numbers), 2):
-                    num1 = numbers[k]
-                    num2 = numbers[k+1]
+                for k in range(0, len(numbers), 1):
+                    num1 = k+1
+                    num2 = numbers[k]
                     for l in range(0, len(numatoms[i]), 1):
                         if numatoms[i][l] == int(num1):
                             new_num[l] = int(num2)
@@ -142,6 +142,8 @@ def symm_numatoms(file_path,orb_data):
                             #new_num[l] = int(num1)
                 new_numatoms.append(new_num)
     return new_numatoms
+
+#J'existe
 
 def write_new_indices(numatoms,zeta):
     zeta = int(zeta)
@@ -207,6 +209,7 @@ def main(input_file, zeta, new_zeta, sym):
         print("The input file must be a .orb file.")
     return output_file
 
+#OK
 
 if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 
@@ -247,6 +250,5 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
        print("Example: python3 xmvbtz.py Tetra_1_1.orb 3 4")
        print("sym.txt is a file containing the symmetry of the molecule. It is optional.")
        print("If sym.txt is not provided, the program will only change the zeta value.")
-       print("Example of sym.txt for permutation: 1 2 2 1 3 4 4 3")
-       print("Example of sym.txt for shifting: 1 2 2 3 3 4 4 1")")
-       print("The first number is the old atom number. The second number is the new atom number.")
+       print("Example of sym.txt : 4 3 2 1")
+       print("The first number is the new atom number for the atom number 1. The second number is the new atom number for the atom number 2.")
