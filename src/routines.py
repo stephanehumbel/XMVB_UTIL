@@ -174,7 +174,37 @@ def read_vec(file_path,vectors,start_line):
                    values.append(float(line[start_index:end_index]))
 #        print('read_vec',vectors)
     return vectors,vector_number
+# 
+def make_table(coeffs):
+    tableau = []
+    for i in range(len(coeffs)): 
+        print("##----##",i)
+        for value in coeffs[i][1]:
+            if abs(value)>1e-6:
+                print("{:5.3f}".format(value),i, end=' ')
+            tableau.append(value)
+    return tableau
 
+def make_orb(coeffs, indices):
+    ''' Returns a reduced vector of MOs with only the non-zero AOs'''
+    coeffs_orb = coeffs
+    coeffs_orb = []
+    orb_coeffs = []
+    print('make_orb',len(coeffs),len(indices))#,coeffs_orb[0][1])
+    for i in range(len(coeffs)):
+        #print()
+        #print('coeffs(',i,',[1])',end='')
+        for value in coeffs[i][1]:
+            continue#print("{:5.3f}".format(value), end=' ')
+        for j in range(len(coeffs[i][1])):
+            if coeffs[i][1][j] != 0:
+                orb_coeffs.append(coeffs[i][1][j])
+            #    print('A',j,'  ',end='')#,orb_coeffs,end='')
+            else:
+                continue# print('Z',j,'|',end='')
+        coeffs_orb.append(orb_coeffs)
+    print('make_orb',len(coeffs_orb),len(coeffs_orb[0]),coeffs_orb) 
+    return coeffs_orb
 
 
 
@@ -256,3 +286,40 @@ def write_orb(filename, coeffs, indices):
                     if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
                         f.write("\n")
                 f.write("\n")
+
+def read_bfi(file_path, start_line):
+    bfi_nom = 0
+    bfi_noa = 0
+    list_om = []
+    list_oa = []
+    with open(file_path, 'r') as file:
+        lines = file.readlines()[start_line:]
+        bfi_nom, bfi_noa = map(int, lines[0].split())
+        counter = 0
+        index = 1
+        while  'end' not in lines[index]:
+            line = lines[index]
+            ranges = re.split(r'\s+', line.strip())
+            for r in ranges:
+                if '-' in r:
+                    start, end = map(int, r.split('-'))
+                    for num in range(start, end+1):
+                        if counter < bfi_nom:
+                            list_om.append(num)
+                        elif counter < bfi_nom + bfi_noa:
+                            list_oa.append(num)
+                        else:
+                            break
+                        counter += 1
+                else: 
+                    if r=='':   # empty line
+                       break
+                    if counter < bfi_nom:
+                        list_om.append(int(r))
+                    elif counter < bfi_nom + bfi_noa and index < len(lines):
+                        list_oa.append(int(r))
+                    else:
+                        break
+                    counter += 1
+            index += 1
+    return bfi_nom, bfi_noa, list_om, list_oa
