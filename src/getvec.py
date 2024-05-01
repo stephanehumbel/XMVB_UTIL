@@ -16,7 +16,8 @@ class Orb:
 
 #Core function which does the job
 def main(input_file):   
-    print(len(sys.argv)," arguments" )
+#    print(len(sys.argv)," arguments",sys.argv[0] )
+    print("Getvec.py - SH 2024                --")
     return input_file
 
 
@@ -28,26 +29,37 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         indices=[]
         input_file = sys.argv[1]
         input_file_name, input_file_ext = os.path.splitext(input_file)
-        output_file_name=input_file_name+".out"
+        output_file_name=input_file_name+".orbb"
         main(input_file)
         input_file_name, input_file_ext = routines.file_extension(input_file)
 #        print(input_file_name, input_file_ext)
         pos=routines.detect_keyword(input_file, "VEC", 0)
         coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
-        vect=routines.make_table(coeffs)
-        print('##############VECT ##','\n',vect)
+        print(" data conversion (to rewrite someday)")
+        vect=routines.make_table(coeffs)#
+#        routines.write_orbs("screen",vect,0,len(vect))
+        print()
+        print(" write ",len(vect)," orbitals from ",input_file,"to ", output_file_name," in .orb format")
+        routines.write_orbs(output_file_name,vect,0,len(vect))
+        #indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
+#        print('##############VECT ##','\n',"{:8.5f}".format(float(vect[0][1])))
 #        print('ifin',coeffs)
 #        routines.write_vec("screen",coeffs,1, nvect)
 #        routines.write_vec(output_file_name, coeffs,1, nvect)
-        indices=routines.compte_AO(coeffs) 
-        print('len(indices)',len(indices),'indices[46]',indices[46],indices[46][1])
-        print('len(coeffs[23][1])', len(coeffs[23][1]), 'coeffs[46][0]',coeffs[46][0],'coeffs[46]')
-        for value in coeffs[46][1]:
-            if value !=0:
-                print("{:5.3f}".format(value), end=' ')
-        coeffs_orb=routines.make_orb(coeffs,indices)
+#        indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
+        #print(vec
+        #routines.write_orb("screen",vect,indices,0,len(vect))
+#        print('len(indices)',len(indices),end=' ' )
+        ao_orb,coeffs_orb=routines.make_orb(vect,indices)
 #        print('len(indices_orb)',len(indices_orb),'indices_orb[46]',indices_orb[46])
-        print('len(coeffs_orb)',len(coeffs_orb),'coeffs_orb[46]', "{:5.3f}".format(coeffs_orb[46][1]))
+#        print(len(coeffs_orb)," orbitals")#,'coeffs_orb[46]', "{:5.3f}".format(coeffs_orb[46][1]))
+#        print(indices)
+#        print('---ao     _orb)',ao_orb)
+#        print('---coeffs_orb)',len(coeffs_orb),coeffs_orb[0])
+#        routines.write_vec("screen",coeffs_orb,1,len(coeffs_orb) )
+#        routines.write_orb("screen",vect,ao_orb,0,len(vect))
+        #routines.write_orb("screen",vect,ao_orb)
+#        print(ao_orb)
         #copy to ccoeffs only the coeff to print aligned to indices
 #        ccoeffs=[]
 #        for i in range(len(indices)):
@@ -76,15 +88,16 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                 sys.exit()
             print('bfi found in ',xmvb_input_file,'at line',pos)
             bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(xmvb_input_file,pos)
-            print(bfi_nom,'MOs to freeze','. the AOs ',list_oa,'will be renumbered as follow')
+            print(bfi_nom,'MOs to freeze','. the MOs ',list_om,'                           -')
+            print(bfi_noa,'OAs          ','. the AOs ',list_oa,'will be renumbered as follow')
             new_coeffs = []
-            print(len(coeffs),len(coeffs[0]),len(coeffs[1]),list_om)
+            print(' e',len(coeffs),len(coeffs[0]),len(coeffs[1]),list_om)
             for i in range(len(coeffs)):
                 new_row = []
-                print('new_row',new_row,list_om[i-1], 'i=',i, len(coeffs[list_om[i]][1]))
-                new_row.append(coeffs[list_om[i-1]][1])
+                print('new_row',new_row,list_om[1], 'i=',i, len(coeffs[list_om[i]]))
+                new_row.append(coeffs[list_om[i-1]])
                 new_coeffs.append(new_row)
-                print('new_coeffs',new_coeffs[list_om[i-1]][1])
+                print('new_coeffs',new_coeffs[list_om[i]])
 #            routines.write_orb("screen",new_coeffs,indices)
      #        coeffs = new_coeffs
     #        for i in range(len(indices)):

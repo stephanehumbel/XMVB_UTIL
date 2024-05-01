@@ -1,0 +1,34 @@
+H2  cc-pvdz
+$ctrl
+nstr=3 iscf=1
+iprint=2 orbtyp=hao frgtyp=sao
+int=libcint basis=cc-pvdz  guess=read
+$end
+$str
+1 2
+1 1
+2 2
+$end
+$frag
+1 1 
+spz 1
+spz 2
+$end
+$orb
+1 1 
+1
+2
+$end
+$geo
+H 1.0 0.0 0.0 0.0
+H 1.0 0.0 0.0 0.74
+$end
+$gus
+    5     5
+# ORBITAL          1  NAO =       5
+ 0.7633607752     1   0.3075741855     2   0.0000000023     3   0.0000000023     4
+ 0.0328888503     5
+# ORBITAL          2  NAO =       5
+ 0.7633607708     6   0.3075741941     7  -0.0000000015     8  -0.0000000015     9
+-0.0328887613    10
+$end

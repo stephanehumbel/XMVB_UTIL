@@ -35,6 +35,21 @@ def detect_keyword(file_path, keyword, start_line):
                 return line_num
     return -1  # not found
 
+def detect_blank(file_path, start_line):
+    '''
+    Description: Get the position of the next blank line in the file.
+    Args:
+        parameter (file_path): Path to the file.
+        parameter (start_line): The line number to start the search from.
+
+    Returns:
+        type: Returns the line number of the next blank line or -1 if not found.
+    '''
+    with open(file_path, 'r') as file:
+        for line_num, line in enumerate(file, start=1):
+            if line_num >= start_line and line.strip() == '':
+                return line_num
+    return -1  # not found
 
 def read_orb(file_name):
     '''
@@ -96,10 +111,11 @@ def compte_AO(vect):
         nao, tab_ao
     ''' 
     #tableau est le tableau des OM, sur les OA, mais tout demarre à tableau[0][0]
-    tableau=[[val for val in pair[1]] for pair in vect]
+    tableau=vect
+#    tableau=[[val for val in pair[1]] for pair in vect]
     # Initialisation du compteur de AO non nuls et de la liste des AO
     tab_ao = []
-    ##print('compte_AO',len(tableau),vect[3],len(tableau[0]))
+#    print('compte_AO',len(tableau),vect[3],len(tableau[0]))
     # Parcours du vecteur MO  tous les vecteurs du tableau on la meme taille?
     for i in range(len(tableau)):
         tab_ao.append([])
@@ -115,6 +131,10 @@ def compte_AO(vect):
     #print('l',nao,tab_ao,len(tab_ao[0]),len(tab_ao[1]))
       
     # Retourner le nombre total de AO non nuls et la liste des AO non nuls
+    print('fin compte_AO:',end='' )
+    for i in range(len(tab_ao)):
+        print(len(tab_ao[i]),end=' ')   
+    print()
     return tab_ao  
         
 
@@ -140,7 +160,7 @@ def read_vec(file_path,vectors,start_line):
 
     prev_vector_number=1
     item=1
-#    print('read_vec',file_path,start_line)
+    print('read_vec:  ',item, end=' ')
     with open(file_path, 'r') as file:
         values = []
         for line_num, line in enumerate(file, start=1):
@@ -168,43 +188,74 @@ def read_vec(file_path,vectors,start_line):
                prev_vector_number=vector_number
                values=[]
                toread = (len(line) - 1 - 5) // 15 # skip 5 (+1) digits and get n (number of float nF15.8)
+               print(item,end=' ')   
                for i in range(toread):            # so partially filled lines are read
                    start_index = 5 + i * 15       # skip 5 digits and the already read floats
                    end_index = start_index + 15   # field as nF15.8
                    values.append(float(line[start_index:end_index]))
 #        print('read_vec',vectors)
+        print()
     return vectors,vector_number
 # 
 def make_table(coeffs):
+    """ returns a table of MO's from  this bizarre tuple thing tableau[i]=coeffs[i][1] from read_vec:
+    that I should re write
+    """
+    print('make_table', end=': ')
     tableau = []
     for i in range(len(coeffs)): 
-        print("##----##",i)
+        orbital = []
+        value=[]
+#        print(coeffs[i][1])
+        print(i,end=' ')
         for value in coeffs[i][1]:
+            #print("{:5.3e}".format(value), end=' ')
+            orbital.append(value)
             if abs(value)>1e-6:
-                print("{:5.3f}".format(value),i, end=' ')
-            tableau.append(value)
+                continue #print("{:5.3f}".format(value),i, end=' ')
+        tableau.append(orbital)
+#        print("tableau d orbital",tableau[i])
     return tableau
 
-def make_orb(coeffs, indices):
-    ''' Returns a reduced vector of MOs with only the non-zero AOs'''
-    coeffs_orb = coeffs
+def make_orb(vect, indices):
+    ''' Returns a reduced vector of MOs with only the non-zero AOs and the list of AO'''
+    ao_orb = []
     coeffs_orb = []
     orb_coeffs = []
-    print('make_orb',len(coeffs),len(indices))#,coeffs_orb[0][1])
-    for i in range(len(coeffs)):
+    orb_ao = []
+#    print('make_orb',len(vect),len(indices))
+    for i in range(len(vect)):
         #print()
         #print('coeffs(',i,',[1])',end='')
-        for value in coeffs[i][1]:
-            continue#print("{:5.3f}".format(value), end=' ')
-        for j in range(len(coeffs[i][1])):
-            if coeffs[i][1][j] != 0:
-                orb_coeffs.append(coeffs[i][1][j])
-            #    print('A',j,'  ',end='')#,orb_coeffs,end='')
-            else:
-                continue# print('Z',j,'|',end='')
+        #value=[]
+        noa = 0  
+        ioa = 0  
+        orb_coeffs = []
+        orb_ao = []
+#        print()
+#        print('orbitale n°',i,len(vect[i]),": ",end='')
+        for val in vect[i]:
+            #value=float(val)
+            #print("{:5.3f}".format(value), end=' ')
+            #continue
+            if val != 0:
+#                print(ioa,'',end=' ')
+                orb_coeffs.append(val)
+                orb_ao.append(ioa)
+                noa += 1
+            ioa += 1
+            #for j in range(len(vect[i])):
+            #    if vect[i][j] != 0:
+            #        print('A',j,'  ',vect[i][j],end='')
+            #        orb_coeffs.append(vect[i][j])
+            #    else:
+            #        continue# print('Z',j,'|',end='')
         coeffs_orb.append(orb_coeffs)
-    print('make_orb',len(coeffs_orb),len(coeffs_orb[0]),coeffs_orb) 
-    return coeffs_orb
+        ao_orb.append(orb_ao)
+#        print(noa,end='Z')
+
+    #print('make_orb',len(coeffs_orb),len(coeffs_orb[0]))#,coeffs_orb) 
+    return ao_orb,coeffs_orb
 
 
 
@@ -253,30 +304,85 @@ def write_vec(file_path, vectors, deb, fin):
              output_file.write('\n')
 
 
-def write_orb(filename, coeffs, indices):
+def write_orbs(filename, phis, deb, fin):
+    """ write the table phis table of MO's to a file or screen from deb to fin"""
+    temponao=[]
+    print('write_orbs',end=' ')
+#    print('write_orbs',filename,len(phis),deb,phis[deb])
+    if filename == 'screen':
+        for i in range(deb , fin):
+            compte=0
+            for j in range(0  , len(phis[i])):
+                if phis[i][j] != 0:
+                    compte+=1
+            print(f"{compte:4d}",end='')
+            temponao.append(compte)
+        for i in range(deb , fin):
+            print() 
+            compte=0
+            print("# _._  Orbital  :   ",i+1," write_orbs---",temponao[i], "//" ,end='')
+            for j in range(0  , len(phis[i])):
+                if phis[i][j] != 0:
+                    if (compte) % 4 == 0:
+                            print()
+                    print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
+                    compte+=1
+                #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
+            #print()
+        print() 
+    else:        
+        with open(filename, 'w') as f: 
+            for i in range(deb , fin):
+                compte=0
+                for j in range(0  , len(phis[i])):
+                    if phis[i][j] != 0:
+                        compte+=1
+                f.write(f"{compte:4d}")
+                temponao.append(compte)
+                #print(f"{compte:4d}",end='')
+            for i in range(deb , fin):
+                f.write("\n")
+                compte=0
+                f.write(f"# __  Orbital  :   {i+1:4d} write_orbs----NAO={temponao[i]:4d}")
+                for j in range(0  , len(phis[i])):
+                    if phis[i][j] != 0:
+                        if (compte) % 4 == 0:
+                                f.write("\n")
+                        #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
+                        f.write(f"{float(phis[i][j]):13.10f}{temponao[i]:4d} ")
+                        compte+=1
+                    #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
+            #for i in range(len(indices)):
+#    print("-end write_orbs-----") 
+def write_orb(filename, coeffs, indices, deb, fin):
     #new_orb_values = new_orb_data.coeffs
     #new_indices = new_orb_data.indices
     #print (coeffs)
 #    print('write_orb',filename,len(coeffs),len(indices))
     if filename == 'screen':
-        for i in range(len(indices)):
+        print('write_orb:',end=''  )
+#        for i in range(len(indices)):
+        for i in range(deb , fin):
             print(f"{len(indices[i]):4d}",end='')
         print()
-        for i in range(len(indices)):
+        #for i in range(len(indices)):
+        for i in deb , fin:
             print(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}")
             count = 0
             for j in range(len(indices[i])):
-                print(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ",end='')
+                print(f"{float(coeffs[i][indices[i][j]]):13.10f}{(indices[i][j])+1:4d}  ",end='')
                 count += 1
                 if (j+1) % 4 == 0 and j != len(indices[i])-1:
                     print()
             print()
     else:        
         with open(filename, 'w') as f: 
-            for i in range(len(indices)):
+            #for i in range(len(indices)):
+            for i in  deb , fin:
                 f.write(f"{len(indices[i]):4d}")
             f.write("\n")
-            for i in range(len(indices)):
+            #for i in range(len(indices)):
+            for i in range (deb , fin):
                 f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}\n")
                 count = 0   
                 for j in range(len(indices [i])):

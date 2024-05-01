@@ -1,0 +1,240 @@
+
+
+    *************************************************************
+                                                               
+        M   M    MM MM    M   M    MMMM        MMMM      MMM   
+         M M     M M M    M   M    M   M          M     M   M  
+          M      M M M     M M     MMMM   MMM  MMMM     M   M  
+         M M     M   M     M M     M   M          M     M   M  
+        M   M    M   M      M      MMMM        MMMM  M   MMM   
+                                                               
+    *************************************************************
+                                                               
+                    Released on: Jul 18, 2017                  
+                    Version:     v3.0                          
+                                                               
+    Cite this work as:                                         
+                                                               
+    (a) Z. Chen, F. Ying, X. Chen, J. Song, P. Su, L. Song, Y. 
+    Mo, Q. Zhang and W. Wu, Int. J. Quantum. Chem., 2015, 115, 
+    737 (b) L. Song, Y. Mo, Q. Zhang, W. Wu, J. Comput. Chem.  
+    2005, 26, 514.                                             
+
+
+ Job started at Wed Apr 24 13:07:04 2024 with     2 processors.
+ Running command: /home/humbel/fuming/softwares/gamess/2020-R2/gamess.xmvb.x H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp H2_xm_vbp
+ Work Directory at /scratch/humbel.256931   PID =               104742
+ ---------------Input File---------------
+  structure : Abini=(GamCAS=1  )  Msym=1
+ $ctrl
+  vbftyp=det WFNTYP=str iscf=3 itmax=200
+  nstr=5 bprep nstate=0 iprint=-1 guess=read
+ nmul=   1
+ $end
+ $bfi
+ 0               4
+
+   1   2   3   4
+ $end
+ $struct
+   1   2
+   3   3
+   4   4
+   5   5
+   6   6
+ $end
+ $orb
+   2   2   2   2   4   4
+    1   2  ;   1
+    3   4  ;   2
+    1   2  ;   3
+    3   4  ;   4
+    1   2   3   4  ;   5
+    1   2   3   4  ;   6
+ $end
+ ---------------End of Input--------------
+                    4 Basis
+  
+Non-zero 2-e integral            =              45
+Total 2-e integral               =              55
+ Non-zero percentage             =          81.82%
+  
+ Cpu time:     0.00
+  
+ READING INTEGRALS...
+  
+ Reading 2-e Integrals...
+ Done
+
+ OPTIMIZATION METHOD: DFPBFS WITH CENTRAL NUMERICAL GRADIENT
+
+ Number of Structures:           5
+
+ The following structures are used in calculation:  
+
+       1 *****     1   2
+       2 *****     3   3
+       3 *****     4   4
+       4 *****     5   5
+       5 *****     6   6
+
+ Nuclear Repulsion Energy:       0.715104
+
+ Partly overlapped orbitals detected.
+ For Orbital                     1  And                     5
+ PRINT INITIAL GUESS INTO XDAT FILE
+
+            *** THE FIRST FEW LINES OF GAMESS INPUT ***
+
+ GAMESS INPUT>!   File created by MacMolPlt 7.4.3                                             
+ GAMESS INPUT>! $CONTRL SCFTYP=NONE CITYP=ALDET RUNTYP=ENERGY                                 
+ GAMESS INPUT> $CONTRL SCFTYP=RHF  RUNTYP=ENERGY MAXIT=200 MULT=1                             
+ GAMESS INPUT>   MAXIT=90  MULT=1                                                             
+ GAMESS INPUT>!   VBTYP=NONE                                                                  
+ GAMESS INPUT>   VBTYP=XMVB                                                                   
+ GAMESS INPUT> $END                                                                           
+ GAMESS INPUT>! $CIDET                                                                        
+ GAMESS INPUT>!  NCORE=13 NACT=4 NELS=4 ISTSYM=1 NSTATE=10                                    
+ GAMESS INPUT>!  WSTATE(1)=0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0                            
+ GAMESS INPUT>! $END                                                                          
+ GAMESS INPUT> $SYSTEM TIMLIM=525600 MEMORY=1000000 $END                                      
+ GAMESS INPUT> $BASIS GBASIS=N31 NGAUSS=6 $END                                                
+ GAMESS INPUT>! $GUESS GUESS=MOREAD NORB=17 $END                                              
+ GAMESS INPUT> $SCF DIRSCF=.TRUE. $END                                                        
+ GAMESS INPUT> $DATA                                                                          
+ GAMESS INPUT>Title                                                                           
+ GAMESS INPUT>C1                                                                              
+ GAMESS INPUT>H     1.0     0.000 0.000 0.000                                                 
+ GAMESS INPUT>H     1.0     0.000 0.000 0.74                                                  
+ GAMESS INPUT> $END                                                                           
+ GAMESS INPUT>                                                                                
+ GAMESS INPUT>                                                                                
+ GAMESS INPUT>                                                                                
+  
+               ***** COORDINATE AND BASIS SET FROM GAMESS *****
+
+     BASIS OPTIONS
+     -------------
+     GBASIS=N31          IGAUSS=       6      POLAR=NONE    
+     NDFUNC=       0     NFFUNC=       0     DIFFSP=       F
+     NPFUNC=       0      DIFFS=       F     BASNAM=        
+
+
+     RUN TITLE
+     ---------
+ Title                                                                           
+
+ THE POINT GROUP OF THE MOLECULE IS C1      
+ THE ORDER OF THE PRINCIPAL AXIS IS     0
+
+ ATOM      ATOMIC                      COORDINATES (BOHR)
+           CHARGE         X                   Y                   Z
+ H           1.0     0.0000000000        0.0000000000        0.0000000000
+ H           1.0     0.0000000000        0.0000000000        1.3983972309
+
+          INTERNUCLEAR DISTANCES (ANGS.)
+          ------------------------------
+
+                1 H          2 H     
+
+   1 H       0.0000000    0.7400000 *
+   2 H       0.7400000 *  0.0000000  
+
+  * ... LESS THAN  3.000
+
+
+     ATOMIC BASIS SET
+     ----------------
+ THE CONTRACTED PRIMITIVE FUNCTIONS HAVE BEEN UNNORMALIZED
+ THE CONTRACTED BASIS FUNCTIONS ARE NOW NORMALIZED TO UNITY
+
+  SHELL TYPE  PRIMITIVE        EXPONENT          CONTRACTION COEFFICIENT(S)
+
+ H         
+
+      1   S       1            18.7311370    0.033494604338
+      1   S       2             2.8253944    0.234726953484
+      1   S       3             0.6401217    0.813757326146
+
+      2   S       4             0.1612778    1.000000000000
+
+ H         
+
+      3   S       5            18.7311370    0.033494604338
+      3   S       6             2.8253944    0.234726953484
+      3   S       7             0.6401217    0.813757326146
+
+      4   S       8             0.1612778    1.000000000000
+
+ TOTAL NUMBER OF BASIS SET SHELLS             =    4
+ NUMBER OF CARTESIAN GAUSSIAN BASIS FUNCTIONS =    4
+ NUMBER OF ELECTRONS                          =    2
+ CHARGE OF MOLECULE                           =    0
+ SPIN MULTIPLICITY                            =    1
+ NUMBER OF OCCUPIED ORBITALS (ALPHA)          =    1
+ NUMBER OF OCCUPIED ORBITALS (BETA )          =    1
+ TOTAL NUMBER OF ATOMS                        =    2
+ THE NUCLEAR REPULSION ENERGY IS        0.7151043909
+  
+ VBPP is applied
+
+                   16  Coefficients                    16  Independent
+  
+ Enter DFP-BFS Route:                     3
+ energy on entry is -- 
+   0.0000000000000000     
+ Gxnorm =    0.000000  Max Comp. =    0.000000
+ icovg=                    1
+  
+ The following results is conserned with excited state                     0
+  
+ Total Energy:       0.00000000
+
+ First Excited:      0.000000
+
+
+ The Absulte Value of Gradient:   0.000000
+
+ Number of Iteration:    0
+
+
+                 ******  OVERLAP OF VB STRUCTURES  ******  
+
+
+                  1            2            3            4            5
+       1       1.000000    -0.572037    -0.571954    -0.980288     0.155406
+       2      -0.572037     1.000000     0.673136     0.502923     0.000015
+       3      -0.571954     0.673136     1.000000     0.502812     0.000016
+       4      -0.980288     0.502923     0.502812     1.000000     0.000000
+       5       0.155406     0.000015     0.000016     0.000000     1.000000
+
+
+
+               ******  HAMILTONIAN OF VB STRUCTURES  ******  
+
+
+                  1            2            3            4            5
+       1      -1.841030     0.934437     0.934223     1.831942    -0.217224
+       2       0.934437    -0.702928    -0.679501    -0.886164     0.054298
+       3       0.934223    -0.679501    -0.702661    -0.885946     0.054306
+       4       1.831942    -0.886164    -0.885946    -1.841724     0.177530
+       5      -0.217224     0.054298     0.054306     0.177530    -0.254503
+
+
+
+          ******  LOWDIN ORTHOGONALIZED HAMILTONIAN OF VB STRUCTURES  ******  
+
+
+                  1            2            3            4            5
+       1      -0.962594     0.378792     0.378715     0.700778    -0.173133
+       2       0.378792    -0.259690    -0.188326     0.048698    -0.048954
+       3       0.378715    -0.188326    -0.259486     0.048783    -0.048915
+       4       0.700778     0.048698     0.048783    -1.198256     0.015620
+       5      -0.173133    -0.048954    -0.048915     0.015620    -0.212998
+
+
+
+ Cpu for the Job:       0.02 (sec)
+
+ Job Finished at Wed Apr 24 13:07:04 2024
+
