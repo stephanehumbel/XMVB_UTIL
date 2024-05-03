@@ -17,7 +17,7 @@ class Orb:
 #Core function which does the job
 def main(input_file):   
 #    print(len(sys.argv)," arguments",sys.argv[0] )
-    print("Getvec.py - SH 2024                --")
+    print("getvec.py - SH 2024                --")
     return input_file
 
 
@@ -33,7 +33,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         main(input_file)
         input_file_name, input_file_ext = routines.file_extension(input_file)
 #        print(input_file_name, input_file_ext)
-        pos=routines.detect_keyword(input_file, "VEC", 0)
+        pos,line=routines.detect_keyword(input_file, "VEC", 0)
         coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
         print(" data conversion (to rewrite someday)")
         vect=routines.make_table(coeffs)#
@@ -41,6 +41,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         print()
         print(" write ",len(vect)," orbitals from ",input_file,"to ", output_file_name," in .orb format")
         routines.write_orbs(output_file_name,vect,0,len(vect))
+        routines.write_orbs("screen",vect,0,17)
         #indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
 #        print('##############VECT ##','\n',"{:8.5f}".format(float(vect[0][1])))
 #        print('ifin',coeffs)
@@ -81,7 +82,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             vb_orb_coeffs,vb_orb_indices=routines.read_orb(xmvb_orb_file)
             #print('vb_orb_coeffs',vb_orb_coeffs,vb_orb_indices)
             #routines.write_orb("screen",vb_orb_coeffs,vb_orb_indices)
-            pos=routines.detect_keyword(xmvb_input_file, "bfi", 0)
+            pos, line=routines.detect_keyword(xmvb_input_file, "bfi", 0)
             if pos == -1:
                 print('bfi not found, use lower case bfi')
                 print('########.... .STOP.  ######## bfi')

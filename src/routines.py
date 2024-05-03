@@ -30,10 +30,34 @@ def detect_keyword(file_path, keyword, start_line):
     '''
 #    print('detect_keyword',file_path,keyword,start_line)
     with open(file_path, 'r') as file:
+        ret_num = -1                # not found
+        ret_line=''                      # not found
         for line_num, line in enumerate(file, 1):  
             if line_num >= start_line and keyword in line:
-                return line_num
-    return -1  # not found
+                ret_line = line
+                ret_num = line_num
+    return ret_num, ret_line 
+
+def Read_INTEGER(file_path, STRING, size):
+    '''
+    Description : get the integer value of the *last* occurence of keyword in file_path.
+    Args:
+        parameter (file_path): name of the file (possibly the path?).
+        parameter (STRING): string to find. It must contain the = character, if so
+        parameter (size): the size of the integer to typically 4 or 5 characters
+
+    Returns:
+        type: returns the integer value of the *last* occurence of keyword or -1 if keyword is not found
+    '''
+    numline, line_to_read = detect_keyword(file_path, STRING, 1)
+    #print('Read_INTEGER',numline, line_to_read) 
+    if numline > 0:
+        col1=line_to_read.find(STRING)
+        num= line_to_read[col1+len(STRING):col1+len(STRING)+size]
+        #print(STRING,':',col1,':::',num)
+        return num
+
+
 
 def detect_blank(file_path, start_line):
     '''
@@ -157,7 +181,7 @@ def read_vec(file_path,vectors,start_line):
 #            start_index = 5 + i * 15       # skip 5 digits and the already read floats
 #            end_index = start_index + 15   # field as nF15.8
 #            values.append(float(line[start_index:end_index]))
-
+    
     prev_vector_number=1
     item=1
     print('read_vec:  ',item, end=' ')
@@ -349,7 +373,7 @@ def write_orbs(filename, phis, deb, fin):
                         if (compte) % 4 == 0:
                                 f.write("\n")
                         #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
-                        f.write(f"{float(phis[i][j]):13.10f}{temponao[i]:4d} ")
+                        f.write(f"{float(phis[i][j]):13.10f}{j+1:4d} ")
                         compte+=1
                     #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
             #for i in range(len(indices)):
