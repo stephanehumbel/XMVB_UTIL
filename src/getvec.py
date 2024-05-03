@@ -7,13 +7,6 @@ import xmvb_orb as xmlib
 import numpy as np  
 import sys
 
-class Orb:
-    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]):
-        self.zeta = zeta
-        self.coeffs = coeffs
-        self.indices = indices
-        self.numatoms = numatoms
-
 #Core function which does the job
 def main(input_file):   
 #    print(len(sys.argv)," arguments",sys.argv[0] )
