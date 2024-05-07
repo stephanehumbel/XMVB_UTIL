@@ -1,0 +1,44 @@
+#!/bin/sh
+# Script genere automatiquement a partir de subgms
+# reserve 48Go de memoire \#SBATCH --mem=18000
+#$ -N AAntr_CSF
+#
+#SBATCH --mem=48000
+#$ -cwd
+#$ -S /bin/sh
+ hhomedir=`pwd`
+ nnode=`hostname`
+echo "Variables"
+echo "Running on        : $nnode  "
+echo "targetdir         : $hhomedir "
+echo "TMPDIR            : $TMPDIR"
+echo "I am in           : $PWD"
+
+# source /usr/share/Modules/init/sh
+
+if [ -e AAntr_CSF.xmo ] ; then
+ set  echo
+   cp AAntr_CSF.xmo AAntr_CSF.xmo~
+ unset  echo
+fi
+if [ -e AAntr_CSF.log ] ; then
+ set  echo
+   cp AAntr_CSF.log AAntr_CSF.log~
+ unset  echo
+fi
+
+set echo
+#time (/share/programs/GAMESS/rungms   AAntr_CSF xmvb 1  > AAntr_CSF.log)
+#time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms/rungms          AAntr_CSF xmvb 1  > AAntr_CSF.log)
+time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms        AAntr_CSF xmvb 1  > AAntr_CSF.log)
+#time (rungms_                     AAntr_CSF xmvb 1  > AAntr_CSF.log)
+# On doit rappatrier à la main le .xmo .gus et les wfn (si necessaire)
+#cp  $TMPDIR/*.wfn  $HOMEDIR/
+#cp  $TMPDIR/AAntr_CSF.gus  $HOMEDIR/
+cp  $TMPDIR/AAntr_CSF.xmo  $HOMEDIR/
+if [ -s AAntr_CSF.wfn ] ; then
+ set  echo
+cp  $TMPDIR/AAntr_CSF.wfn  $HOMEDIR/
+ unset  echo
+fi
+unset echo

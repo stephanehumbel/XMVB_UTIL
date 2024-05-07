@@ -184,7 +184,7 @@ def read_vec(file_path,vectors,start_line):
     
     prev_vector_number=1
     item=1
-    print('read_vec:  ',item, end=' ')
+    print('read_vec from:  ',file_path,' OM ', item, end=' ')
     with open(file_path, 'r') as file:
         values = []
         for line_num, line in enumerate(file, start=1):
@@ -212,12 +212,13 @@ def read_vec(file_path,vectors,start_line):
                prev_vector_number=vector_number
                values=[]
                toread = (len(line) - 1 - 5) // 15 # skip 5 (+1) digits and get n (number of float nF15.8)
-               print(item,end=' ')   
+               #print(item,end=' ')   
                for i in range(toread):            # so partially filled lines are read
                    start_index = 5 + i * 15       # skip 5 digits and the already read floats
                    end_index = start_index + 15   # field as nF15.8
                    values.append(float(line[start_index:end_index]))
 #        print('read_vec',vectors)
+        print('-',item,end=' ')   
         print()
     return vectors,vector_number
 # 
@@ -225,13 +226,14 @@ def make_table(coeffs):
     """ returns a table of MO's from  this bizarre tuple thing tableau[i]=coeffs[i][1] from read_vec:
     that I should re write
     """
-    print('make_table', end=': ')
+    print(" data conversion (to rewrite someday)")
+#    print('make_table', end=': ')
     tableau = []
     for i in range(len(coeffs)): 
         orbital = []
         value=[]
 #        print(coeffs[i][1])
-        print(i,end=' ')
+        #print(i,end=' ')
         for value in coeffs[i][1]:
             #print("{:5.3e}".format(value), end=' ')
             orbital.append(value)
