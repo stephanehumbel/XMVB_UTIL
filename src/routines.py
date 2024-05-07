@@ -393,7 +393,7 @@ def write_vec(file_path, vectors, deb, fin):
 def write_orbs(filename, phis, deb, fin):
     """ write the table phis table of MO's to a file or screen from deb to fin"""
     temponao=[]
-    print('|   write_orbs',end='._._.')
+#    print('|   write_orbs',end='._._.')
 #    print('write_orbs',filename,len(phis),deb,phis[deb])
     if filename == 'screen':
         for i in range(deb , fin):

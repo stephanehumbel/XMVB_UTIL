@@ -55,19 +55,19 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                 sys.exit()
             print('|  bfi found in ',xmvb_input_file,'at line',pos)
             bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(xmvb_input_file,pos)
-            print(bfi_nom,'| . MOs to freeze',': ',list_om)
-            print(bfi_noa,'| . OAs to keep  ',': ',list_oa)
+            print('| ', bfi_nom,' MOs to freeze',': ',list_om)
+            print('| ',bfi_noa,' OAs to keep  ',': ',list_oa)
             for p in list_oa:            # test inutile en principe
                 try:
                      t=list_oa.index(p)
                      #print(t, end=', ')
                 except ValueError:
                      print('|   error',p,' not in the AOs list',list_oa,list_om)
-            print()
+            print('|  ')
             new_coeffs = []
             new_MOs = []
-            print('>> among ',len(vb_orb_coeffs),' orbitals, ')# and list_om=',list_om)
-            print('>> here is the VB orb list       : ', end=' ')
+            print('| > among ',len(vb_orb_coeffs),' orbitals, ')# and list_om=',list_om)
+            print('| > here is the VB orb list       : ', end=' ')
             compteorbvb=0
             for i in range(len(vb_orb_coeffs)):
                  if i+1 not in list_om: # i est forcement + petit que fin car relu 
@@ -85,19 +85,31 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                       #print('\n##',i+1, vb_orb_coeffs[i])
                       #print(i+1, end=', ')
 #
-            print('')
+            print('| ')
 #            print('new_coeffs',new_coeffs[2])
             fin=len(new_coeffs)
             finmos=len(new_MOs)
             xmvb_input_file_name, xmvb_input_file_ext = os.path.splitext(xmvb_input_file)
             xmvb_output_file=xmvb_input_file_name+'.orbb'
             gamess_output_file=xmvb_input_file_name+'.vecc'
-            print('+-  -----------------------------------------------------------------------')
+            print('|-   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   ------')
             print('| writes the',finmos,'VECs to', gamess_output_file)
             routines.wwrite_vec(gamess_output_file,new_MOs,1,finmos) 
             print('| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
             routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
             print('+-  -----------------------------------------------------------------------')
+            print('+- - ----------------------------------------------------------------------')
+            print('+- -  ---------------------------------------------------------------------')
+            print('|  ')
+            print('|    ____  _  __                _____ ______ _________      ________ _____ ')
+            print('|   / __ \| |/ /               / ____|  ____|__   __\ \    / /  ____/ ____|')
+            print('|  | |  | | : /               | |  __| |__     | |   \ \  / /| |__ | |     ')
+            print('|  | |  | |  <                | | |_ |  __|    | |    \ \/ / |  __|| |     ')
+            print('|  | |__| | : \               | |__| | |____   | |     \  /  | |___| |____ ')
+            print('|   \____/|_|\_\               \_____|______|  |_|      \/   |______\_____|')
+            print('|                                                                          ')
+            print('|                                                                          ')
+            print('+- -    -------------------------------------------------------------------')
  #           print('finmos:',finmos,'new_MOs',new_MOs[1])
             #new_MOs_array=routines.to_array(new_MOs)
 #            routines.wwrite_vec('screen',new_MOs,1,finmos) 
@@ -111,6 +123,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             print('|  -> pi (orb written in file_w_bfi.orbb, to use with xmvb') 
             print('+-----------------------------------------------------------------------')
             print('+ needs routines.py -----------------------------------------------------')
+            print('+-----------------------------------------------------------------------')
             sys.exit() 
 
                     # new_row = []
