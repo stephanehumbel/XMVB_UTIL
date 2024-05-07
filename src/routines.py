@@ -222,6 +222,20 @@ def read_vec(file_path,vectors,start_line):
         print()
     return vectors,vector_number
 # 
+def to_array(liste):
+    ''' convert a list of list to a numpy array'''
+    vectors=[]  
+    item=0
+    print('to_array',end=': ')
+    for values in liste:
+        print(item,values)
+        v=[]
+        for i in range(len(values)):
+          v.append(float(values[i]))    
+        vectors.append(np.array(v))
+        item+=1
+    return vectors
+
 def make_table(coeffs):
     """ returns a table of MO's from  this bizarre tuple thing tableau[i]=coeffs[i][1] from read_vec:
     that I should re write
@@ -286,6 +300,52 @@ def make_orb(vect, indices):
 
 
 # PRINT_VEC
+def wwrite_vec(file_path, vectors, deb, fin):
+    '''
+    Description : write MO's as $VEC to a file.
+    Args:
+        parameter (vectors): the MO's vectors(array(NAO's))
+        parameter (deb, fin): beginning and end of the printing
+        parameter (file_path): path to the output file ; "screen" for screen output
+
+    Returns:
+        None
+    '''
+    if deb < 1 or fin > len(vectors) + 1:
+        print('Error: Invalid limits in write_vec', deb, fin, len(vectors))
+        sys.exit(1)
+    numvec=0
+    if file_path == 'screen':
+        print('$VEC ',end='')
+        for values in vectors:
+            line_number = 1
+            if deb <= numvec <= fin:
+                for i in range(0, len(values)):
+                    if i % 5 == 0:
+                        print(f"\n{numvec % 100:2d}{line_number:3d}",end='')
+                        line_number += 1
+                    print(f"{values[i]:15.8E}",end='')
+            numvec+=1
+        print('\n$END')
+    else:
+        with open(file_path, 'w') as output_file:
+             output_file.write(' $VEC')
+             for values in vectors:
+                line_number = 1
+                if deb <= numvec <= fin:
+                     for i in range(0, len(values)):
+                         if i % 5 == 0:
+                             output_file.write('\n')
+                             output_file.write(f"{numvec % 100:2d}{line_number:3d}")
+                             line_number += 1
+                         output_file.write(f"{values[i]:15.8E}")
+
+                numvec+=1
+             output_file.write('\n $END')
+             output_file.write('\n')
+
+
+
 def write_vec(file_path, vectors, deb, fin):
     '''
     Description : write MO's as $VEC to a file.
@@ -333,7 +393,7 @@ def write_vec(file_path, vectors, deb, fin):
 def write_orbs(filename, phis, deb, fin):
     """ write the table phis table of MO's to a file or screen from deb to fin"""
     temponao=[]
-    print('write_orbs',end=' ')
+    print('write_orbs',end='._._.')
 #    print('write_orbs',filename,len(phis),deb,phis[deb])
     if filename == 'screen':
         for i in range(deb , fin):
@@ -389,7 +449,7 @@ def write_orb(filename, coeffs, indices, deb, fin):
         print('write_orb:',end=''  )
 #        for i in range(len(indices)):
         for i in range(deb , fin):
-            print(f"{len(indices[i]):4d}",end='')
+            print(f"{len(indices[i]):4d}",end='|')
         print()
         #for i in range(len(indices)):
         for i in deb , fin:

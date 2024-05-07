@@ -31,7 +31,11 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         vect=routines.make_table(coeffs)#
 #        routines.write_orbs("screen",vect,0,len(vect))
         print()
-        fin=int(input("highest MO:"))
+        try:
+            fin=int(input("highest MO: (hit return for all MOs  )"))       
+        except:
+            print("I will take all ",len(vect)," orbitals")
+            fin=len(vect)
         print("Select MOs 1-",fin, ' among ', len(vect)," MOs from ",input_file,"to ", output_file_name," in .orb format")
         routines.write_orbs(output_file_name,vect,0,fin) 
 #        routines.write_orbs("screen",vect,0,fin)
@@ -39,7 +43,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         #indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
 #        print('##############VECT ##','\n',"{:8.5f}".format(float(vect[0][1])))
 #        print('ifin',coeffs)
-#        routines.write_vec("screen",coeffs,1, nvect)
+ #       routines.write_vec("screen",coeffs,1, fin)
 #        routines.write_vec(output_file_name, coeffs,1, nvect)
 #        indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
         #print(vec
@@ -98,11 +102,12 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             new_coeffs = []
             new_MOs = []
             print('>>',len(vb_orb_coeffs),' vb vectors and list_om=',list_om)
+            print('>> VB orb list       : ', end=' ')
             for i in range(len(vb_orb_coeffs)):
                  if i+1 not in list_om: # i est forcement + petit que fin car relu 
                       new_coeffs.append(vb_orb_coeffs[i])
                       #print('\n##',i+1, vb_orb_coeffs[i])
-                      print(i+1, end=', ')
+                      print(i+1, end=' ')
                       #print('\n__',i+1,vb_orb_indices[i] )
                       for k in vb_orb_indices[i]:
                                 #print(list_oa.index(k)+1,end=' ')
@@ -113,6 +118,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                       #print('\n##',i+1, vb_orb_coeffs[i])
                       #print(i+1, end=', ')
 #
+            print('')
 #            print('new_coeffs',new_coeffs[2])
             fin=len(new_coeffs)
             finmos=len(new_MOs)
@@ -120,7 +126,10 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             xmvb_output_file=xmvb_input_file_name+'.orbb'
             gamess_output_file=xmvb_input_file_name+'.vecc'
             routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
-            routines.write_vec(gamess_output_file,new_MOs,0,finmos-1) 
+ #           print('finmos:',finmos,'new_MOs',new_MOs[1])
+            #new_MOs_array=routines.to_array(new_MOs)
+#            routines.wwrite_vec('screen',new_MOs,1,finmos) 
+            routines.wwrite_vec(gamess_output_file,new_MOs,1,finmos) 
                     # new_row = []
                     # print('new_row',new_row,list_om[1], 'i=',i, len(vb_orb_coeffs[list_om[i]]))
                     # new_row.append(coeffs[list_om[i-1]])
