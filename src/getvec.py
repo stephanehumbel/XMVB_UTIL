@@ -10,7 +10,8 @@ import sys
 #Core function which does the job
 def main(input_file):   
 #    print(len(sys.argv)," arguments",sys.argv[0] )
-    print("getvec.py - SH 2024                --")
+    print("+--------getvec.py - SH 2024 ---------------------")
+    print('| getvec.py file_w_VEC [file_w_bfi]')
     return input_file
 
 
@@ -32,80 +33,46 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 #        routines.write_orbs("screen",vect,0,len(vect))
         print()
         try:
-            fin=int(input("highest MO: (hit return for all MOs  )"))       
+            fin=int(input("| ==>   highest MO: (hit return for all MOs)  :     "))       
         except:
-            print("I will take all ",len(vect)," orbitals")
+            print("|             I will take all ",len(vect)," orbitals")
             fin=len(vect)
-        print("Select MOs 1-",fin, ' among ', len(vect)," MOs from ",input_file,"to ", output_file_name," in .orb format")
-        routines.write_orbs(output_file_name,vect,0,fin) 
+        print("|     Select MOs 1-",fin, ' among ', len(vect)," MOs from ",input_file,"to ", output_file_name," in .orb format")
+        print("                 -_________-  ") 
 #        routines.write_orbs("screen",vect,0,fin)
-#------
-        #indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
-#        print('##############VECT ##','\n',"{:8.5f}".format(float(vect[0][1])))
-#        print('ifin',coeffs)
- #       routines.write_vec("screen",coeffs,1, fin)
-#        routines.write_vec(output_file_name, coeffs,1, nvect)
-#        indices=routines.compte_AO(vect) # compte_AO est fait dans make_orb
-        #print(vec
-        #routines.write_orb("screen",vect,indices,0,len(vect))
-#        print('len(indices)',len(indices),end=' ' )
+        routines.write_orbs(output_file_name,vect,0,fin) 
         ao_orb,coeffs_orb=routines.make_orb(vect,indices)
-#        print('len(indices_orb)',len(indices_orb),'indices_orb[46]',indices_orb[46])
-#        print(len(coeffs_orb)," orbitals")#,'coeffs_orb[46]', "{:5.3f}".format(coeffs_orb[46][1]))
-#        print(indices)
-#        print('---ao     _orb)',ao_orb)
-#        print('---coeffs_orb)',len(coeffs_orb),coeffs_orb[0])
-#        routines.write_vec("screen",coeffs_orb,1,len(coeffs_orb) )
-#        routines.write_orb("screen",vect,ao_orb,0,len(vect))
-        #routines.write_orb("screen",vect,ao_orb)
-#        print(ao_orb)
-        #copy to ccoeffs only the coeff to print aligned to indices
-#        ccoeffs=[]
-#        for i in range(len(indices)):
-#             print('-----------')
-#             print('bcl indices(',i,')',indices[i],len(indices[i]))    
-#             for j in range(len(indices[i])):
-                #ccoeffs.append(coeffs[indices[i][i]])
-#                print(len(indices[i]),'indices(',i,',',j,' )=',indices[i][j],end=' ,')
-            #   coeffs[i]=ccoeffs
-            #   print('coeff  (',i,',',j,')',coeffs[i][j],end='')
-            #    print(' coeffs(',i,',',j,')=',coeffs[i][1][indices[i][j]],end='')
-            #    ccoeffs.append(coeffs[i][1][indices[i][j]])
-#             print(i,'-----------')
-#             #print('ccoeffs',ccoeffs)    
         if len(sys.argv) == 3:
             xmvb_input_file=sys.argv[2]
 #            xmvb_orb_file=sys.argv[3]
-            #print('xmvb_input_file',xmvb_input_file,'xmvb_orb_file',xmvb_orb_file)
-#            print('+++++++++++++++++++++++++++++++-',ao_orb)
             vb_orb_coeffs,vb_orb_indices=routines.read_orb(output_file_name)
-#            print()
-#            print('--------------------------------',ao_orb)
-#            print('vb_orb_coeffs',vb_orb_coeffs,'indices',vb_orb_indices)
-#            #routines.write_orb("screen",vb_orb_coeffs,vb_orb_indices)
+#            routines.write_orb("screen",vb_orb_coeffs,vb_orb_indices)
             pos, line=routines.detect_keyword(xmvb_input_file, "bfi", 0)
             if pos == -1:
-                print('bfi not found, use lower case bfi')
-                print('########.... .STOP.  ######## bfi')
+                print('|  bfi not found, use lower case bfi')
+                print('   ########.... .STOP.  ######## bfi')
+                print('+-     ------------------------------------------------------')
                 sys.exit()
-            print('bfi found in ',xmvb_input_file,'at line',pos)
+            print('|  bfi found in ',xmvb_input_file,'at line',pos)
             bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(xmvb_input_file,pos)
-            print(bfi_nom,'MOs to freeze',': ',list_om)
-            print(bfi_noa,'OAs to keep  ',': ',list_oa)
-            for p in list_oa:  # test inutile en principe
+            print(bfi_nom,'| . MOs to freeze',': ',list_om)
+            print(bfi_noa,'| . OAs to keep  ',': ',list_oa)
+            for p in list_oa:            # test inutile en principe
                 try:
                      t=list_oa.index(p)
                      #print(t, end=', ')
                 except ValueError:
-                     print('error',p,' not il the AOs list',list_oa,list_om)
+                     print('|   error',p,' not in the AOs list',list_oa,list_om)
             print()
             new_coeffs = []
             new_MOs = []
-            print('>>',len(vb_orb_coeffs),' vb vectors and list_om=',list_om)
-            print('>> VB orb list       : ', end=' ')
+            print('>> among ',len(vb_orb_coeffs),' orbitals, ')# and list_om=',list_om)
+            print('>> here is the VB orb list       : ', end=' ')
+            compteorbvb=0
             for i in range(len(vb_orb_coeffs)):
                  if i+1 not in list_om: # i est forcement + petit que fin car relu 
                       new_coeffs.append(vb_orb_coeffs[i])
+                      compteorbvb+=1
                       #print('\n##',i+1, vb_orb_coeffs[i])
                       print(i+1, end=' ')
                       #print('\n__',i+1,vb_orb_indices[i] )
@@ -125,11 +92,27 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             xmvb_input_file_name, xmvb_input_file_ext = os.path.splitext(xmvb_input_file)
             xmvb_output_file=xmvb_input_file_name+'.orbb'
             gamess_output_file=xmvb_input_file_name+'.vecc'
+            print('+-  -----------------------------------------------------------------------')
+            print('| writes the',finmos,'VECs to', gamess_output_file)
+            routines.wwrite_vec(gamess_output_file,new_MOs,1,finmos) 
+            print('| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
             routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
+            print('+-  -----------------------------------------------------------------------')
  #           print('finmos:',finmos,'new_MOs',new_MOs[1])
             #new_MOs_array=routines.to_array(new_MOs)
 #            routines.wwrite_vec('screen',new_MOs,1,finmos) 
-            routines.wwrite_vec(gamess_output_file,new_MOs,1,finmos) 
+    else:
+            print('+-  -----------------------------------------------------------------------')
+            print('| Usage: getvec.py file_w_VEC [file_w_bfi]')
+            print('|  -> file_w_VEC (.dat or .inp) $VEC is read and put in file_w_VEC.orbb ')
+            print('|                                               ')
+            print('| with [file_w_bfi] the VEC is splitted between ')
+            print('|  -> sigma ($VEC written in file_w_bfi.vecc) to use un gamess')
+            print('|  -> pi (orb written in file_w_bfi.orbb, to use with xmvb') 
+            print('+-----------------------------------------------------------------------')
+            print('+ needs routines.py -----------------------------------------------------')
+            sys.exit() 
+
                     # new_row = []
                     # print('new_row',new_row,list_om[1], 'i=',i, len(vb_orb_coeffs[list_om[i]]))
                     # new_row.append(coeffs[list_om[i-1]])
@@ -145,4 +128,3 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
     #        print()
         #routines.write_orb("screen",coeffs,indices)routines.write_orb("screen",coeffs,indices)
     #    routines.write_orb("screen",coeffs,new_indices)
-        sys.exit() 

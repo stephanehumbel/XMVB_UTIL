@@ -184,7 +184,7 @@ def read_vec(file_path,vectors,start_line):
     
     prev_vector_number=1
     item=1
-    print('read_vec from:  ',file_path,' OM ', item, end=' ')
+    print('|  read_vec from:  ',file_path,' OM ', item, end=' ')
     with open(file_path, 'r') as file:
         values = []
         for line_num, line in enumerate(file, start=1):
@@ -240,7 +240,7 @@ def make_table(coeffs):
     """ returns a table of MO's from  this bizarre tuple thing tableau[i]=coeffs[i][1] from read_vec:
     that I should re write
     """
-    print(" data conversion (to rewrite someday)")
+    print(" routines.make_table for data conversion (should be rewrite someday)")
 #    print('make_table', end=': ')
     tableau = []
     for i in range(len(coeffs)): 
@@ -393,7 +393,7 @@ def write_vec(file_path, vectors, deb, fin):
 def write_orbs(filename, phis, deb, fin):
     """ write the table phis table of MO's to a file or screen from deb to fin"""
     temponao=[]
-    print('write_orbs',end='._._.')
+    print('|   write_orbs',end='._._.')
 #    print('write_orbs',filename,len(phis),deb,phis[deb])
     if filename == 'screen':
         for i in range(deb , fin):
