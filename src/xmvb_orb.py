@@ -4,7 +4,7 @@ import sys
 import os
 
 class Orb:
-    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]):
+    def __init__(self, zeta : int=0, coeffs : list[list[float]]=[], indices : list[list[int]]=[], numatoms : list(list([int]))=[]): # type: ignore
         self.zeta = zeta
         self.coeffs = coeffs
         self.indices = indices
