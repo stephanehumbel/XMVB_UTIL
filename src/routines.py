@@ -311,7 +311,7 @@ def wwrite_vec(file_path, vectors, deb, fin):
     Returns:
         None
     '''
-    if deb < 1 or fin > len(vectors) + 1:
+    if deb < 0 or fin > len(vectors) + 1:
         print('Error: Invalid limits in write_vec', deb, fin, len(vectors))
         sys.exit(1)
     numvec=0
@@ -336,7 +336,7 @@ def wwrite_vec(file_path, vectors, deb, fin):
                      for i in range(0, len(values)):
                          if i % 5 == 0:
                              output_file.write('\n')
-                             output_file.write(f"{numvec % 100:2d}{line_number:3d}")
+                             output_file.write(f"{numvec+1 % 100:2d}{line_number:3d}")
                              line_number += 1
                          output_file.write(f"{values[i]:15.8E}")
 

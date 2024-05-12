@@ -81,10 +81,15 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                                 continue
                       #print('--',vb_orb_indices[list_oa[i]])   
                  else : # i est dans les MO's a garder
-                      new_MOs.append(vb_orb_coeffs[i])
+                      new_MOs.append(vect[i])
                       #print('\n##',i+1, vb_orb_coeffs[i])
                       #print(i+1, end=', ')
-#
+            # now add the rest of the MOs to the VEC
+            for i in range(len(vb_orb_coeffs)):
+                 if i+1 not in list_om : # i est forcement + petit que fin car relu 
+                    print(' complement',i+1, end=' ')
+                    new_MOs.append(vect[i])
+           
             print('| ')
 #            print('new_coeffs',new_coeffs[2])
             fin=len(new_coeffs)
@@ -94,7 +99,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             gamess_output_file=xmvb_input_file_name+'.vecc'
             print('|-   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   ------')
             print('| writes the',finmos,'VECs to', gamess_output_file)
-            routines.wwrite_vec(gamess_output_file,new_MOs,1,finmos) 
+            routines.wwrite_vec(gamess_output_file,new_MOs,0,finmos) 
             print('| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
             routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
             print('+-  -----------------------------------------------------------------------')
