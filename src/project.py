@@ -16,53 +16,169 @@ def CS_weight(i,Ci,Sij):
 #    print('CS_weight(',i,')=',wi)
     return wi
 
-def Get_CIVECT(CAS_file_name, state ):
-    search_state=" STATE #    "+str(state)
-    pos_CASvect,line=routines.detect_keyword(CAS_file_name, "LAGRANGIAN CONVERGED", 0)
+def Get_CIVECT(CAS_file_name, state):
+    offset=4
+    if state == -1:
+        offset=2   
+        print("xmo file")
+        pos_CASvect,line=routines.detect_keyword(CAS_file_name,"******  COEFFICIENTS OF STRUCTURES", 0)
+    else:
+        pos_CASvect,line=routines.detect_keyword(CAS_file_name, "LAGRANGIAN CONVERGED", 0)
+        search_state=" STATE #    "+str(state)
+        pos_CASvect,line=routines.detect_keyword(CAS_file_name, search_state, pos_CASvect)
     if (pos_CASvect == -1):
-        print("LAGRANGIAN CONVERGED not found")
-        quit()
-    pos_CASvect,line=routines.detect_keyword(CAS_file_name, search_state, pos_CASvect)
-    pos_CASvectfin = routines.detect_blank(CAS_file_name,pos_CASvect + 3)
-    CI_SIZE=pos_CASvectfin-1-(pos_CASvect+3)
-    #print('pos_CASvect',pos_CASvect, CI_SIZE)
-    # on decale de 2 ligne
-    CI_conf, CI_vect=Read_CIVECT(CAS_file_name, pos_CASvect+3,pos_CASvectfin-1)
+        print("Get_CIVECT  no converged Ci coeffs in  ",CAS_file_name)
+        print("for state :",state)
+        quit(   )
+    pos_CASvectfin = routines.detect_blank(CAS_file_name,pos_CASvect+offset)
+    CI_SIZE=pos_CASvectfin-1-(pos_CASvect+offset-1)
+#    print('pos_CASvect',pos_CASvect+offset, CI_SIZE, pos_CASvectfin-1)
+    # on decale de 3 lignes pour .log et de 2 lignes pour xmo 
+    CI_conf, CI_vect=Read_CIVECT(CAS_file_name, pos_CASvect+offset-1,pos_CASvectfin-1,offset)
+#    print('GET_CIVEC CI_vect:',CI_vect)
     return CI_conf,CI_vect
-    
 
-def Read_CIVECT(file, pos,fin):
+def Read_CIVECT(file, pos,fin,offset):
+    #offset=4 pour .log et 2 pour .xmo
+    # indique la position a lire
     with open(file, 'r') as f:
         lines = f.readlines()[pos:fin]
         n=fin-pos
-        print('n',pos,n,fin)
+#        print('n',pos,n,fin)
         CI_vect = np.zeros(n)
-        CI_conf = np.zeros(n)
+        CI_conf = []
         for i in range(n):
 # Det,       CI_vect[i] = float(re.split('\|+| +|\n', lines[i])[7])
 # GUGA
             CI_vect[i] = float(re.split(' +',lines[i])[2])
-            print(re.split(' +|\n',lines[i]),re.split(' +|\n',lines[i])[3])
-            CI_conf[i] = re.split(' +|\n',lines[i])[3]
+            if offset == 4: # log
+                str=re.split(' +|\n',lines[i])[3]
+                CI_conf.append(str)
+            else: # xmo
+                #CI_conf[i] = re.split(' +|\n',lines[i])[3:]
+                str=''
+                k=4
+                while True:
+                    if re.split(' +|\n',lines[i])[k]!= '':
+                        str+=' '+re.split(' +|\n',lines[i])[k]   
+#                        print(str,end=' ')
+                    else:
+                        break
+                    k+=1
+                CI_conf.append(str)
+                continue
     return CI_conf, CI_vect
 
-input_file = sys.argv[1]
-state = sys.argv[2]
-input_file_name, input_file_ext = os.path.splitext(input_file)
-# Le calcul CAS est dans nom.out
-CAS_file_name = input_file_name + ".log"
+print("+--------project.py - SH 2024 ---------------------")
+print('| project.py file_CI ')
+if len(sys.argv) <= 1:
+    print('| file_CI can be either a .log or a .xmo file')
+    input_file = "proj_xm.xmo"
+else: 
+    input_file = sys.argv[1]
+CAS_file_name = input_file
 if not os.path.exists(CAS_file_name):
     log_files = [file for file in os.listdir() if file.endswith(".log")]
-    print("Available .log files:")
+    xmo_files = [file for file in os.listdir() if file.endswith(".xmo")]
+    print("Available .log .xmo files:")
+    for file in xmo_files:
+        print(file, end=' ')
     for file in log_files:
         print(file, end=' ')
     print()
     input_file = input("Enter the file name: ")
-    input_file_name, input_file_ext = os.path.splitext(input_file)
-    CAS_file_name = input_file_name + ".log"
+input_file_name, input_file_ext = os.path.splitext(input_file)
+#    CAS_file_name = input_file_name + ".log"
+#input_file_name, input_file_ext = os.path.splitext(input_file)
+###        pos=pos+2
+###        posfin=(routines.detect_blank(input_file,pos))
+###        print('pos & posfin',pos,posfin, posfin-(pos)), 
+###        with open(input_file, 'r') as f:
+###            lines = f.readlines()[pos-1:posfin]
+###            n=posfin-pos
+###            print('n',pos,n,posfin,lines)
+###            CI_vect = np.zeros(n)
+###            CI_conf = np.zeros(n)
+###            for i in range(n):
+###                print(i,'||',re.split(' +|\n',lines[i])[2])
+###                CI_vect[i]=float(re.split(' +',lines[i])[2])
+###                CI_conf[i] = re.split(' +|\n',lines[i])[4]
+###            print('CI_vect:',CI_vect)
+
+# Le calcul CAS est dans nom.log
+if input_file_ext == ".log":
+    state = int(input("Enter the state number: "))
+else:
+    state = -1  # xmo file only 1 state
 # Define your matrix
 CI_conf,CI_vect=Get_CIVECT(CAS_file_name, state)
 print('CI_vect:',CI_vect,CI_conf)
+CAS_file_namevb = input_file_name+"_vb"+input_file_ext
+CI_confvb,CI_vectvb=Get_CIVECT(CAS_file_namevb, state)
+print('CI_vect VB:',CI_vectvb,CI_confvb)
+print(len(CI_vect),len(CI_vectvb))
+k=0
+ttab=[]
+tab=[]
+while True:
+    if k >= len(CI_confvb):
+        break
+    else:
+        l=0
+        ttab=re.split(' +|:|\n',CI_confvb[k])
+        print(len(ttab),'ttab',ttab,end=' ')
+        while True:
+            #print('\n ttab[',k,']=',end=' ')
+            if l >= len(ttab):
+                break
+            else:
+                if ttab[l] != '':
+                    #print(ttab[l],end=' ')
+                    tab.append(int(ttab[l]))
+                l+=1
+        k+=1
+print('-----------------------')
+print(tab,'max=',max(tab))
+# offset the MCSCF conf by max(tab) to write the conf
+OFFSET=max(tab)
+k=0
+ttab=[]
+tab=[]
+inidi =[]
+new_indices=[]
+while True:
+    if k >= len(CI_conf):
+        break
+    else:
+        l=0
+        indices=re.split(' +|\n',CI_conf[k])  
+        print(len(indices),'indices',indices,end=' ')
+        llist=''
+        while True:
+            if l >= len(indices):
+                break
+            else:
+                if indices[l] != '':
+                    if ':' in  indices[l] :
+                        indic=re.split(':',indices[l])  
+                        debut=int(indic[0])+OFFSET
+                        fin=int(indic[1])+OFFSET
+                        print('debut',debut,'fin',fin)
+                        inidi.append(str(debut)+':' +str(fin)  )
+                        llist+=str(debut)+':' +str(fin)+' '
+                    else :
+                        inidi.append(str(int(indices[l])+OFFSET))
+                        llist+=str(int(indices[l])+OFFSET)+' '
+            print(inidi)
+#                    tab.append(int(indices[l]))
+            l+=1
+        new_indices.append(llist)
+#        CI_conf[k]=(int(CI_conf[k])+max(tab))
+        k+=1
+    print('new_indices',new_indices)
+quit()
+val=int(re.split(' +|:|\n',CI_confvb[k]))
+print(re.split(' +|\n',CI_confvb[len(CI_vectvb)-1])[1])
 ###state_number=1
 ###search_state=" STATE #    "+str(state_number)
 ###pos_CASvect=routines.detect_keyword(CAS_file_name, "LAGRANGIAN CONVERGED", 0)
