@@ -383,13 +383,26 @@ w=[]
 for i in range(len(sol)):
     w.append(CS_weight(i, sol, Svbvb))
 #    print('CS_weight(',i,')=',CS_weight(i, sol, Svbvb))
-trust=100*np.sqrt(np.dot(sol.T,np.dot(Svbvb,sol)))
-print('|   Solution of the projection (C[i] are ab initio, k[i] are projected) :',trust)
-print('|  VB[i]     C[i]   k[i]     w[i]        < i| ψ_CI>   ')
+
+trust=np.dot(SOMvb,sol)
+trust2=np.dot(SOMvb,VB_vect)
+print('|   Solution of the projection (C[i] are ab initio, k[i] are projected) : trust/C[i]//K[i]',f"{trust*100:7.2f}/{trust2*100:7.2f}",'%')
+print('|  VB[i]     C[i]   k[i]     w[i]        <VB i| ψ_CI>   ')
 for i in range(len(sol)):
-    print('|  ',f"{i:3d}",'',f"{VB_vect[i]:7.3f}",f"{sol[i]:7.3f}",f"{w[i]*100:7.2f}",'%     ',f"{SOMvb[i]:7.3f}",'  ')
+    print('|  ',f"{i+1:3d}",'',f"{VB_vect[i]:7.3f}",f"{sol[i]:7.3f}",f"{w[i]*100:7.2f}",'%     ',f"{SOMvb[i]:7.3f}",'  ')
 
 #print(f"{matrix[i][j]:7.4f}", end="\t")
+yes=input('Do you want to print the CI/VB overlaps ? (y/n)')
+if yes != 'n':
+    print('|  VB[i]     C[i]   ',end=' ')   
+    for i in range(len(CI_vect)):
+        print('   CI',f"{i:2d}",end='  ')
+    print()
+    for i in range(len(sol)):
+        print('|  ',f"{i+1:3d}",'  ',f"{VB_vect[i]:7.3f}",end=' ')
+        for j in range(len(CI_vect)):
+            print(' ',f"{part_SOM[i][j]:7.4f}",end=' ') 
+        print()
 
 quit()
 print(f"{matrix[i][j]:7.4f}", end="\t")
