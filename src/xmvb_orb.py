@@ -10,6 +10,7 @@ class Orb:
         self.indices = indices
         self.numatoms = numatoms
 
+
 def readorb(file_name):
     all_coeffs = []
     all_aos = []

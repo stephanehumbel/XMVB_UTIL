@@ -55,7 +55,7 @@ def Read_INTEGER(file_path, STRING, size):
         col1=line_to_read.find(STRING)
         num= line_to_read[col1+len(STRING):col1+len(STRING)+size]
         #print(STRING,':',col1,':::',num)
-        return num
+        return int(num)
 
 
 
@@ -441,41 +441,36 @@ def write_orbs(filename, phis, deb, fin):
             #for i in range(len(indices)):
 #    print("-end write_orbs-----") 
 def write_orb(filename, coeffs, indices, deb, fin):
-    #new_orb_values = new_orb_data.coeffs
-    #new_indices = new_orb_data.indices
-    #print (coeffs)
 #    print('write_orb',filename,len(coeffs),len(indices))
     if filename == 'screen':
         print('write_orb:',end=''  )
-#        for i in range(len(indices)):
         for i in range(deb , fin):
-            print(f"{len(indices[i]):4d}",end='|')
+            print(f"{len(indices[i]):4d}",end='')
         print()
-        #for i in range(len(indices)):
-        for i in deb , fin:
+        for i in range(deb , fin):
             print(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}")
             count = 0
             for j in range(len(indices[i])):
-                print(f"{float(coeffs[i][indices[i][j]]):13.10f}{(indices[i][j])+1:4d}  ",end='')
+                print(f"{float(coeffs[i][j]):13.10f}{(indices[i][j]):4d}  ",end='')
+                #print(f"{float(coeffs[i][indices[i][j]]):13.10f}{(indices[i][j])+1:4d}  ",end='')
                 count += 1
                 if (j+1) % 4 == 0 and j != len(indices[i])-1:
                     print()
             print()
     else:        
         with open(filename, 'w') as f: 
-            #for i in range(len(indices)):
-            for i in  deb , fin:
+            for i in range ( deb , fin):
                 f.write(f"{len(indices[i]):4d}")
             f.write("\n")
-            #for i in range(len(indices)):
             for i in range (deb , fin):
-                f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}\n")
+                f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}      routines.write_orb({filename})\n")
                 count = 0   
                 for j in range(len(indices [i])):
 #                    print(' coeffs(',i,',',j,')=',coeffs[i][1][indices[i][j]],end='')
-                    f.write(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ")
+                    #f.write(f"{coeffs[i][1][indices[i][j]]:13.10f}{(indices[i][j])+1:4d}  ")
+                    f.write(f"{coeffs[i][j]:13.10f}{(indices[i][j]):6d}  ")
                     count += 1
-                    if (j+1) % 4 == 0 and j != len(coeffs[i][1])-1:
+                    if (j+1) % 4 == 0 and j != len(coeffs[i])-1:
                         f.write("\n")
                 f.write("\n")
 
