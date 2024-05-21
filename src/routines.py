@@ -473,6 +473,35 @@ def write_orb(filename, coeffs, indices, deb, fin):
                     if (j+1) % 4 == 0 and j != len(coeffs[i])-1:
                         f.write("\n")
                 f.write("\n")
+        f.close()
+
+def write_DOLLARORB(filename, AOS, deb, fin):
+    if filename == 'screen':
+        print('$orb')
+        for i in range(len(AOS)):
+            #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
+            print('',len(AOS[i]),end='')
+        for i in range(len(AOS)):
+            print()
+            for j in range(len(AOS[i])):
+                print(' ',AOS[i][j],end='')
+        print()
+        print('$end')
+    else:        
+        with open(filename, 'w') as f: 
+            f.write('$orb')
+            for i in range ( deb , fin):
+                f.write(f"{len(AOS[i]):4d}")
+            for i in range(len(AOS)):
+                f.write("\n")
+                for j in range(len(AOS[i])):
+                    f.write(f"{AOS[i][j]:4d}")
+            f.write("\n")
+            f.write("$end")
+        f.close()
+
+
+
 
 def read_bfi(file_path, start_line):
     bfi_nom = 0
@@ -509,4 +538,5 @@ def read_bfi(file_path, start_line):
                         break
                     counter += 1
             index += 1
+    file.close()
     return bfi_nom, bfi_noa, list_om, list_oa

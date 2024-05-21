@@ -131,6 +131,7 @@ def check_size(file_name,pos,fin):
                 newblock=False
             k+=1
 #        print('NOM=',NOM,end=' ')
+    file.close()
     return NOA,NOM
 
 def read5cols(file_name,length,size,pos,fin):# read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
@@ -188,6 +189,7 @@ def read5cols(file_name,length,size,pos,fin):# read a file with 3 blank lines, +
                     Stot[iom][ioa] = float(val)
                 ioa+=1
         print("| ------",iom+1,' columns have been read')
+        file.close()
         return Stot
 
 def Read_CIVECT(file, pos,fin,offset):
@@ -219,6 +221,7 @@ def Read_CIVECT(file, pos,fin,offset):
                     k+=1
                 CI_conf.append(str)
                 continue
+    f.close()
     return CI_conf, CI_vect
 def ls_dir(beginning,end,k):
     files = [file for file in os.listdir() if file.endswith(end) and file .startswith(beginning)]
@@ -325,9 +328,25 @@ for k in range(len(CI_orb_coeffs)):
 routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
 print('  ',OVERL_file_orb,' written')   
 print('-------------------------------------------------')
+#print('$orb')
+#for i in range(len(OVERL_aos)):
+#    #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
+#    print('',len(OVERL_aos[i]),end='')
+#for i in range(len(OVERL_aos)):
+#    print()
+#    for j in range(len(OVERL_aos[i])):
+#        print(' ',OVERL_aos[i][j],end='')
+#print()
+#print('$end')
+#print('----------------tttttttttttt---------------------')
+#routines.write_DOLLARORB("screen",OVERL_aos,0,len(OVERL_aos))
+#print('----------------tutttttttttt---------------------')
+routines.write_DOLLARORB("ORBB",OVERL_aos,0,len(OVERL_aos))
+print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
+print('| $end ')
 OVERL_output_file = input_file_name+'_vbp.xmo'
 if not os.path.exists(OVERL_output_file):
-    print('- submit the calculation:',OVERL_output_file, ' is required ')
+    print('- submit the calculation:',OVERL_output_file, ' is required to continue')
     quit()
 
 OVERLP_size= routines.Read_INTEGER(OVERL_output_file, " Number of Structures:",12)  
