@@ -16,6 +16,18 @@ def file_extension(file_name):
     fname, extension = os.path.splitext(file_name)
     return fname, extension
 
+def is_in(line, keyword):
+    if keyword in line:
+        return True
+    return False
+
+def Read_INT(line, keyword):
+    words = re.split(' +|=+|\n',line)
+    strin=' '.join(words) # twice to remove all the empty strings 
+    words = re.split(' +|=+|\n',strin)
+    index = words.index(keyword)
+    integer = int(words[index + 1])
+    return integer
 
 def detect_keyword(file_path, keyword, start_line):
     '''
@@ -488,8 +500,10 @@ def write_DOLLARORB(filename, AOS, deb, fin):
         print()
         print('$end')
     else:        
-        with open(filename, 'w') as f: 
+        with open(filename, 'a') as f: 
+            f.write("\n")
             f.write('$orb')
+            f.write("\n")
             for i in range ( deb , fin):
                 f.write(f"{len(AOS[i]):4d}")
             for i in range(len(AOS)):
@@ -502,6 +516,24 @@ def write_DOLLARORB(filename, AOS, deb, fin):
 
 
 
+def makeSTR(list_of_int):
+        ''' convert a list of integers to a string, replacing consecutive integers with a range '''
+        list_of_int.sort()
+        str_list = []
+        i = 0
+        while i < len(list_of_int):
+            start = list_of_int[i]
+            end = start
+            while i + 1 < len(list_of_int) and list_of_int[i + 1] == end + 1:
+                end = list_of_int[i + 1]
+                i += 1
+            if start == end:
+                str_list.append(str(start))
+            else:
+                str_list.append(f"{start}-{end}")
+            i += 1
+        return ' '.join(str_list)
+    
 
 def read_bfi(file_path, start_line):
     bfi_nom = 0

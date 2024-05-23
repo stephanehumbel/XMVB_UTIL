@@ -254,6 +254,10 @@ def collect_confs(CI_conf):
                     l+=1
             k+=1
     return tab
+
+# =========------------------------------------------------------
+# == main =------------------------------------------------------
+# =========------------------------------------------------------
 print("+--------project.py - SH 2024 ---------------------")
 print('| project.py file_CI ')
 print("+--------                     ---------------------")
@@ -273,9 +277,25 @@ if input_file_ext == ".log":
     state = int(input("Enter the state number: "))
 else:
     state = -1  # xmo file only 1 state
+VB_inp_file = input_file_name+'_vb.inp'
+OVERL_inp_file = input_file_name+'_vbp.inp'
+must_write_OVERL=False  
+if not os.path.exists(OVERL_inp_file): # if that one exists the xmo should also be done
+    must_write_OVERL=True
+    if os.path.exists(VB_inp_file):
+       command='cp '+VB_inp_file+' '+OVERL_inp_file 
+       print('|  ',command,' the inp file for the OVERLAP calculation is mandatory')
+       os.system(command)
+    else:
+        print('Error : no file ',VB_inp_file,' to copy')
+OVERL_output_file = input_file_name+'_vbp.xmo'
+OVERL_input_file = input_file_name+'_vbp.xmii' #for .xmi, to avoid erasing
+OVERL_file_orb=input_file_name+'_vbp.orbb'     #for .orb, to avoid erasing
+    
 print('|  read files :\n| ',input_file,end=':')
 CI_conf,CI_vect=Get_CIVECT(input_file, state)
-print('',len(CI_vect),end='CI vect, ')
+lenCI=len(CI_vect)
+print('',lenCI,end=' CI vect, ')
 if len(sys.argv) >= 3:
     VB_file  = sys.argv[2]
 else:
@@ -296,54 +316,62 @@ print(file_orb_CI,end=':')
 CI_orb_coeffs,CI_orb_aos=routines.read_orb(file_orb_CI)
 print(len(CI_orb_coeffs),end=' CI orbs')
 print()
-OVERL_file_orb=input_file_name+'_vbp.orbb'
+if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
-OFFSET=max(collect_confs(VB_conf))  
-print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CI_conf)),'-', max(collect_confs(CI_conf)) ,' CI orbitals      ')
-print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CI_conf)),' to ',OFFSET+max(collect_confs(CI_conf)),' and written in ',OVERL_file_orb )
-dec_CI_conf=Offset_conf(CI_conf,OFFSET)
-lenCI=len(dec_CI_conf)
-print('|  use the following to compute the overlaps')
-print('$ctrl   ; =============',NVBCONF,'+',lenCI           ,'=============.======')
-print (' nstr=',NVBCONF+lenCI           ,' iprint=-1 guess=read')
-print('$end    ; ')
-print('$struc  ; =============',NVBCONF,'+',lenCI           ,'=============.======')
-#ttt=collect_confs(VB_conf)
-for i in range(len(VB_conf)):
-    #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
-    print('  ',VB_conf[i],'    ; VB ',i+1 , VB_vect[i])
-for i in range(lenCI):
-    #print(*['%4.0f' % int(val) for val in dec_CI_conf[i].split()],end=' ')
-    print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CI_vect[i])
-print('$end     ; ==========================.======')
-OVERL_coeffs=[]
-OVERL_aos=[]
-for k in range(len(VB_orb_coeffs)):
-    OVERL_coeffs.append(VB_orb_coeffs[k])
-    #print('k coeffs', k, len(VB_orb_coeffs[k]),end=' ')
-    OVERL_aos.append(VB_orb_aos[k])
-for k in range(len(CI_orb_coeffs)):
-    OVERL_coeffs.append(CI_orb_coeffs[k])
-    OVERL_aos.append(CI_orb_aos[k])
-routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
-print('  ',OVERL_file_orb,' written')   
-print('-------------------------------------------------')
-#print('$orb')
-#for i in range(len(OVERL_aos)):
-#    #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
-#    print('',len(OVERL_aos[i]),end='')
-#for i in range(len(OVERL_aos)):
-#    print()
-#    for j in range(len(OVERL_aos[i])):
-#        print(' ',OVERL_aos[i][j],end='')
-#print()
-#print('$end')
-#print('----------------tttttttttttt---------------------')
-#routines.write_DOLLARORB("screen",OVERL_aos,0,len(OVERL_aos))
-#print('----------------tutttttttttt---------------------')
-routines.write_DOLLARORB("ORBB",OVERL_aos,0,len(OVERL_aos))
-print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
-print('| $end ')
+    OFFSET=max(collect_confs(VB_conf))  
+    print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CI_conf)),'-', max(collect_confs(CI_conf)) ,' CI orbitals      ')
+    print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CI_conf)),' to ',OFFSET+max(collect_confs(CI_conf)),' and written in ',OVERL_file_orb )
+    dec_CI_conf=Offset_conf(CI_conf,OFFSET)
+    print('-------------------------------------------------')
+    with open(VB_file , "r") as file:
+        for line in file:
+            MULT=1
+            if routines.is_in(line, "MULTIPLICITY"):
+               MULT= routines.Read_INT(line, "MULTIPLICITY")
+               print('| Multiplicity is ',MULT)
+    print('|  filling the ', OVERL_input_file,' xmi input file ' )
+    with open(OVERL_input_file,'a') as file:
+        line='made by project.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
+        line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=10' 
+        line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
+        file.write(line)    
+        line= ' $struc  ; ============= \n '
+        file.write(line)   
+        #ttt=collect_confs(VB_conf)
+        for i in range(len(VB_conf)):
+            line= '  '+ VB_conf[i]+'    ; VB '+str(i+1) + str( VB_vect[i])+'\n'  
+            #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
+            #print(line)
+            file.write(line)   
+        for i in range(lenCI):
+            line= '  '+ dec_CI_conf[i]+'    ; CI '+str(i+1) + str( CI_vect[i])+'\n'  
+            #print(*['%4.0f' % int(val) for val in dec_CI_conf[i].split()],end=' ')
+            #print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CI_vect[i])
+            file.write(line)   
+        line= ' $end  ; ============= \n '
+        file.write(line)   
+        pos, line=routines.detect_keyword(VB_file, "$bfi", 0)
+        bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(VB_file,pos)
+        line= ' $bfi  ; ============= \n '
+        line=line+' '+str(bfi_nom)+' '+str(bfi_noa)+ '\n   '+routines.makeSTR(list_om)+'\n   '+routines.makeSTR(list_oa)+'\n $end \n'
+        file.write(line)   
+    OVERL_coeffs=[]
+    OVERL_aos=[]
+    for k in range(len(VB_orb_coeffs)):
+   #     print('VBcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
+        OVERL_coeffs.append(VB_orb_coeffs[k])
+        OVERL_aos.append(VB_orb_aos[k])
+    for k in range(len(CI_orb_coeffs)):
+   #     print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
+        OVERL_coeffs.append(CI_orb_coeffs[k])
+        OVERL_aos.append(CI_orb_aos[k])
+    routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
+    print('  ',OVERL_file_orb,' written')   
+    
+    routines.write_DOLLARORB(OVERL_input_file,OVERL_aos,0,len(OVERL_aos))
+    print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
+    print('| $end ')
+
 OVERL_output_file = input_file_name+'_vbp.xmo'
 if not os.path.exists(OVERL_output_file):
     print('- submit the calculation:',OVERL_output_file, ' is required to continue')
@@ -377,25 +405,24 @@ for ivb in range(len(VB_conf)):
         Svbvb[ivb][jvb]=Stot[ivb][jvb]
     for jmo in range(len(CI_vect)):
         part_SOM[ivb][jmo]=Stot[ivb][jmo+NVBCONF] # part_SOM is the part that concerns the overlap between each MO configurations of the CI and each VB configurations.
-print_lin_matrix('S_CI/VB^T',part_SOM.T)
+#print_lin_matrix('S_CI/VB^T',part_SOM.T)
 print('| ' )
-print('| ------------------------------------------------------------')
-print('| The vector of the overlap between ',NVBCONF,' VB CSF\' (structure) ')
+#print('| ------------------------------------------------------------')
+#print('| The vector of the overlap between ',NVBCONF,' VB CSF\' (structure) ')
 #print_lin_matrix('S_VB/VB',Svbvb)
-
 print('| ' )
-print('| ------------------------------------------------------------')
-print('| The CI vector of this state ',CI_vect,' has the following overlaps with each VB\'s structures')
+#print('| ------------------------------------------------------------')
+#print('| The CI vector of this state ',CI_vect,' has the following overlaps with each VB\'s structures')
 SOMvb=np.dot(part_SOM,CI_vect)
 #SOMvb=SOMvb.T
 #print('SOMvb',SOMvb)    
 sol=np.linalg.solve(Svbvb,SOMvb)
 Svbvbsol=np.dot(Svbvb,sol)  
 norm_sol=np.dot(sol.T,Svbvbsol)  
-print('vecteur sol: norme before=',f"{norm_sol:4.3f}")
+print('| projected  : norme before=',f"{norm_sol:4.3f}")
 sol = sol / np.sqrt(norm_sol)
 norm_sol = np.dot(sol.T, np.dot(Svbvb, sol))
-print("norm sol after............",f"{norm_sol:4.3f}")
+#print("|  norm sol after............",f"{norm_sol:4.3f}")
 #print('vecteur sol', sol)
 print('-----')
 w=[]
@@ -405,7 +432,7 @@ for i in range(len(sol)):
 
 trust=np.dot(SOMvb,sol)
 trust2=np.dot(SOMvb,VB_vect)
-print('|   Solution of the projection (C[i] are ab initio, k[i] are projected) : trust/C[i]//K[i]',f"{trust*100:7.2f}/{trust2*100:7.2f}",'%')
+print('|   Solution of the projection (C[i] are ab initio, while K[i] are projected) : trust/C[i]//K[i]',f"{trust*100:7.2f}/{trust2*100:7.2f}",'%')
 print('|  VB[i]     C[i]   k[i]     w[i]        <VB i| ψ_CI>   ')
 for i in range(len(sol)):
     print('|  ',f"{i+1:3d}",'',f"{VB_vect[i]:7.3f}",f"{sol[i]:7.3f}",f"{w[i]*100:7.2f}",'%     ',f"{SOMvb[i]:7.3f}",'  ')
