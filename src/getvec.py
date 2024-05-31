@@ -26,22 +26,87 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         output_file_name=input_file_name+".orbb"
         main(input_file)
         input_file_name, input_file_ext = routines.file_extension(input_file)
+        if input_file_ext == ".dat":
+            pos,line=routines.detect_keyword(input_file, "$DATA", 0)
+            pos2,line2=routines.detect_keyword(input_file, "$END", pos)
+# met dans lines les lignes entre DATA et END
+            with open(input_file, 'r') as file:
+                in_data=False
+                N_protons=[]
+                for line_num, line in enumerate(file, 1):  
+                    if '$END' in line:
+                        in_data=False
+                        break
+                    if '$DATA' in line.upper():
+                        in_data=True
+              #          print('|  ',line.upper(), end=' ')
+                        continue    
+                    if in_data and len(line.split()) ==5: # 5 mots sur la ligne, c'est un atome et le second champ est le numero atomique
+              #          print('*',line.split()[1],end='')
+                        N_protons.append(float(line.split()[1]))
+              #      print('|  ',line.upper(),end='_')
+              #      print('|  ',len(line.split()),line.split())
+            NORB_RHF =sum(N_protons)/2
+            print('|  there are ',NORB_RHF*2 ,' electrons in the neutral molecule hence best choice is ',NORB_RHF,' orbitals')
 #        print(input_file_name, input_file_ext)
         pos,line=routines.detect_keyword(input_file, "VEC", 0)
         coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
         vect=routines.make_table(coeffs)#
+        NORB_RHF=min(len(vect),NORB_RHF)
 #        routines.write_orbs("screen",vect,0,len(vect))
-        print()
+        str1="| ==>   highest MO: (hit return for all MOs)  : ["+str(NORB_RHF)+"] max= "+str(len(vect))+" :"
         try:
-            fin=int(input("| ==>   highest MO: (hit return for all MOs)  :     "))       
+            fin=int(input(str1))    
         except:
-            print("|             I will take all ",len(vect)," orbitals")
-            fin=len(vect)
+            print("|             I will take all ",NORB_RHF,' orbitals')
+            fin = int(NORB_RHF)
         print("|     Select MOs 1-",fin, ' among ', len(vect)," MOs from ",input_file,"to ", output_file_name," in .orb format")
         print("                 -_________-  ") 
 #        routines.write_orbs("screen",vect,0,fin)
         routines.write_orbs(output_file_name,vect,0,fin) 
         ao_orb,coeffs_orb=routines.make_orb(vect,indices)
+        # Analyse des orbitales, proposition de bfi
+        tab=[]
+        pi_orb=[]
+        sigma_orb=[]
+        ratio_sigma_pi=3.2
+        for i in range(len(ao_orb)):
+            tab.append(len(ao_orb[i]))   
+        mini=min(tab)
+        maxi=max(tab)
+        systeme_pi=int(maxi/ratio_sigma_pi)
+        print('|  max  and min number of AO\'s :',maxi,'/',mini,'=',maxi/mini)
+        print('|  systeme_pi for <',systeme_pi,'aos (ratio sigma/pi=',ratio_sigma_pi)
+        if mini+4*mini/100 < systeme_pi:
+            list_pi_aos=[]
+            for i in range(fin):
+                    if tab[i] <= systeme_pi:
+                        pi_orb.append(i+1)
+#                        print(i+1,end=' , ')
+                    if tab[i] > systeme_pi:
+                        sigma_orb.append(i+1)
+
+            for i in range(len(pi_orb)):
+                for j in range(len(ao_orb[pi_orb[i]])):
+                    #print(ao_orb[pi_orb[i]][j],end='+ ')
+                    list_pi_aos.append(ao_orb[pi_orb[i]][j])
+               # print(ao_orb[pi_orb[i]],end=' ')
+#                'keep only unique values in list_pi_aos'    
+#            list_pi_aos = list(dict.fromkeys(list_pi_aos))
+            print('|  temptative bfi:')
+            print('  $bfi')
+            print('  ',len(sigma_orb),' ',len(pi_orb))
+            print(routines.makeSTR(sigma_orb,0))
+#            print ((list_pi_aos))
+            #print(routines.makeSTR(list_pi_aos))
+            longue_pi_orb=tab.index(mini)
+            print(longue_pi_orb+1)
+            print(routines.makeSTR(ao_orb[longue_pi_orb],1))
+            print(' $end')
+            print('| ------------    .')
+
+
+
         if len(sys.argv) == 3:
             xmvb_input_file=sys.argv[2]
 #            xmvb_orb_file=sys.argv[3]

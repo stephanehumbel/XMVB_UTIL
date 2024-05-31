@@ -516,20 +516,22 @@ def write_DOLLARORB(filename, AOS, deb, fin):
 
 
 
-def makeSTR(list_of_int):
+def makeSTR(list_of_int,offset):
         ''' convert a list of integers to a string, replacing consecutive integers with a range '''
+        ''' offset is the value to add to the integers in the list (corrextion de zero)'''
         list_of_int.sort()
         str_list = []
         i = 0
         while i < len(list_of_int):
-            start = list_of_int[i]
+            start = list_of_int[i]+offset
             end = start
             while i + 1 < len(list_of_int) and list_of_int[i + 1] == end + 1:
-                end = list_of_int[i + 1]
+                end = list_of_int[i + 1]+offset
                 i += 1
             if start == end:
                 str_list.append(str(start))
             else:
+                print('start',start,end)
                 str_list.append(f"{start}-{end}")
             i += 1
         return ' '.join(str_list)
