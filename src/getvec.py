@@ -70,7 +70,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         tab=[]
         pi_orb=[]
         sigma_orb=[]
-        ratio_sigma_pi=3.2
+        ratio_sigma_pi=3.5
         for i in range(len(ao_orb)):
             tab.append(len(ao_orb[i]))   
         mini=min(tab)
@@ -78,7 +78,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         systeme_pi=int(maxi/ratio_sigma_pi)
         print('|  max  and min number of AO\'s :',maxi,'/',mini,'=',maxi/mini)
         print('|  systeme_pi for <',systeme_pi,'aos (ratio sigma/pi=',ratio_sigma_pi)
-        if mini+4*mini/100 < systeme_pi:
+        if mini < systeme_pi: #  arbitrary ratio sigma/pi
             list_pi_aos=[]
             for i in range(fin):
                     if tab[i] <= systeme_pi:
