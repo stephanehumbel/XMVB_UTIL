@@ -70,14 +70,14 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         tab=[]
         pi_orb=[]
         sigma_orb=[]
-        ratio_sigma_pi=3.5
+        ratio_sigma_pi=3.0
         for i in range(len(ao_orb)):
             tab.append(len(ao_orb[i]))   
         mini=min(tab)
         maxi=max(tab)
         systeme_pi=int(maxi/ratio_sigma_pi)
         print('|  max  and min number of AO\'s :',maxi,'/',mini,'=',maxi/mini)
-        print('|  systeme_pi for <',systeme_pi,'aos (ratio sigma/pi=',ratio_sigma_pi)
+        print('|  systeme_pi for MOs with NOAs <',systeme_pi,'aos (ratio sigma/pi=',ratio_sigma_pi)
         if mini < systeme_pi: #  arbitrary ratio sigma/pi
             list_pi_aos=[]
             for i in range(fin):
@@ -86,16 +86,20 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 #                        print(i+1,end=' , ')
                     if tab[i] > systeme_pi:
                         sigma_orb.append(i+1)
-
+            print('|  sigma orbitals:',sigma_orb)
+            print('|  pi orbitals:',pi_orb)
+#            print('|  oa_orb                                   :',ao_orb)
             for i in range(len(pi_orb)):
-                for j in range(len(ao_orb[pi_orb[i]])):
-                    #print(ao_orb[pi_orb[i]][j],end='+ ')
-                    list_pi_aos.append(ao_orb[pi_orb[i]][j])
+                index=i
+#                print('pi_orb[',index,']=',pi_orb[index],':' ,ao_orb[pi_orb[index]-1])
+                for j in range(len(ao_orb[pi_orb[index]-1])):
+#                    print(ao_orb[pi_orb[index]-1][j]+1,end=' ')
+                    list_pi_aos.append(ao_orb[pi_orb[index]-1][j]+1)
                # print(ao_orb[pi_orb[i]],end=' ')
 #                'keep only unique values in list_pi_aos'    
 #            list_pi_aos = list(dict.fromkeys(list_pi_aos))
             print('|  temptative bfi:')
-            print('  $bfi')
+            print(' $bfi')
             print('  ',len(sigma_orb),' ',len(pi_orb))
             print(routines.makeSTR(sigma_orb,0))
 #            print ((list_pi_aos))
@@ -171,16 +175,16 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             print("+-  -----------------------------------------------------------------------")
             print("+- - ----------------------------------------------------------------------")
             print("+- -  ---------------------------------------------------------------------")
-            print("|  ")
-            print("|    ____  _  __                _____ ______ _________      ________ _____ ")
-            print("|   / __ \| |/ /               / ____|  ____|__   __\ \    / /  ____/ ____|")
-            print("|  | |  | | : /               | |  __| |__     | |   \ \  / /| |__ | |     ")
-            print("|  | |  | |  <                | | |_ |  __|    | |    \ \/ / |  __|| |     ")
-            print("|  | |__| | : \               | |__| | |____   | |     \  /  | |___| |____ ")
-            print("|   \____/|_|\_\               \_____|______|  |_|      \/   |______\_____|")
-            print("|                                                                          ")
-            print("|                                                                          ")
-            print("+- -    -------------------------------------------------------------------")
+#            print("|  ")
+#            print("|    ____  _  __                _____ ______ _________      ________ _____ ")
+#            print("|   / __ \| |/ /               / ____|  ____|__   __\ \    / /  ____/ ____|")
+#            print("|  | |  | | : /               | |  __| |__     | |   \ \  / /| |__ | |     ")
+#            print("|  | |  | |  <                | | |_ |  __|    | |    \ \/ / |  __|| |     ")
+#            print("|  | |__| | : \               | |__| | |____   | |     \  /  | |___| |____ ")
+#            print("|   \____/|_|\_\               \_____|______|  |_|      \/   |______\_____|")
+#            print("|                                                                          ")
+#            print("|                                                                          ")
+#            print("+- -    -------------------------------------------------------------------")
  #           print('finmos:',finmos,'new_MOs',new_MOs[1])
             #new_MOs_array=routines.to_array(new_MOs)
 #            routines.wwrite_vec('screen',new_MOs,1,finmos) 
