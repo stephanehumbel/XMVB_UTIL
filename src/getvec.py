@@ -16,6 +16,7 @@ def main(input_file):
 
 
 if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
+    NORB_RHF=10000
     if len(sys.argv) >= 2: 
         zeta=1
         numatoms=[]
