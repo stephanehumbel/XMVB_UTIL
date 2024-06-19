@@ -531,7 +531,7 @@ def makeSTR(list_of_int,offset):
             if start == end:
                 str_list.append(str(start))
             else:
-                print('start',start,end)
+              #  print('start',start,end)
                 str_list.append(f"{start}-{end}")
             i += 1
         return ' '.join(str_list)

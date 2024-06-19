@@ -98,6 +98,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                # print(ao_orb[pi_orb[i]],end=' ')
 #                'keep only unique values in list_pi_aos'    
 #            list_pi_aos = list(dict.fromkeys(list_pi_aos))
+            longue_pi_orb=tab.index(mini)
             print('|  temptative bfi:')
             print(' $bfi')
             print('  ',len(sigma_orb),' ',len(ao_orb[longue_pi_orb]     ))
