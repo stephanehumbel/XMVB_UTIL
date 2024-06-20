@@ -309,14 +309,16 @@ else:
         tableau=collect_confs(CI_conf)
 #        print('apres collect_conf',tableau) 
         toprint=routines.make_conf_from_gamess(CI_conf)
-        print('Make a ',input_file_name,'_xm.xmi file     with ')
+        print('Make a ',input_file_name+'_xm.xmi',' file     with ')
         print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
         print("$str ")
         for ii in range(len(toprint)):
             print(toprint[ii],' ; ', CI_conf[ii],ii+1,'... ',CI_vect[ii])    
         print("$end \n")
         if os.path.exists(input_file_name+'.dat'):
-           print('now type :  getvec.py ',input_file_name+'.dat \n \n')
+           print('now type :  getvec.py ',input_file_name+'.dat (and put the bfi in  ', input_file_name+'_xm.xmi)' ) 
+           print('then type:  getvec.py ',input_file_name+'.dat ', input_file_name+'_xm.xmi')
+           print('finally xmpdec        ',input_file_name+'_xm.orbb  ','will provide the $orb part  \n ----------- \n')
     VB_file  = input_file_name+"_vb.xmo"
 print(VB_file,end=':')
 try:
