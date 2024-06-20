@@ -1,0 +1,79 @@
++--------project.py - SH 2024 ---------------------
+| project.py file_CI  2 arguments
++--------                     ---------------------
+Enter the state number: [1] |  read files :
+|  benzene_cas.log: 10 CI vect, I need to build the _xm.* files
+apres collect_conf [222000, 220002, 121011, 121011, 22020, 211101, 211101, 112110, 22110, 202200]
+make_conf_from_gamess
+222000222000  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 222000
+220002220002  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 220002
+121011121011  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 121011
+121011121011  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 121011
+022020022020  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 022020
+211101211101  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 211101
+211101211101  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 211101
+112110112110  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 112110
+022110022110  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 022110
+202200202200  . 
+
+
+
+
+
+TheXMconf  1 2 3 4 5 CI_conf 202200
+apres make_conf_from_gamess [' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5', ' 1 2 3 4 5']
+benzene_cas_vb.xmo:no file  benzene_cas_vb.xmo

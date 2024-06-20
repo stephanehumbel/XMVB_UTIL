@@ -236,8 +236,8 @@ def collect_confs(CI_conf):
     # cares of the : in the confs
     # usefull to detect the max/min of the orbitals.
     k=0
-    ttab=[]
     tab=[]
+    ttab=[]
     while True:
         if k >= len(CI_conf):
             break
@@ -259,7 +259,7 @@ def collect_confs(CI_conf):
 # == main =------------------------------------------------------
 # =========------------------------------------------------------
 print("+--------project.py - SH 2024 ---------------------")
-print('| project.py file_CI ')
+print('| project.py file_CI ',len(sys.argv), 'arguments')
 print("+--------                     ---------------------")
 if len(sys.argv) <= 1:
     print('| file_CI can be either a .log or a .xmo file')
@@ -274,7 +274,12 @@ if not os.path.exists(input_file):
 input_file_name, input_file_ext = os.path.splitext(input_file)
 # Le calcul CAS est dans nom.log ?
 if input_file_ext == ".log":
-    state = int(input("Enter the state number: "))
+    reponse=input("Enter the state number: [1] ")
+    try:
+        state = int(reponse)    
+    except:
+        state = 1
+
 else:
     state = -1  # xmo file only 1 state
 VB_inp_file = input_file_name+'_vb.inp'
@@ -299,9 +304,27 @@ print('',lenCI,end=' CI vect, ')
 if len(sys.argv) >= 3:
     VB_file  = sys.argv[2]
 else:
+    if len(sys.argv)==2  :
+        print('You need to build the _xm.* files')
+        tableau=collect_confs(CI_conf)
+#        print('apres collect_conf',tableau) 
+        toprint=routines.make_conf_from_gamess(CI_conf)
+        print('Make a ',input_file_name,'_xm.xmi file     with ')
+        print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
+        print("$str ")
+        for ii in range(len(toprint)):
+            print(toprint[ii],' ; ', CI_conf[ii],ii+1,'... ',CI_vect[ii])    
+        print("$end \n")
+        if os.path.exists(input_file_name+'.dat'):
+           print('now type :  getvec.py ',input_file_name+'.dat \n \n')
     VB_file  = input_file_name+"_vb.xmo"
 print(VB_file,end=':')
-NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
+try:
+    NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
+except:   
+    print('no valid file ',VB_file)
+    NVBCONF=len(CI_conf)
+    quit()
 VB_conf,VB_vect=Get_CIVECT(VB_file, state)
 if (len(VB_vect) != NVBCONF):
     print('Error : should read ',NVBCONF,' in ', VB_file,' but read ', len(VB_file))

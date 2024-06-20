@@ -574,3 +574,98 @@ def read_bfi(file_path, start_line):
             index += 1
     file.close()
     return bfi_nom, bfi_noa, list_om, list_oa
+
+
+
+
+def make_conf_from_gamess(CI_conf):
+    ''' 
+    takes a table of strings like 22201210000 and convert to a table of string for xmvb conf
+    like 1:3 6 6 5 7
+    '''
+    tab=[]
+#    print('make_conf_from_gamess')
+    for i in range(len(CI_conf)):
+#        print(CI_conf[i],end='')
+        k=0
+        TheXMconf = ''
+        Theconf = CI_conf[i]
+#        print(Theconf,' . ')
+        while True: 
+            if k >= len(Theconf):
+                break
+            else:
+                if Theconf[k] == '0':
+                    TheXMconf=TheXMconf
+                if Theconf[k] == '1':
+                    TheXMconf=TheXMconf+' '+str(k+1)    
+                if Theconf[k] == '2':
+                    TheXMconf=TheXMconf+' '+str(k+1)+' '+str(k+1)    
+            k+=1
+#            print()
+#        print('TheXMconf',TheXMconf,'CI_conf',CI_conf[i])   
+        tab.append(TheXMconf)
+ #   print('in the routines',tab)
+    return tab
+
+
+def Make_conf_from_gamess(CI_conf):
+    ''' 
+    takes a table of strings like 22201210000 and convert to a table of string for xmvb conf
+    like 1:3 6 6 5 7
+    '''
+    tab=[]
+    print('make_conf_from_gamess')
+    for i in range(len(CI_conf)):
+        print(CI_conf[i],end='')
+        k=0
+        TheXMconf = ''
+        alasuite=False
+        Theconf = CI_conf[i]
+        print(Theconf,' . ')
+        while True: 
+            if k >= len(Theconf)-1:
+                break
+            else:
+                print('.k=',k,Theconf[k],'|',TheXMconf,'',end='')
+                if Theconf[k] == '0':
+                    print('vide :',str(k+1),'X',end='')
+                    print()
+                    alasuite=False
+                    continue
+                if Theconf[k] == '1':
+                    TheXMconf=TheXMconf+' '+str(k+1)
+                    alasuite=False
+                    print ()
+                    continue
+                if Theconf[k] == '2':
+                    if not alasuite:
+                        TheXMconf=TheXMconf+' '+str(k+1)
+                        try:
+                            if Theconf[k+1] == '2':
+                                alasuite=True
+                            else:
+                                print('fin de serie de 2',str(k+1),')))',end='')
+                                print ()
+                                alasuite=False
+                                TheXMconf=TheXMconf+':'+str(k+1)
+                        except:
+                            TheXMconf+=' '+str(k+1)
+                            break
+                    else:
+                        try:
+                            if Theconf[k+1] == '2':
+                                break
+                            else:
+                                TheXMconf=TheXMconf+':'+str(k+2)
+                                alasuite=False
+                        except:
+                                TheXMconf=TheXMconf+':'+str(k+1)
+                                alasuite=False
+                                break
+            k+=1
+        print()
+        print('TheXMconf',TheXMconf,'CI_conf',CI_conf[i])   
+        tab.append(TheXMconf)
+    return tab
+
