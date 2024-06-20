@@ -1,0 +1,27 @@
+ 5 confs=3 structures pour cycle A 1=[644] 2,3[62.6]  (2.=biradical)
+ $ctrl
+  vbftyp=det WFNTYP=struc iscf=3 itmax=1000 
+  nstr=1 bprep nstate=0 iprint=3 guess=read
+ nmul= 1
+ $end
+ 
+ $bfi
+   18   12
+1-18
+5 9 14 18 23 27 32 36 41 45 50 54
+ $end
+
+ $struct
+1:6
+ $end
+
+ $orb
+  12  12  12  12  12  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+   1   2   3   4   5   6   7   8   9  10  11  12
+ $end
+

@@ -1,0 +1,44 @@
+#!/bin/sh
+# Script genere automatiquement a partir de subgms
+# reserve 18Go de memoire \#SBATCH --mem=18000
+#$ -N benzene_cas
+#
+#SBATCH --mem=18000
+#$ -cwd
+#$ -S /bin/sh
+ hhomedir=`pwd`
+ nnode=`hostname`
+echo "Variables"
+echo "Running on        : $nnode  "
+echo "targetdir         : $hhomedir "
+echo "TMPDIR            : $TMPDIR"
+echo "I am in           : $PWD"
+
+# source /usr/share/Modules/init/sh
+
+if [ -s benzene_cas.xmo ] ; then
+ set  echo
+   cp benzene_cas.xmo benzene_cas.xmo~
+ unset  echo
+fi
+if [ -s benzene_cas.log ] ; then
+ set  echo
+   cp benzene_cas.log benzene_cas.log~
+ unset  echo
+fi
+
+set echo
+#time (/share/programs/GAMESS/rungms   benzene_cas xmvb 1  > benzene_cas.log)
+#time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms/rungms          benzene_cas xmvb 1  > benzene_cas.log)
+time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms        benzene_cas xmvb 1  > benzene_cas.log)
+#time (rungms_                     benzene_cas xmvb 1  > benzene_cas.log)
+# On doit rappatrier à la main le .xmo .gus et les wfn (si necessaire)
+#cp  $TMPDIR/*.wfn  $HOMEDIR/
+#cp  $TMPDIR/benzene_cas.gus  $HOMEDIR/
+cp  $TMPDIR/benzene_cas.xmo  $HOMEDIR/
+if [ -s benzene_cas.wfn ] ; then
+ set  echo
+cp  $TMPDIR/benzene_cas.wfn  $HOMEDIR/
+ unset  echo
+fi
+unset echo
