@@ -135,6 +135,42 @@ def read_orb(file_name):
     #print('rr',len(all_coeffs),all_aos,all_coeffs)
     return all_coeffs, all_aos
 
+def make_dollarorb(ao_orb,fin): # writes the $orb of vect
+    print( '$orb')
+    for numorb in range(fin):
+        print(len(ao_orb[numorb]),end=' ')
+    for numorb in range(fin):
+        print()
+        for j in range(len(ao_orb[numorb])):
+            print(' ',ao_orb[numorb][j]+1,end='')     
+    print()
+    print('$end')
+
+def make_dolorb(vect,fin): # writes the $orb of vect
+    print( '$orb')
+    for numorb in range(fin):
+        make_oneorb(vect,numorb)    
+        print()
+    print( '$end')
+
+
+def make_oneorb(vect,numorb): # writes the ao's of an orbital for the $orb
+    for i in range(len(vect)):
+        if vect[numorb][i] != 0:
+            print(f"{i+1} ",end='') 
+
+def make_bfi(vect): # make an all electron bfi
+    print(' $bfi')
+    print('  0    '  ,len(vect)   )
+    print(' ')
+    #imprime la liste des entiers entre 1 et len(ao_orb)
+    tab_entier=range(1,len(vect)+1)
+    for i in tab_entier:
+        print (i,end=' ')
+    print(' ')
+    print(' $end')
+#   
+ 
 def compte_AO(vect):
     '''
     Description : compte et retourne la liste des AO non nuls dans un vecteur MO

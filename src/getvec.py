@@ -56,6 +56,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         NORB_RHF=min(len(vect),NORB_RHF)
 #        routines.write_orbs("screen",vect,0,len(vect))
         str1="| ==>   highest MO: (hit return for all MOs)  : ["+str(NORB_RHF)+"] max= "+str(len(vect))+" :"
+        print("|  The following number MUST be consistent with the bfi (if provided) ")
         try:
             fin=int(input(str1))    
         except:
@@ -63,16 +64,8 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             fin = int(NORB_RHF)
         print("|     Select MOs 1-",fin, ' among ', len(vect)," MOs from ",input_file,"to ", output_file_name," in .orb format")
         print("                 -_________-  ") 
-        print(' $bfi')
         print('|  all electron bfi:')
-        print('  0    '  ,len(vect)   )
-        print(' ')
-        #imprime la liste des entiers entre 1 et len(ao_orb)
-        tab_entier=range(1,len(vect)+1)
-        for i in tab_entier:
-            print (i,end=' ')
-        print(' ')
-        print(' $end')
+        routines.make_bfi(vect)
         print()
 #        routines.write_orbs("screen",vect,0,fin)
         routines.write_orbs(output_file_name,vect,0,fin) 
@@ -127,6 +120,15 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 
         if len(sys.argv) == 3:
             xmvb_input_file=sys.argv[2]
+            if not os.path.isfile(xmvb_input_file):
+                 if xmvb_input_file=='orb':
+                    print('|  orb is a reserved word, ')
+                    ao_orb, coeff_orb = routines.make_orb(vect,indices)
+                    routines.make_dollarorb(ao_orb,fin)
+                    sys.exit()  
+                 else :
+                    print('|  file ',xmvb_input_file,' not found')
+                    sys.exit()
 #            xmvb_orb_file=sys.argv[3]
             vb_orb_coeffs,vb_orb_indices=routines.read_orb(output_file_name)
 #            routines.write_orb("screen",vb_orb_coeffs,vb_orb_indices)
@@ -136,7 +138,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                 print('   ########.... .STOP.  ######## bfi')
                 print('+-     ------------------------------------------------------')
                 sys.exit()
-            print('|  bfi found in ',xmvb_input_file,'at line',pos)
+            print('|  bfi found in ',xmvb_input_file)
             bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(xmvb_input_file,pos)
             print('| ', bfi_nom,' MOs to freeze',': ',list_om)
             print('| ',bfi_noa,' OAs to keep  ',': ',list_oa)
@@ -180,14 +182,15 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             xmvb_input_file_name, xmvb_input_file_ext = os.path.splitext(xmvb_input_file)
             xmvb_output_file=xmvb_input_file_name+'.orbb'
             gamess_output_file=xmvb_input_file_name+'.vecc'
-            print('|-   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   ------')
-            print('| writes the',finmos,'VECs to', gamess_output_file)
+            print('#|-   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   ------')
+            print('#| writes the',finmos,'VECs to', gamess_output_file)
             routines.wwrite_vec(gamess_output_file,new_MOs,0,finmos) 
-            print('| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
+            print('#| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
             routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
-            print("+-  -----------------------------------------------------------------------")
-            print("+- - ----------------------------------------------------------------------")
-            print("+- -  ---------------------------------------------------------------------")
+            print("#+-  -----------------------------------------------------------------------")
+            ao_orb, coeff_orb = routines.make_orb(new_coeffs,indices)
+            routines.make_dollarorb(ao_orb,fin)
+            print("#+- - ----------------------------------------------------------------------")
 #            print("|  ")
 #            print("|    ____  _  __                _____ ______ _________      ________ _____ ")
 #            print("|   / __ \| |/ /               / ____|  ____|__   __\ \    / /  ____/ ____|")
@@ -205,6 +208,8 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             print('+-  -----------------------------------------------------------------------')
             print('| Usage: getvec.py file_w_VEC [file_w_bfi]')
             print('|  -> file_w_VEC (.dat or .inp) $VEC is read and put in file_w_VEC.orbb ')
+            print('|                                               ')
+            print('|  if [file_bfi]== "orb"  then make the $orb section ')
             print('|                                               ')
             print('| with [file_w_bfi] the VEC is splitted between ')
             print('|  -> sigma ($VEC written in file_w_bfi.vecc) to use un gamess')
