@@ -135,6 +135,32 @@ def read_orb(file_name):
     #print('rr',len(all_coeffs),all_aos,all_coeffs)
     return all_coeffs, all_aos
 
+def make_dollarorb_file(ao_orb,fin,filename): # writes the $orb of vect
+    if filename == 'screen':
+        print( '$orb')
+        for numorb in range(fin):
+            print(len(ao_orb[numorb]),end=' ')
+        for numorb in range(fin):
+            print()
+            for j in range(len(ao_orb[numorb])):
+                print(' ',ao_orb[numorb][j]+1,end='')     
+        print()
+        print('$end')
+    else:   
+        with open(filename, 'w') as f:
+            f.write('$orb')
+            f.write("\n")
+            for numorb in range(fin):
+                f.write(f"{len(ao_orb[numorb]):4d}")
+            for numorb in range(fin):
+                f.write("\n")
+                for j in range(len(ao_orb[numorb])):
+                    f.write(f"{ao_orb[numorb][j]+1:4d}")
+            f.write("\n")
+            f.write("$end")
+        f.close()   
+
+
 def make_dollarorb(ao_orb,fin): # writes the $orb of vect
     print( '$orb')
     for numorb in range(fin):

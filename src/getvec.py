@@ -124,7 +124,10 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                 if os.path.isfile(xmvb_input_file):
                     print('|  orb is a reserved word, but a file named orb does exist')
                 ao_orb, coeff_orb = routines.make_orb(vect,indices)
-                routines.make_dollarorb(ao_orb,fin)
+                output='orb.orb'
+                routines.make_dollarorb_file(ao_orb,fin, output)
+                print('|  $orb section written in ', output)
+                print('|  for an all electron calculation and ',fin,' orbitals')
                 sys.exit()  
             if not os.path.isfile(xmvb_input_file):
                     print('|  file ',xmvb_input_file,' not found')
