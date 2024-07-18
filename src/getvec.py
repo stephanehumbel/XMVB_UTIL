@@ -120,13 +120,13 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 
         if len(sys.argv) == 3:
             xmvb_input_file=sys.argv[2]
+            if xmvb_input_file=='orb':
+                if os.path.isfile(xmvb_input_file):
+                    print('|  orb is a reserved word, but a file named orb does exist')
+                ao_orb, coeff_orb = routines.make_orb(vect,indices)
+                routines.make_dollarorb(ao_orb,fin)
+                sys.exit()  
             if not os.path.isfile(xmvb_input_file):
-                 if xmvb_input_file=='orb':
-                    print('|  orb is a reserved word, ')
-                    ao_orb, coeff_orb = routines.make_orb(vect,indices)
-                    routines.make_dollarorb(ao_orb,fin)
-                    sys.exit()  
-                 else :
                     print('|  file ',xmvb_input_file,' not found')
                     sys.exit()
 #            xmvb_orb_file=sys.argv[3]
