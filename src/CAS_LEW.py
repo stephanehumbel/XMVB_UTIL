@@ -267,12 +267,13 @@ if len(sys.argv) <= 1:
     print('| usually file_xm.xmo + a file_xm_vb to make the _vbp')
 k=1    
 CAS_file = sys.argv[1]
-if not os.path.exists(CAS_file):
-    print('ls ',CAS_file,' *.xmo')
-#    k=ls_dir(CAS_file,'.log',0)
-    k=ls_dir(CAS_file,'.xmo',k)
-    CAS_file = input("Enter the file name: ")
 CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
+if not os.path.exists(CAS_file_name+'.xmo'):
+            print('no ',CAS_file_name+'.xmo')
+            print('                 ---===---===:::========')    
+            print(' CAS file ERROR  --- STOOOOOOOOOOOOP ===')    
+            print('                 ---===---===:::========')    
+            quit()
 # Le calcul CAS est dans nom.log ?
 state = -1  # xmo file only 1 state
 must_write_OVERL=True  
@@ -285,6 +286,13 @@ lenCI=len(CI_vect)
 print('',lenCI,end=' CI vect, ')
 if len(sys.argv) >= 3:
     VB_file  = sys.argv[2]
+    VB_file_name, VB_file_ext = os.path.splitext(VB_file)
+    if not os.path.exists(VB_file_name+'.xmo'):
+            print('no ',VB_file_name+'.xmo')    
+            print('                 ---===---===:::========')    
+            print('  VB file ERROR  --- STOOOOOOOOOOOOP ===')    
+            print('                 ---===---===:::========')    
+            quit()
 else:
     if len(sys.argv)==2  :
         print('You need to build the _xm.* files')
@@ -318,7 +326,7 @@ file_orb_CAS=CAS_file_name+'.orb'
 print(file_orb_CAS,end=':')
 VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_CAS) 
 print(len(VB_orb_coeffs),end=' VB orbs, ')
-file_orb_CI=CAS_file_name+'.orb'
+file_orb_CI=VB_file_name+'.orb'
 print(file_orb_CI,end=':')
 CI_orb_coeffs,CI_orb_aos=routines.read_orb(file_orb_CI)
 print(len(CI_orb_coeffs),end=' CI orbs')
