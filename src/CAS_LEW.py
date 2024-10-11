@@ -348,7 +348,7 @@ if must_write_OVERL:
                MULT= routines.Read_INT(line, "MULTIPLICITY")
                print('| Multiplicity is ',MULT)
     print('|  filling the ', OVERL_file_xmi,' xmi input file ' )
-    with open(OVERL_file_xmi,'a') as file:
+    with open(OVERL_file_xmi,'w') as file:
         line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
         line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=0 int=libcint basis=6-31G ' 
         line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
