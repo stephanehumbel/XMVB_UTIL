@@ -95,8 +95,8 @@ def Get_CIVECT(CAS_file_name, state):
     pos_CASvectfin = routines.detect_blank(CAS_file_name,pos_CASvect+offset)
     CI_SIZE=pos_CASvectfin-1-(pos_CASvect+offset-1)
     # on decale de 3 lignes pour .log et de 2 lignes pour xmo 
-    CI_conf, CI_vect=Read_CIVECT(CAS_file_name, pos_CASvect+offset-1,pos_CASvectfin-1,offset)
-    return CI_conf,CI_vect
+    CAS_conf, CAS_vect=Read_CIVECT(CAS_file_name, pos_CASvect+offset-1,pos_CASvectfin-1,offset)
+    return CAS_conf,CAS_vect
 
 def est_reel(chaine):
     return '.' in chaine
@@ -199,17 +199,17 @@ def Read_CIVECT(file, pos,fin,offset):
         lines = f.readlines()[pos:fin]
         n=fin-pos
 #        print('n',pos,n,fin)
-        CI_vect = np.zeros(n)
-        CI_conf = []
+        CAS_vect = np.zeros(n)
+        CAS_conf = []
         for i in range(n):
-# Det,       CI_vect[i] = float(re.split('\|+| +|\n', lines[i])[7])
+# Det,       CAS_vect[i] = float(re.split('\|+| +|\n', lines[i])[7])
 # GUGA
-            CI_vect[i] = float(re.split(' +',lines[i])[2])
+            CAS_vect[i] = float(re.split(' +',lines[i])[2])
             if offset == 4: # log
                 str=re.split(' +|\n',lines[i])[3]
-                CI_conf.append(str)
+                CAS_conf.append(str)
             else: # xmo
-                #CI_conf[i] = re.split(' +|\n',lines[i])[3:]
+                #CAS_conf[i] = re.split(' +|\n',lines[i])[3:]
                 str=''
                 k=4
                 while True:
@@ -219,10 +219,10 @@ def Read_CIVECT(file, pos,fin,offset):
                     else:
                         break
                     k+=1
-                CI_conf.append(str)
+                CAS_conf.append(str)
                 continue
     f.close()
-    return CI_conf, CI_vect
+    return CAS_conf, CAS_vect
 def ls_dir(beginning,end,k):
     files = [file for file in os.listdir() if file.endswith(end) and file .startswith(beginning)]
     for file in files:
@@ -231,19 +231,19 @@ def ls_dir(beginning,end,k):
         if k%5 == 0:
             print() 
     return  k
-def collect_confs(CI_conf):
-    # collect the confs from the CI_conf in a single table of integers
+def collect_confs(CAS_conf):
+    # collect the confs from the CAS_conf in a single table of integers
     # cares of the : in the confs
     # usefull to detect the max/min of the orbitals.
     k=0
     tab=[]
     ttab=[]
     while True:
-        if k >= len(CI_conf):
+        if k >= len(CAS_conf):
             break
         else:
             l=0
-            ttab=re.split(' +|:|\n',CI_conf[k])
+            ttab=re.split(' +|:|\n',CAS_conf[k])
       #      print(len(ttab),'ttab',ttab,end='M ')
             while True:
                 if l >= len(ttab):
@@ -281,8 +281,8 @@ CAS_file=CAS_file_name+'.xmo'
 OVERL_file_orb=CAS_file_name+'_overl.orb'
 OVERL_file_xmi=CAS_file_name+'_overl.xmi'
 print('|  read files :\n| ',CAS_file,end=':')
-CI_conf,CI_vect=Get_CIVECT(CAS_file, state)
-lenCI=len(CI_vect)
+CAS_conf,CAS_vect=Get_CIVECT(CAS_file, state)
+lenCI=len(CAS_vect)
 print('',lenCI,end=' CI vect, ')
 if len(sys.argv) >= 3:
     VB_file  = sys.argv[2]
@@ -296,14 +296,14 @@ if len(sys.argv) >= 3:
 else:
     if len(sys.argv)==2  :
         print('You need to build the _xm.* files')
-        tableau=collect_confs(CI_conf)
+        tableau=collect_confs(CAS_conf)
 #        print('apres collect_conf',tableau) 
-        toprint=routines.make_conf_from_gamess(CI_conf)
+        toprint=routines.make_conf_from_gamess(CAS_conf)
         print('Make a ',CAS_file_name+'_xm.xmi',' file     with ')
         print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
         print("$str ")
         for ii in range(len(toprint)):
-            print(toprint[ii],' ; ', CI_conf[ii],ii+1,'... ',CI_vect[ii])    
+            print(toprint[ii],' ; ', CAS_conf[ii],ii+1,'... ',CAS_vect[ii])    
         print("$end \n")
         if os.path.exists(CAS_file_name+'.dat'):
            print('now type :  getvec.py ',CAS_file_name+'.dat (and put the bfi in  ', CAS_file_name+'_xm.xmi)' ) 
@@ -315,7 +315,7 @@ try:
     NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
 except:   
     print('no valid file ',VB_file)
-    NVBCONF=len(CI_conf)
+    NVBCONF=len(CAS_conf)
     quit()
 VB_conf,VB_vect=Get_CIVECT(VB_file, state)
 if (len(VB_vect) != NVBCONF):
@@ -324,12 +324,12 @@ else:
     print('',len(VB_vect),end='VB vect, ')
 file_orb_CAS=CAS_file_name+'.orb'
 print(file_orb_CAS,end=':')
-VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_CAS) 
-print(len(VB_orb_coeffs),end=' VB orbs, ')
-file_orb_CI=VB_file_name+'.orb'
-print(file_orb_CI,end=':')
-CI_orb_coeffs,CI_orb_aos=routines.read_orb(file_orb_CI)
-print(len(CI_orb_coeffs),end=' CI orbs')
+CAS_orb_coeffs,CAS_orb_aos=routines.read_orb(file_orb_CAS) 
+print(len(CAS_orb_coeffs),end=' CAS orbs, ')
+file_orb_VB=VB_file_name+'.orb'
+print(file_orb_VB,end=':')
+VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_VB)
+print(len(VB_orb_coeffs),end=' VB orbs')
 print()
 ##
 
@@ -337,9 +337,9 @@ print()
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
     OFFSET=max(collect_confs(VB_conf))  
-    print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CI_conf)),'-', max(collect_confs(CI_conf)) ,' CI orbitals      ')
-    print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CI_conf)),' to ',OFFSET+max(collect_confs(CI_conf)),' and written in ',OVERL_file_orb )
-    dec_CI_conf=Offset_conf(CI_conf,OFFSET)
+    print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CAS_conf)),'-', max(collect_confs(CAS_conf)) ,' CI orbitals      ')
+    print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CAS_conf)),' to ',OFFSET+max(collect_confs(CAS_conf)),' and written in ',OVERL_file_orb )
+    dec_CI_conf=Offset_conf(CAS_conf,OFFSET)
     print('-------------------------------------------------')
     with open(VB_file , "r") as file:
         for line in file:
@@ -349,7 +349,7 @@ if must_write_OVERL:
                print('| Multiplicity is ',MULT)
     print('|  filling the ', OVERL_file_xmi,' xmi input file ' )
     with open(OVERL_file_xmi,'a') as file:
-        line='made by project.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
+        line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
         line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=0 int=libcint basis=6-31G ' 
         line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
         file.write(line)    
@@ -362,9 +362,9 @@ if must_write_OVERL:
             #print(line)
             file.write(line)   
         for i in range(lenCI):
-            line= '  '+ dec_CI_conf[i]+'    ; CI '+str(i+1) + str( CI_vect[i])+'\n'  
+            line= '  '+ dec_CI_conf[i]+'    ; CI '+str(i+1) + str( CAS_vect[i])+'\n'  
             #print(*['%4.0f' % int(val) for val in dec_CI_conf[i].split()],end=' ')
-            #print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CI_vect[i])
+            #print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CAS_vect[i])
             file.write(line)   
         line= ' $end  ; ============= \n '
         file.write(line)   
@@ -379,10 +379,10 @@ if must_write_OVERL:
    #     print('VBcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
         OVERL_coeffs.append(VB_orb_coeffs[k])
         OVERL_aos.append(VB_orb_aos[k])
-    for k in range(len(CI_orb_coeffs)):
+    for k in range(len(VB_orb_coeffs)):
    #     print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
-        OVERL_coeffs.append(CI_orb_coeffs[k])
-        OVERL_aos.append(CI_orb_aos[k])
+        OVERL_coeffs.append(CAS_orb_coeffs[k])
+        OVERL_aos.append(CAS_orb_aos[k])
     routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
     print('  ',OVERL_file_orb,' written')   
     
@@ -411,17 +411,17 @@ Stot=[]
 print('| In ', OVERL_output_file, ' the overlap matrix is (',n,'x',m,')')
 Stot=read5cols(OVERL_output_file,OVERLP_size,OVERLP_size,posit,posfin) # read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
 #print_matrix('Stot',Stot)
-#print('CI_vect[1]',CI_vect[1])
+#print('CAS_vect[1]',CAS_vect[1])
 Svbvb=np.zeros((NVBCONF,NVBCONF))
-part_SOM=np.zeros((NVBCONF,len(CI_vect)))
+part_SOM=np.zeros((NVBCONF,len(CAS_vect)))
 SOMvb=np.zeros(NVBCONF)
 print('| ' )
 print('| ------------------------------------------------------------')
-print('|  Get the overlaps between each of the CI\'s CSF of ',CI_vect,'with each of the ',NVBCONF,'VB conf')
+print('|  Get the overlaps between each of the CI\'s CSF of ',CAS_vect,'with each of the ',NVBCONF,'VB conf')
 for ivb in range(len(VB_conf)):
     for jvb in range(len(VB_vect)):
         Svbvb[ivb][jvb]=Stot[ivb][jvb]
-    for jmo in range(len(CI_vect)):
+    for jmo in range(len(CAS_vect)):
         part_SOM[ivb][jmo]=Stot[ivb][jmo+NVBCONF] # part_SOM is the part that concerns the overlap between each MO configurations of the CI and each VB configurations.
 #print_lin_matrix('S_CI/VB^T',part_SOM.T)
 print('| ' )
@@ -430,8 +430,8 @@ print('| ' )
 #print_lin_matrix('S_VB/VB',Svbvb)
 print('| ' )
 #print('| ------------------------------------------------------------')
-#print('| The CI vector of this state ',CI_vect,' has the following overlaps with each VB\'s structures')
-SOMvb=np.dot(part_SOM,CI_vect)
+#print('| The CI vector of this state ',CAS_vect,' has the following overlaps with each VB\'s structures')
+SOMvb=np.dot(part_SOM,CAS_vect)
 #SOMvb=SOMvb.T
 #print('SOMvb',SOMvb)    
 sol=np.linalg.solve(Svbvb,SOMvb)
@@ -459,12 +459,12 @@ for i in range(len(sol)):
 yes=input('Do you want to print the CI/VB overlaps ? (y/n)')
 if yes != 'n':
     print('|  VB[i]     C[i]   ',end=' ')   
-    for i in range(len(CI_vect)):
+    for i in range(len(CAS_vect)):
         print('   CI',f"{i:2d}",end='  ')
     print()
     for i in range(len(sol)):
         print('|  ',f"{i+1:3d}",'  ',f"{VB_vect[i]:7.3f}",end=' ')
-        for j in range(len(CI_vect)):
+        for j in range(len(CAS_vect)):
             print(' ',f"{part_SOM[i][j]:7.4f}",end=' ') 
         print()
 
