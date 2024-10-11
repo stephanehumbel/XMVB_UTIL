@@ -277,6 +277,8 @@ CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
 state = -1  # xmo file only 1 state
 must_write_OVERL=True  
 CAS_file=CAS_file_name+'.xmo'
+OVERL_file_orb=CAS_file_name+'_overl.orb'
+OVERL_file_xmi=CAS_file_name+'_overl.xmi'
 print('|  read files :\n| ',CAS_file,end=':')
 CI_conf,CI_vect=Get_CIVECT(CAS_file, state)
 lenCI=len(CI_vect)
@@ -322,7 +324,7 @@ CI_orb_coeffs,CI_orb_aos=routines.read_orb(file_orb_CI)
 print(len(CI_orb_coeffs),end=' CI orbs')
 print()
 ##
-routines.write_orbs("screen",VB_orb_coeffs,0,len(VB_orb_coeffs))
+
 ##
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
@@ -337,10 +339,10 @@ if must_write_OVERL:
             if routines.is_in(line, "MULTIPLICITY"):
                MULT= routines.Read_INT(line, "MULTIPLICITY")
                print('| Multiplicity is ',MULT)
-    print('|  filling the ', OVERL_input_file,' xmi input file ' )
-    with open(OVERL_input_file,'a') as file:
+    print('|  filling the ', OVERL_file_xmi,' xmi input file ' )
+    with open(OVERL_file_xmi,'a') as file:
         line='made by project.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
-        line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=10' 
+        line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=0 int=libcint basis=6-31G ' 
         line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
         file.write(line)    
         line= ' $struc  ; ============= \n '
@@ -358,11 +360,11 @@ if must_write_OVERL:
             file.write(line)   
         line= ' $end  ; ============= \n '
         file.write(line)   
-        pos, line=routines.detect_keyword(VB_file, "$bfi", 0)
-        bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(VB_file,pos)
-        line= ' $bfi  ; ============= \n '
-        line=line+' '+str(bfi_nom)+' '+str(bfi_noa)+ '\n   '+routines.makeSTR(list_om)+'\n   '+routines.makeSTR(list_oa)+'\n $end \n'
-        file.write(line)   
+     ##   pos, line=routines.detect_keyword(VB_file, "$bfi", 0)
+     ##   bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(VB_file,pos)
+     ##   line= ' $bfi  ; ============= \n '
+     ##   line=line+' '+str(bfi_nom)+' '+str(bfi_noa)+ '\n   '+routines.makeSTR(list_om)+'\n   '+routines.makeSTR(list_oa)+'\n $end \n'
+     ##   file.write(line)   
     OVERL_coeffs=[]
     OVERL_aos=[]
     for k in range(len(VB_orb_coeffs)):
@@ -376,7 +378,7 @@ if must_write_OVERL:
     routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
     print('  ',OVERL_file_orb,' written')   
     
-    routines.write_DOLLARORB(OVERL_input_file,OVERL_aos,0,len(OVERL_aos))
+    routines.write_DOLLARORB(OVERL_file_xmi,OVERL_aos,0,len(OVERL_aos))
     print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
     print('| $end ')
 
