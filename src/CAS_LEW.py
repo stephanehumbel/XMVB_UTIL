@@ -74,8 +74,15 @@ def Offset_conf(conf,offset):
                         llist+=str(int(indices[l])+offset)+' '
             #print(inidi)
             l+=1
-        new_indices.append(llist)
+        new_indices.append(llist) 
         k+=1
+    i=0
+    tampon=[]
+    str_ofset="1:"+str(offset)+'   '
+    #print('str_ofset',str_ofset )
+    while i < len(new_indices):
+        tampon.append(str_ofset+new_indices[i])
+        i+=1
     #print('new_indices',new_indices)
     return new_indices
 
@@ -86,7 +93,7 @@ def Get_CIVECT(CAS_file_name, state):
         pos_CASvect,line=routines.detect_keyword(CAS_file_name,"******  COEFFICIENTS OF STRUCTURES", 0)
     else:            # log file
         pos_CASvect,line=routines.detect_keyword(CAS_file_name, "LAGRANGIAN CONVERGED", 0)
-        search_state=" STATE #    "+str(state)
+        search_state=""+str(state)+'  ENERGY'
         pos_CASvect,line=routines.detect_keyword(CAS_file_name, search_state, pos_CASvect)
     if (pos_CASvect == -1):
         print("Get_CIVECT  no converged Ci coeffs in  ",CAS_file_name)
@@ -265,51 +272,70 @@ print("+--------                     ---------------------")
 if len(sys.argv) <= 1:
     print('| file_CI can be either a .log or a .xmo file')
     print('| usually file_xm.xmo + a file_xm_vb to make the _vbp')
-k=1    
-CAS_file = sys.argv[1]
-CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
-if not os.path.exists(CAS_file_name+'.xmo'):
-            print('no ',CAS_file_name+'.xmo')
-            print('                 ---===---===:::========')    
-            print(' CAS file ERROR  --- STOOOOOOOOOOOOP ===')    
-            print('                 ---===---===:::========')    
-            quit()
-# Le calcul CAS est dans nom.log ?
-state = -1  # xmo file only 1 state
-must_write_OVERL=True  
-CAS_file=CAS_file_name+'.xmo'
-OVERL_file_orb=CAS_file_name+'_overl.orb'
-OVERL_file_xmi=CAS_file_name+'_overl.xmi'
+    print('| at final stage cas.xmo + vb.xmo  and will search $cas+_overl.xmo ')
+    quit()
+if len(sys.argv) == 2:
+#For an xmo file')
+    CAS_file = sys.argv[1]
+    CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
+#For a  GAMESS log file')
+    if CAS_file_ext == '.log' and os.path.exists(CAS_file):
+        print (CAS_file_name+'.log exists must be like $MCSCF CISTEP=GUGA MAXIT=200 QUAD=.F. $END $GUGDIA NSTATE=2 $END $GUGDM2 WSTATE(1)=1.0,0.0 $END')
+        CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".log",1)
+        toprint=routines.make_conf_from_gamess(CAS_conf)
+        num,line=routines.detect_keyword(CAS_file_name+".log", "NUMBER OF CORE MOL", 0)    
+        offset=routines.Read_INT(line,"ORBITALS")
+        print('number of core Orbs=',offset,CAS_conf,CAS_vect)
+        if offset > 0:
+            CAS_conf=Offset_conf(toprint,offset)
+        routines.write_conf("screen",CAS_conf,CAS_vect)
+        if os.path.exists(CAS_file_name+'.dat'):
+           print('use getvec.py ', CAS_file_name+'.dat to get the orbs ')
+        else:
+            print('  ', CAS_file_name+'.dat not found ')
+        print('                 ---===---===:::========')
+        quit()
+    elif CAS_file_ext == '.xmo' and os.path.exists(CAS_file):
+        print('|  read files :\n| ',CAS_file_name+".xmo",end=':')
+        CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".xmo", -1)
+        lenCI=len(CAS_vect)
+        print('',lenCI,end=' CI vect.')
+        print('')    
+        print('                 ---===---===:::========')    
+        routines.write_conf("screen",CAS_conf,CAS_vect)
+        routines.write_conf(".conf"  ,CAS_conf,CAS_vect)
+        print('                 ---===---===:::========')    
+    else:   
+        print('### >>> ',CAS_file,'  not found <<<<< ##')
+    quit()
+#k=1    
+if len(sys.argv) >= 3: 
+    VB_file = sys.argv[1]
+    CAS_file = sys.argv[2]
+    VB_file_name, VB_file_ext = os.path.splitext(VB_file)
+    CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
+    if not os.path.exists(VB_file_name+'.xmo'):
+        ext_error='### >>> ',VB_file_name+'.xmo not found <<<<< ## '
+        quit(ext_error) 
+    if not os.path.exists(CAS_file_name+'.xmo'):
+        ext_error='### >>> ',CAS_file_name+'.xmo not found <<<<< ## '
+        quit(ext_error)
+    state = -1  # xmo file only 1 state
+    if len(sys.argv) ==4:
+        must_write_OVERL=False  
+        OVERL_file_xmo=sys.argv[3]
+        print('|OVERLAP files :\n| ',OVERL_file_xmo,end='')
+    if len(sys.argv) ==3:
+        must_write_OVERL=True
+        OVERL_file_orb=CAS_file_name+'_overl.orb'
+        OVERL_file_xmi=CAS_file_name+'_overl.xmi'
+        OVERL_file_xmo=CAS_file_name+'_overl.xmo'
+# comes here only if more than 2 arguments
+# reads the xmo files
 print('|  read files :\n| ',CAS_file,end=':')
 CAS_conf,CAS_vect=Get_CIVECT(CAS_file, state)
 lenCI=len(CAS_vect)
 print('',lenCI,end=' CI vect, ')
-if len(sys.argv) >= 3:
-    VB_file  = sys.argv[2]
-    VB_file_name, VB_file_ext = os.path.splitext(VB_file)
-    if not os.path.exists(VB_file_name+'.xmo'):
-            print('no ',VB_file_name+'.xmo')    
-            print('                 ---===---===:::========')    
-            print('  VB file ERROR  --- STOOOOOOOOOOOOP ===')    
-            print('                 ---===---===:::========')    
-            quit()
-else:
-    if len(sys.argv)==2  :
-        print('You need to build the _xm.* files')
-        tableau=collect_confs(CAS_conf)
-#        print('apres collect_conf',tableau) 
-        toprint=routines.make_conf_from_gamess(CAS_conf)
-        print('Make a ',CAS_file_name+'_xm.xmi',' file     with ')
-        print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
-        print("$str ")
-        for ii in range(len(toprint)):
-            print(toprint[ii],' ; ', CAS_conf[ii],ii+1,'... ',CAS_vect[ii])    
-        print("$end \n")
-        if os.path.exists(CAS_file_name+'.dat'):
-           print('now type :  getvec.py ',CAS_file_name+'.dat (and put the bfi in  ', CAS_file_name+'_xm.xmi)' ) 
-           print('then type:  getvec.py ',CAS_file_name+'.dat ', CAS_file_name+'_xm.xmi')
-           print('finally xmpdec        ',CAS_file_name+'_xm.orbb  ','will provide the $orb part  \n ----------- \n')
-    VB_file  = CAS_file_name+"_vb.xmo"
 print(VB_file,end=':')
 try:
     NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
@@ -332,7 +358,6 @@ VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_VB)
 print(len(VB_orb_coeffs),end=' VB orbs')
 print()
 ##
-
 ##
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
@@ -350,7 +375,7 @@ if must_write_OVERL:
     print('|  filling the ', OVERL_file_xmi,' xmi input file ' )
     with open(OVERL_file_xmi,'w') as file:
         line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
-        line=line+'  vbftyp=det WFNTYP=struc iscf=3 itmax=0 int=libcint basis=6-31G ' 
+        line=line+'  vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G ' 
         line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
         file.write(line)    
         line= ' $struc  ; ============= \n '
@@ -389,55 +414,77 @@ if must_write_OVERL:
     routines.write_DOLLARORB(OVERL_file_xmi,OVERL_aos,0,len(OVERL_aos))
     print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
     print('| $end ')
-
-OVERL_output_file = CAS_file_name+'_vbp.xmo'
-if not os.path.exists(OVERL_output_file):
-    print('- submit the calculation:',OVERL_output_file, ' is required to continue')
+    print('- ------------------------------------------------------------------')
+    print('- submit the calculation:',OVERL_file_xmo, ' is required to continue')
+    print('- ------------------------------------------------------------------')
+    quit()  
+if not os.path.exists(OVERL_file_xmo):
+    print('- submit the calculation:',OVERL_file_xmo, ' is required to continue')
     quit()
 
-OVERLP_size= routines.Read_INTEGER(OVERL_output_file, " Number of Structures:",12)  
+OVERLP_size= routines.Read_INTEGER(OVERL_file_xmo, " Number of Structures:",12)  
 if OVERLP_size != NVBCONF+lenCI           :
     print('Error in OVERLP_size',OVERLP_size,'instead of ',NVBCONF+lenCI           )
     quit()
 else:
-    print('OVERLP_size',OVERLP_size,' is OK with VB+CI ')
-posit,line=routines.detect_keyword(OVERL_output_file,"******  OVERLAP OF VB STRUCTURES ",0)
-posfin,line=routines.detect_keyword(OVERL_output_file,"******  HAMILTONIAN ",posit)
+    print('|  OVERLP_size',OVERLP_size,' is OK with VB+CI ')
+posit,line=routines.detect_keyword(OVERL_file_xmo,"******  OVERLAP OF VB STRUCTURES ",0)
+posfin,line=routines.detect_keyword(OVERL_file_xmo,"******  HAMILTONIAN ",posit)
 # read  The  Matrix at pos (3 lines between each blocks)
 # 5 intergers first (5 cols) then each line as integer (line) then 5 reals 
 #
-n,m=check_size(OVERL_output_file,posit+1,posfin)
+n,m=check_size(OVERL_file_xmo,posit+1,posfin)
 Stot=[]
-print('| In ', OVERL_output_file, ' the overlap matrix is (',n,'x',m,')')
-Stot=read5cols(OVERL_output_file,OVERLP_size,OVERLP_size,posit,posfin) # read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
+print('| In ', OVERL_file_xmo, ' the overlap matrix is (',n,'x',m,')')
+Stot=read5cols(OVERL_file_xmo,OVERLP_size,OVERLP_size,posit,posfin) # read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
 #print_matrix('Stot',Stot)
 #print('CAS_vect[1]',CAS_vect[1])
+Smomo=np.zeros((lenCI,lenCI))
 Svbvb=np.zeros((NVBCONF,NVBCONF))
 part_SOM=np.zeros((NVBCONF,len(CAS_vect)))
 SOMvb=np.zeros(NVBCONF)
 print('| ' )
 print('| ------------------------------------------------------------')
-print('|  Get the overlaps between each of the CI\'s CSF of ',CAS_vect,'with each of the ',NVBCONF,'VB conf')
+print('|  Get the overlaps between each of the CI\'s CSF of ',lenCI,'CAS CSFs with each of the ',NVBCONF,'VB conf')
+for imo in range(lenCI):
+    for jmo in range(lenCI):
+        Smomo[imo][jmo]=Stot[imo+NVBCONF][jmo+NVBCONF] # Smomo is the part that concerns the overlap between each MO configurations of the CI.
+
 for ivb in range(len(VB_conf)):
     for jvb in range(len(VB_vect)):
         Svbvb[ivb][jvb]=Stot[ivb][jvb]
     for jmo in range(len(CAS_vect)):
         part_SOM[ivb][jmo]=Stot[ivb][jmo+NVBCONF] # part_SOM is the part that concerns the overlap between each MO configurations of the CI and each VB configurations.
+
+#print_lin_matrix('S_CI/CI',Smomo)
 #print_lin_matrix('S_CI/VB^T',part_SOM.T)
-print('| ' )
-#print('| ------------------------------------------------------------')
 #print('| The vector of the overlap between ',NVBCONF,' VB CSF\' (structure) ')
 #print_lin_matrix('S_VB/VB',Svbvb)
 print('| ' )
 #print('| ------------------------------------------------------------')
 #print('| The CI vector of this state ',CAS_vect,' has the following overlaps with each VB\'s structures')
+##
+# just check the norm of the CAS vector ------------------
+norm_CAS_vect=np.dot(CAS_vect.T,np.dot(Smomo,CAS_vect))
+if abs(norm_CAS_vect-1.0) > 0.01: 
+    print('>>>>>>> .  Error in the norm of the CAS wf: ',f"{norm_CAS_vect:4.3f} <<<<<<<<<")
+    quit()
+print('| Norm of the CAS wf is OK: ',f"{norm_CAS_vect:4.3f}")
+print('| solving the projection of the CAS wf on the VB wf')
+# define & solv the HLP equations       ------------------
 SOMvb=np.dot(part_SOM,CAS_vect)
-#SOMvb=SOMvb.T
-#print('SOMvb',SOMvb)    
 sol=np.linalg.solve(Svbvb,SOMvb)
+# align VB_vect on the CAS_vect         ------------------
+if np.dot(VB_vect.T,SOMvb) < 0:
+    print('| turn the vectors so they better aligns on the CAS:'," VB_vect=", VB_vect, 'CAS in the VB space=', SOMvb)
+    VB_vect=-VB_vect
+if np.dot(VB_vect.T,sol) < 0:
+    sol=-sol
+    Svbvbsol=np.dot(Svbvb,sol)  
+    print('|  the solution is inverted to have >0  overlaps')
 Svbvbsol=np.dot(Svbvb,sol)  
 norm_sol=np.dot(sol.T,Svbvbsol)  
-print('| projected  : norme before=',f"{norm_sol:4.3f}")
+print('| projected wf_K obtained. Norme wf_K=',f"{norm_sol:4.3f}")
 sol = sol / np.sqrt(norm_sol)
 norm_sol = np.dot(sol.T, np.dot(Svbvb, sol))
 #print("|  norm sol after............",f"{norm_sol:4.3f}")

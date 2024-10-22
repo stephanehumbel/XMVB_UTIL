@@ -549,6 +549,23 @@ def write_orb(filename, coeffs, indices, deb, fin):
                 f.write("\n")
         f.close()
 
+def write_conf(filename, CONF,COEF):
+    ssize=len(CONF)
+#    print('write_conf',filename,len(CONF),ssize)
+    if filename == 'screen':
+       for ii in range(ssize):
+            print(' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
+       print(" \n")
+    else:
+       print(ssize, "confs",end='')
+       with open(filename, 'w') as f: 
+            for ii in range(ssize):  
+#                print(' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
+                f.write(f"{CONF[ii]}  ; {ii+1} ... {COEF[ii]:13.10f}")
+                f.write("\n")
+       print(" written on ",filename)    
+
+
 def write_DOLLARORB(filename, AOS, deb, fin):
     if filename == 'screen':
         print('$orb')

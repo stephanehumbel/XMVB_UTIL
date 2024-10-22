@@ -5,7 +5,7 @@
 ## $DRT    GROUP=CS  FORS=.TRUE. NMCC=13 NDOC=2 NVAL=2 $END
 ## $GUGDIA NSTATE=2 $END
 ## $GUGDM2 WSTATE(1)=1.0,0.0 $END
-# or ===> from an .xmo file       
+
 import os
 import cclib
 import sys
@@ -259,67 +259,52 @@ def collect_confs(CI_conf):
 # == main =------------------------------------------------------
 # =========------------------------------------------------------
 print("+--------project.py - SH 2024 ---------------------")
-print('| project.py file_CI ',len(sys.argv), 'arguments')
+print('|CAS_PRO.py file_OVERLAP ',len(sys.argv), 'arguments')
 print("+--------                     ---------------------")
 if len(sys.argv) <= 1:
-    print('| file_CI can be either a .log or a .xmo file')
-    print('| usually file_xm.xmo + a file_xm_vb to make the _vbp')
+    print('| usage : CAS_PRO.py file_OVERLAP.xmo N          |')
+    print('|       : file_OVERLAP.xmo  is an .xmo file      |')
+    print('|       : N   is the size of the VB wavfunction  |')
     
 input_file = sys.argv[1]
 if not os.path.exists(input_file):
-    print('ls ',input_file,'*.log or *.xmo')
-    k=ls_dir(input_file,'.log',0)
-    k=ls_dir(input_file,'.xmo',k)
+    print('ls ',input_file,' *.xmo')
+    k=ls_dir(input_file,'.xmo',0)
     input_file = input("Enter the file name: ")
 input_file_name, input_file_ext = os.path.splitext(input_file)
-# Le calcul CAS est dans nom.log ?
-if input_file_ext == ".log":
-    reponse=input("Enter the state number: [1] ")
-    try:
-        state = int(reponse)    
-    except:
-        state = 1
-
-else:
-    state = -1  # xmo file only 1 state
-VB_inp_file = input_file_name+'_vb.inp'
-OVERL_inp_file = input_file_name+'_vbp.inp'
+state = -1  # xmo file only 1 state
 must_write_OVERL=False  
-if not os.path.exists(OVERL_inp_file): # if that one exists the xmo should also be done
-    must_write_OVERL=True
-    if os.path.exists(VB_inp_file):
-       command='cp '+VB_inp_file+' '+OVERL_inp_file 
-       print('|  ',command,' the inp file for the OVERLAP calculation is mandatory')
-       os.system(command)
-    else:
-        print('Error : no file ',VB_inp_file,' to copy')
-OVERL_output_file = input_file_name+'_vbp.xmo'
+OVERL_output_file = input_file_name+'.xmo'
 OVERL_input_file = input_file_name+'_vbp.xmii' #for .xmi, to avoid erasing
-OVERL_file_orb=input_file_name+'_vbp.orbb'     #for .orb, to avoid erasing
+OVERL_file_orb=input_file_name+'.orbb'     #for .orb, to avoid erasing
     
 print('|  read files :\n| ',input_file,end=':')
-CI_conf,CI_vect=Get_CIVECT(input_file, state)
-lenCI=len(CI_vect)
-print('',lenCI,end=' CI vect, ')
+#CI_conf,CI_vect=Get_CIVECT(input_file, state)
+#lenCI=len(CI_vect)
+#print('',lenCI,end=' CI vect, ')
 if len(sys.argv) >= 3:
-    VB_file  = sys.argv[2]
+    VB_SIZE  = sys.argv[2]
+#    VB_file  = sys.argv[2]
+    print('the file must start with ',VB_SIZE,' VB structures  ',end='.')
 else:
     if len(sys.argv)==2  :
-        print('You need to build the _xm.* files')
-        tableau=collect_confs(CI_conf)
+        print('How many VB structures?          ')
+        VB_SIZE = input("Enter the size : ")
+#        tableau=collect_confs(CI_conf)
 #        print('apres collect_conf',tableau) 
-        toprint=routines.make_conf_from_gamess(CI_conf)
-        print('Make a ',input_file_name+'_xm.xmi',' file     with ')
-        print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
-        print("$str ")
-        for ii in range(len(toprint)):
-            print(toprint[ii],' ; ', CI_conf[ii],ii+1,'... ',CI_vect[ii])    
-        print("$end \n")
-        if os.path.exists(input_file_name+'.dat'):
-           print('now type :  getvec.py ',input_file_name+'.dat (and put the bfi in  ', input_file_name+'_xm.xmi)' ) 
-           print('then type:  getvec.py ',input_file_name+'.dat ', input_file_name+'_xm.xmi')
-           print('finally xmpdec        ',input_file_name+'_xm.orbb  ','will provide the $orb part  \n ----------- \n')
-    VB_file  = input_file_name+"_vb.xmo"
+#        toprint=routines.make_conf_from_gamess(CI_conf)
+#        print('Make a ',input_file_name+'_xm.xmi',' file     with ')
+#        print("$ctrl \n vbftyp=det WFNTYP=struc iscf=3 itmax=1000 bprep nstate=0 iprint=3 guess=read \n nmul=1 nstr=",lenCI,"\n  $end")
+#        print("$str ")
+#       for ii in range(len(toprint)):
+#           print(toprint[ii],' ; ', CI_conf[ii],ii+1,'... ',CI_vect[ii])    
+#       print("$end \n")
+#       if os.path.exists(input_file_name+'.dat'):
+#          print('now type :  getvec.py ',input_file_name+'.dat (and put the bfi in  ', input_file_name+'_xm.xmi)' ) 
+#          print('then type:  getvec.py ',input_file_name+'.dat ', input_file_name+'_xm.xmi')
+#          print('finally xmpdec        ',input_file_name+'_xm.orbb  ','will provide the $orb part  \n ----------- \n')
+#   VB_file  = input_file_name+"_vb.xmo"
+VB_file=input_file_name+'.xmo'
 print(VB_file,end=':')
 try:
     NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
