@@ -269,7 +269,7 @@ print("+--------project.py - SH 2024 ---------------------")
 print('| CAS_LEW.py file_CAS file_VB ',len(sys.argv), 'arguments')
 print("+- must have .orb and .xmo of both              ---")
 print("+--------                     ---------------------")
-if len(sys.argv) <= 1:
+if len(sys.argv) == 1:
     print('| file_CI can be either a .log or a .xmo file')
     print('| usually file_xm.xmo + a file_xm_vb to make the _vbp')
     print('| at final stage cas.xmo + vb.xmo  and will search $cas+_overl.xmo ')
