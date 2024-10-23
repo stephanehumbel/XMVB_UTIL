@@ -1,0 +1,18 @@
+--------SLURM EXECUTION------ -,date
+Variables
+Running on        : muhka  
+targetdir         : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src/benz_ca_touz_xm32 
+VBDIR            : /home/humbel/xmvb3_2/
+TMPDIR            : /scratch/humbel.259656
+I am in           : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src/benz_ca_touz_xm32
+/home/humbel/xmvb3_2//bin/xmvb: line 5: 3445386 Killed                  "$VBDIR"/bin/xmvb.exe $@
+
+real	0m2.621s
+user	0m2.654s
+sys	0m1.167s
+/scratch/humbel.259656
+total 900
+-rw-r--r-- 1 humbel users  25865 Jul 18 10:24 benz_ca_touz_xm32.xmi
+-rw-r--r-- 1 humbel users      0 Jul 18 10:24 benz_ca_touz_xm32.gus
+cat: benz_ca_touz_xm32.xmo: input file is output file
+slurmstepd: error: Detected 1 oom_kill event in StepId=259656.batch. Some of the step tasks have been OOM Killed.

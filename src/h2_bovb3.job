@@ -1,9 +1,9 @@
 #!/bin/sh
 # Script genere automatiquement a partir de subgms
 #
-#$ -N benzene_cas
+#$ -N h2_bovb3
 #
-#SBATCH --job-name=benzene_cas
+#SBATCH --job-name=h2_bovb3
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=3000
 #***************************
@@ -28,44 +28,44 @@ echo "I am in           : $PWD"
 
 # source /usr/share/Modules/init/sh
 # save previous run
-if [ -s benzene_cas.orb ] ; then
+if [ -s h2_bovb3.orb ] ; then
  set  echo
-   cp benzene_cas.orb benzene_cas.orb~
+   cp h2_bovb3.orb h2_bovb3.orb~
  unset  echo
 fi
-if [ -s benzene_cas.xmo ] ; then
+if [ -s h2_bovb3.xmo ] ; then
  set  echo
-   cp benzene_cas.xmo benzene_cas.xmo~
+   cp h2_bovb3.xmo h2_bovb3.xmo~
  unset  echo
 fi
-if [ -s benzene_cas.log ] ; then
+if [ -s h2_bovb3.log ] ; then
  set  echo
-   cp benzene_cas.log benzene_cas.log~
+   cp h2_bovb3.log h2_bovb3.log~
  unset  echo
 fi
 
 set echo
 export OMP_NUM_THREADS=8
 export OMP_STACKSIZE=3000M
-cp  $HOMEDIR/benzene_cas.xmi  $TMPDIR/benzene_cas.xmi
-if [ -s benzene_cas.gus ] ; then
-    cp  $HOMEDIR/benzene_cas.gus  $TMPDIR/benzene_cas.gus
+cp  $HOMEDIR/h2_bovb3.xmi  $TMPDIR/h2_bovb3.xmi
+if [ -s h2_bovb3.gus ] ; then
+    cp  $HOMEDIR/h2_bovb3.gus  $TMPDIR/h2_bovb3.gus
 else 
 # use .orb as a .gus
-    cp  $HOMEDIR/benzene_cas.orb  $TMPDIR/benzene_cas.gus
+    cp  $HOMEDIR/h2_bovb3.orb  $TMPDIR/h2_bovb3.gus
 fi
 
 cd $TMPDIR 
-#time (/home/humbel/xmvb3_2//bin/preint                 benzene_cas                      )
+#time (/home/humbel/xmvb3_2//bin/preint                 h2_bovb3                      )
 #pwd;ls -lrt |head -3
-time (/home/humbel/xmvb3_2//bin/xmvb                   benzene_cas                      )
+time (/home/humbel/xmvb3_2//bin/xmvb                   h2_bovb3                      )
 pwd;ls -lrt |head -3
 cd $HOMEDIR 
-#time (rungms_                     benzene_cas  1  > benzene_cas.log)
+#time (rungms_                     h2_bovb3  1  > h2_bovb3.log)
 # On doit rappatrier à la main le .xmo et les wfn (si necessaire)
-cp  $TMPDIR/benzene_cas.orb  $HOMEDIR/
-cp  $TMPDIR/benzene_cas.xmo  $HOMEDIR/
-cp  $TMPDIR/benzene_cas.xdat  $HOMEDIR/
+cp  $TMPDIR/h2_bovb3.orb  $HOMEDIR/
+cp  $TMPDIR/h2_bovb3.xmo  $HOMEDIR/
+cp  $TMPDIR/h2_bovb3.xdat  $HOMEDIR/
 # join slurm and xmo
-cat slurm-${SLURM_JOB_ID}.out benzene_cas.xmo >> benzene_cas.xmo
+cat slurm-${SLURM_JOB_ID}.out h2_bovb3.xmo >> h2_bovb3.xmo
 unset echo

@@ -1,0 +1,36 @@
+benzene
+$ctrl
+ nstr=3 nao=2  nae=2   nmul=1
+ orbtyp=hao frgtyp=sao
+ int=libcint basis=6-31G(d,p)
+ iscf=1 iprint=3
+ guess=read itmax=200
+$end
+$frag
+1 1 2 2 
+spz 1
+spz 2
+px 1 2
+py 1 2
+$end
+$stru
+ 1 2 
+ 1 1 
+ 2 2 
+$end
+$orb
+1*2
+1
+2
+$geo
+  H   -0.00000    0.00000   -0.37    
+  H   -0.00000    0.00000    0.37    
+$end
+$gus
+ 3 3
+# ORBITAL          1  NAO =       6
+0.3261           1   0.3000000000     2   0.0150000000     5 
+# ORBITAL          1  NAO =       6
+0.3261           6   0.3000000000     7  -0.0150000000    10
+$end
+

@@ -1,0 +1,454 @@
+
+
+    *************************************************************
+                                                               
+        M   M    MM MM    M   M    MMMM        MMMM     MMMM   
+         M M     M M M    M   M    M   M          M        M   
+          M      M M M     M M     MMMM   MMM  MMMM     MMMM   
+         M M     M   M     M M     M   M          M     M      
+        M   M    M   M      M      MMMM        MMMM  M  MMMM   
+                                                               
+    *************************************************************
+                                                               
+                    Released on: Dec 22, 2023                  
+                    Version:     v3.2.1                        
+                                                               
+    Cite this work as:                                         
+                                                               
+    (a) Z. Chen, F. Ying, X. Chen, J. Song, P. Su, L. Song, Y. 
+    Mo, Q. Zhang and W. Wu, Int. J. Quantum. Chem., 2015, 115, 
+    737 (b) L. Song, Y. Mo, Q. Zhang, W. Wu, J. Comput. Chem.  
+    2005, 26, 514.                                             
+
+
+ Job started at Wed Oct 23 09:18:17 2024 with     8 processors.
+ Running command: /home/humbel/xmvb3_2/bin/xmvb.exe h2_bovb3
+ Work Directory at /scratch/humbel.262282   PID =      919079
+ ---------------Input File---------------
+H2
+$ctrl
+ nstr=3 nao=2  nae=2   nmul=1
+ orbtyp=hao frgtyp=sao
+ int=libcint basis=6-31G(d,p)
+ iscf=1 iprint=3
+ guess=read itmax=200
+$end
+$frag
+1 1 2 2
+spz 1
+spz 2
+px 1 2
+py 1 2
+$end
+$stru
+ 1 2
+ 3 3
+ 4 4
+$end
+$orb
+1*4
+1
+2
+1
+2
+$geo
+  H   -0.00000    0.00000   -0.37
+  H   -0.00000    0.00000    0.37
+$end
+$gus
+ 3 3 3 3
+# ORBITAL          1  NAO =       6
+0.3261           1   0.3000000000     2   0.0150000000     5
+# ORBITAL          1  NAO =       6
+0.3261           6   0.3000000000     7  -0.0150000000    10
+# ORBITAL          1  NAO =       6
+0.3261           1   0.3000000000     2   0.0150000000     5
+# ORBITAL          1  NAO =       6
+0.3261           6   0.3000000000     7  -0.0150000000    10
+$end
+
+ ---------------End of Input--------------
+ BEGIN INT_XMVB_PREINT
+  
+ DONE XMVB_PREINT
+  
+ END INT_XMVB_PREINT
+
+  
+ READING INTEGRALS...
+  
+
+ OPTIMIZATION METHOD: DFPBFS WITH FORWARD NUMERICAL GRADIENT
+
+ Number of Structures:           3
+
+ The following structures are used in calculation:  
+
+       1 *****  1:2 
+       2 *****  1:2 
+       3 *****  1:2 
+
+ Nuclear Repulsion Energy:       0.715104
+
+ PRINT INITIAL GUESS INTO XDAT FILE
+
+ ATOM      ATOMIC                      COORDINATES (BOHR)
+           CHARGE         X                   Y                   Z
+ H           1.0    -0.0000000000        0.0000000000       -0.6991986696
+ H           1.0    -0.0000000000        0.0000000000        0.6991986696
+
+     ATOMIC BASIS SET
+     ----------------
+ THE CONTRACTED PRIMITIVE FUNCTIONS HAVE BEEN UNNORMALIZED
+ THE CONTRACTED BASIS FUNCTIONS ARE NOW NORMALIZED TO UNITY
+
+  SHELL TYPE  PRIMITIVE        EXPONENT          CONTRACTION COEFFICIENT(S)
+
+ H       
+
+      1   S       1            18.7311370    0.033494600000
+      1   S       2             2.8253937    0.234726950000
+      1   S       3             0.6401217    0.813757330000
+
+      2   S       4             0.1612778    1.000000000000
+
+      3   P       5             1.1000000    1.000000000000
+
+ H       
+
+      4   S       6            18.7311370    0.033494600000
+      4   S       7             2.8253937    0.234726950000
+      4   S       8             0.6401217    0.813757330000
+
+      5   S       9             0.1612778    1.000000000000
+
+      6   P      10             1.1000000    1.000000000000
+
+ TOTAL NUMBER OF BASIS SET SHELLS             =    6
+ NUMBER OF CARTESIAN GAUSSIAN BASIS FUNCTIONS =   10
+ NUMBER OF ELECTRONS                          =    2
+ CHARGE OF MOLECULE                           =    0
+ SPIN MULTIPLICITY                            =    1
+ TOTAL NUMBER OF ATOMS                        =    2
+ THE INTEGRALS THRESHOLD                      =  0.1000000D-09
+
+ VBDET is applied
+
+          12  Coefficients           12  Independent
+  
+ Enter DFP-BFS Route:            1
+ energy on entry is -- 
+  -1.1480844325568920     
+ Gxnorm =    0.037245  Max Comp. =    0.016781
+
+ Iteration     0  E =     -1.14866647  DE =   -0.00058204
+ Gxnorm =    0.035232  Max Comp. =    0.021954
+
+ Iteration     1  E =     -1.14927489  DE =   -0.00060842
+ Gxnorm =    0.004541  Max Comp. =    0.003165
+
+ Iteration     2  E =     -1.14937254  DE =   -0.00009765
+ Gxnorm =    0.009604  Max Comp. =    0.006670
+
+ Iteration     3  E =     -1.14939819  DE =   -0.00002565
+ Gxnorm =    0.000850  Max Comp. =    0.000352
+
+ Iteration     4  E =     -1.14939933  DE =   -0.00000114
+ Gxnorm =    0.000893  Max Comp. =    0.000386
+
+ Iteration     5  E =     -1.14940552  DE =   -0.00000619
+ Gxnorm =    0.002253  Max Comp. =    0.001105
+
+ Iteration     6  E =     -1.14941115  DE =   -0.00000563
+ Gxnorm =    0.000140  Max Comp. =    0.000075
+ icovg=           1
+ Total Energy:      -1.14941115
+
+ First Excited:     -0.218758
+
+
+ The Absulte Value of Gradient:   0.000140
+
+ Number of Iteration:    7
+
+
+                 ******  OVERLAP OF VB STRUCTURES  ******  
+
+
+                  1            2            3
+       1       1.000000     0.831572     0.831572
+       2       0.831572     1.000000     0.555434
+       3       0.831572     0.555434     1.000000
+
+
+
+               ******  HAMILTONIAN OF VB STRUCTURES  ******  
+
+
+                  1            2            3
+       1      -1.853828    -1.579490    -1.579490
+       2      -1.579490    -1.578890    -1.163727
+       3      -1.579490    -1.163727    -1.578890
+
+
+
+          ******  LOWDIN ORTHOGONALIZED HAMILTONIAN OF VB STRUCTURES  ******  
+
+
+                  1            2            3
+       1      -1.094476    -0.554884    -0.554884
+       2      -0.554884    -0.999344    -0.065482
+       3      -0.554884    -0.065482    -0.999344
+
+
+
+              ******  COEFFICIENTS OF STRUCTURES ****** 
+
+       1      -0.76289343  ******  1:2 
+       2      -0.14051494  ******  1:2 
+       3      -0.14051506  ******  1:2 
+
+
+          ******  LOWDIN ORTHOGONALIZED COEFFICIENTS OF STRUCTURES ****** 
+
+       1      -0.71375373  ******  1:2 
+       2      -0.49525526  ******  1:2 
+       3      -0.49525533  ******  1:2 
+
+
+          ******  LOWDIN ORTHOGONALIZATION TRANSFORMATION MATRIX ****** 
+
+
+              1            2            3
+   1       0.769111     0.451922     0.451922
+   2       0.451922     0.868862     0.202103
+   3       0.451922     0.202103     0.868862
+
+
+
+
+              ****** UNNORMALIZED COEFFICIENTS OF DETERMINANTS ****** 
+
+                              INA
+                              INA
+  
+       1      -0.44551960  ******  1-2 
+                              1-2 
+       2      -0.44551960  ******  1-2 
+                              1-2 
+       3      -0.14051494  ******  1-2 
+                              1-2 
+       4      -0.14051506  ******  1-2 
+                              1-2 
+
+
+              ******   NORMALIZED COEFFICIENTS OF DETERMINANTS ****** 
+
+                              INA
+                              INA
+  
+       1      -0.44551960  ******  1-2 
+                              1-2 
+       2      -0.44551960  ******  1-2 
+                              1-2 
+       3      -0.14051494  ******  1-2 
+                              1-2 
+       4      -0.14051506  ******  1-2 
+                              1-2 
+
+
+
+              ******  WEIGHTS OF STRUCTURES ****** 
+
+       1       0.76029199  ******  1:2 
+       2       0.11985395  ******  1:2 
+       3       0.11985406  ******  1:2 
+
+         Lowdin Weights
+
+       1       0.50944439  ******  1:2 
+       2       0.24527777  ******  1:2 
+       3       0.24527784  ******  1:2 
+
+         Inverse Weights
+
+       1       0.86798875  ******  1:2 
+       2       0.06600557  ******  1:2 
+       3       0.06600568  ******  1:2 
+
+         Renormalized Weights
+
+       1       0.93646142  ******  1:2 
+       2       0.03176926  ******  1:2 
+       3       0.03176932  ******  1:2 
+
+
+
+                 ******  OPTIMIZED ORBITALS  ******
+
+
+              1            2            3            4
+   1       0.611789     0.000000     0.561947     0.000000
+   2       0.484811     0.000000     0.533158     0.000000
+   3       0.000000     0.000000     0.000000     0.000000
+   4       0.000000     0.000000     0.000000     0.000000
+   5       0.013089     0.000000     0.074171     0.000000
+   6       0.000000     0.611789     0.000000     0.561947
+   7       0.000000     0.484811     0.000000     0.533158
+   8       0.000000     0.000000     0.000000     0.000000
+   9       0.000000     0.000000     0.000000     0.000000
+  10       0.000000    -0.013089     0.000000    -0.074171
+
+
+
+       ******  ORBITALS IN PRIMITIVE BASIS FUNCTIONS ******
+
+
+                      1          2          3          4
+
+
+    1  H  1  S    0.611789   0.000000   0.561947   0.000000
+    2  H  1  S    0.484811   0.000000   0.533158   0.000000
+    3  H  1  X    0.000000   0.000000   0.000000   0.000000
+    4  H  1  Y    0.000000   0.000000   0.000000   0.000000
+    5  H  1  Z    0.013089   0.000000   0.074171   0.000000
+    6  H  2  S    0.000000   0.611789   0.000000   0.561947
+    7  H  2  S    0.000000   0.484811   0.000000   0.533158
+    8  H  2  X    0.000000   0.000000   0.000000   0.000000
+    9  H  2  Y    0.000000   0.000000   0.000000   0.000000
+   10  H  2  Z    0.000000  -0.013089   0.000000  -0.074171
+
+
+
+                 ******  ORBITAL OVERLAP  ******
+
+
+              1            2            3            4
+   1       1.000000     0.682716     0.997310     0.713899
+   2       0.682716     1.000000     0.713899     0.997310
+   3       0.997310     0.713899     1.000000     0.745274
+   4       0.713899     0.997310     0.745274     1.000000
+
+
+
+              ******        DENSITY MATRIX         ****** 
+
+
+                      1          2          3          4          5
+
+    1  H  1  S    0.222511
+    2  H  1  S    0.183081   0.150738
+    3  H  1  X    0.000000   0.000000   0.000000
+    4  H  1  Y    0.000000   0.000000   0.000000   0.000000
+    5  H  1  Z    0.009538   0.007919   0.000000   0.000000   0.000459
+    6  H  2  S    0.196590   0.163951   0.000000   0.000000   0.009981
+    7  H  2  S    0.163951   0.136619   0.000000   0.000000   0.008245
+    8  H  2  X    0.000000   0.000000   0.000000   0.000000   0.000000
+    9  H  2  Y    0.000000   0.000000   0.000000   0.000000   0.000000
+   10  H  2  Z   -0.009981  -0.008245   0.000000   0.000000  -0.000451
+
+                      6          7          8          9         10
+
+    6  H  2  S    0.222511
+    7  H  2  S    0.183081   0.150739
+    8  H  2  X    0.000000   0.000000   0.000000
+    9  H  2  Y    0.000000   0.000000   0.000000   0.000000
+   10  H  2  Z   -0.009538  -0.007919   0.000000   0.000000   0.000459
+
+
+              ******   COMPUTED NATURAL ORBITALS   ****** 
+
+
+                       1            2
+                   1.977587     0.022412
+   1  H  1  S      0.325519    -0.760447
+   2  H  1  S      0.269543    -0.561230
+   3  H  1  X      0.000000     0.000000
+   4  H  1  Y      0.000000     0.000000
+   5  H  1  Z      0.015161     0.013009
+   6  H  2  S      0.325519     0.760447
+   7  H  2  S      0.269543     0.561230
+   8  H  2  X      0.000000     0.000000
+   9  H  2  Y      0.000000     0.000000
+  10  H  2  Z     -0.015161     0.013009
+
+
+                 ===============================================
+                         XMVB ATOMIC POPULATION ANALYSIS        
+                 ===============================================
+
+
+                     ******  POPULATION AND CHARGE  ******
+
+       ATOM         MULL.POP.    CHARGE          LOW.POP.     CHARGE
+    1 H             1.000000    0.000000         1.000000    0.000000
+    2 H             1.000000   -0.000000         1.000000   -0.000000
+
+              ******  ATOMIC SPIN POLARIZATION POPULATION ******
+
+        ATOM          MULL.POP.                    LOW.POP.
+
+      1   H           0.000000                     0.000000
+      2   H           0.000000                     0.000000
+
+
+                            ******  BOND ORDER  ******
+
+                  ATOM 1        ATOM 2           DIST     BOND ORDER
+
+                   1 H           2 H            0.740       0.957
+
+
+                     ******    VALENCE ANALYSIS    ******
+
+                                TOTAL       BONDED        FREE
+               ATOM            VALENCE     VALENCE     VALENCE
+             1 H                 1.002       0.957       0.044
+             2 H                 1.002       0.957       0.044
+
+                     ****** DIPOLE MOMENT ANALYSIS ******
+
+                DX         DY         DZ        TOTAL
+
+            0.000000    0.000000   -0.000000    0.000000
+
+
+                 ****** ENERGY DECOMPOSITION ANALYSIS ******
+
+                   TOTAL VB ENERGY :         -1.149411147841
+               NUCLEAR REP. ENERGY :          0.715104335541
+                 ELECTRONIC ENERGY :         -1.864515483382
+               ONE-ELECTRON ENERGY :         -2.489234336579
+               TWO-ELECTRON ENERGY :          0.624718853197
+                    KINETIC ENERGY :          1.168722471356
+               NUC-ELE POT. ENERGY :         -3.657956807934
+                    COULUMB ENERGY :          1.320765332275
+                   EXCHANGE ENERGY :         -0.696046479078
+                  POTENTIAL ENERGY :         -2.318133619197
+               VIRIAL THEOREM VALUE:          1.983476553255
+
+
+
+ Cpu for the Job:       0.03 (sec)
+
+ Job Finished at Wed Oct 23 09:18:17 2024
+
+--------SLURM EXECUTION------ -,date
+Variables
+Running on        : brusel  
+targetdir         : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src 
+VBDIR            : /home/humbel/xmvb3_2/
+TMPDIR            : /scratch/humbel.262282
+I am in           : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src
+cp: cannot stat '/home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src/h2_bovb3.orb': No such file or directory
+ BEGIN INT_XMVB_PREINT
+ END INT_XMVB_PREINT
+
+
+real	0m0.732s
+user	0m0.178s
+sys	0m0.217s
+/scratch/humbel.262282
+total 64
+-rw-r--r-- 1 humbel users   723 Oct 23 09:18 h2_bovb3.xmi
+-rw-r--r-- 1 humbel users 19332 Oct 23 09:18 x1e.int

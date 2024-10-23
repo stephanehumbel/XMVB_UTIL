@@ -1,0 +1,44 @@
+#!/bin/sh
+# Script genere automatiquement a partir de subgms
+# reserve 48Go de memoire \#SBATCH --mem=18000
+#$ -N proj_xm_vb
+#
+#SBATCH --mem=48000
+#$ -cwd
+#$ -S /bin/sh
+ hhomedir=`pwd`
+ nnode=`hostname`
+echo "Variables"
+echo "Running on        : $nnode  "
+echo "targetdir         : $hhomedir "
+echo "TMPDIR            : $TMPDIR"
+echo "I am in           : $PWD"
+
+# source /usr/share/Modules/init/sh
+
+if [ -e proj_xm_vb.xmo ] ; then
+ set  echo
+   cp proj_xm_vb.xmo proj_xm_vb.xmo~
+ unset  echo
+fi
+if [ -e proj_xm_vb.log ] ; then
+ set  echo
+   cp proj_xm_vb.log proj_xm_vb.log~
+ unset  echo
+fi
+
+set echo
+#time (/share/programs/GAMESS/rungms   proj_xm_vb xmvb 1  > proj_xm_vb.log)
+#time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms/rungms          proj_xm_vb xmvb 1  > proj_xm_vb.log)
+time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms        proj_xm_vb xmvb 1  > proj_xm_vb.log)
+#time (rungms_                     proj_xm_vb xmvb 1  > proj_xm_vb.log)
+# On doit rappatrier à la main le .xmo .gus et les wfn (si necessaire)
+#cp  $TMPDIR/*.wfn  $HOMEDIR/
+#cp  $TMPDIR/proj_xm_vb.gus  $HOMEDIR/
+cp  $TMPDIR/proj_xm_vb.xmo  $HOMEDIR/
+if [ -s proj_xm_vb.wfn ] ; then
+ set  echo
+cp  $TMPDIR/proj_xm_vb.wfn  $HOMEDIR/
+ unset  echo
+fi
+unset echo

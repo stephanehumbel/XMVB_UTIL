@@ -1,0 +1,44 @@
+#!/bin/sh
+# Script genere automatiquement a partir de subgms
+# reserve 48Go de memoire \#SBATCH --mem=18000
+#$ -N h2_cas_gamess
+#
+#SBATCH --mem=48000
+#$ -cwd
+#$ -S /bin/sh
+ hhomedir=`pwd`
+ nnode=`hostname`
+echo "Variables"
+echo "Running on        : $nnode  "
+echo "targetdir         : $hhomedir "
+echo "TMPDIR            : $TMPDIR"
+echo "I am in           : $PWD"
+
+# source /usr/share/Modules/init/sh
+
+if [ -e h2_cas_gamess.xmo ] ; then
+ set  echo
+   cp h2_cas_gamess.xmo h2_cas_gamess.xmo~
+ unset  echo
+fi
+if [ -e h2_cas_gamess.log ] ; then
+ set  echo
+   cp h2_cas_gamess.log h2_cas_gamess.log~
+ unset  echo
+fi
+
+set echo
+#time (/share/programs/GAMESS/rungms   h2_cas_gamess xmvb 1  > h2_cas_gamess.log)
+#time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms/rungms          h2_cas_gamess xmvb 1  > h2_cas_gamess.log)
+time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms        h2_cas_gamess xmvb 1  > h2_cas_gamess.log)
+#time (rungms_                     h2_cas_gamess xmvb 1  > h2_cas_gamess.log)
+# On doit rappatrier à la main le .xmo .gus et les wfn (si necessaire)
+#cp  $TMPDIR/*.wfn  $HOMEDIR/
+#cp  $TMPDIR/h2_cas_gamess.gus  $HOMEDIR/
+cp  $TMPDIR/h2_cas_gamess.xmo  $HOMEDIR/
+if [ -s h2_cas_gamess.wfn ] ; then
+ set  echo
+cp  $TMPDIR/h2_cas_gamess.wfn  $HOMEDIR/
+ unset  echo
+fi
+unset echo

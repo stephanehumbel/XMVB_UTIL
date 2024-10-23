@@ -1,0 +1,23 @@
+benzene
+$ctrl
+ str=full nao=2  nae=2   nmul=1
+ orbtyp=hao frgtyp=sao
+ int=libcint basis=6-31G(d,p)
+ iscf=1 iprint=3
+ guess=auto itmax=200
+$end
+$frag
+ 2 2 2 
+spz 1 2
+px 1 2
+py 1 2
+$end
+
+$orb
+1*2
+1
+1
+$geo
+  H   -0.00000    0.00000   -0.37    
+  H   -0.00000    0.00000    0.37    
+$end

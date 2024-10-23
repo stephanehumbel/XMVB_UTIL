@@ -1,0 +1,41 @@
+H2
+$ctrl
+ nstr=3 nao=2  nae=2   nmul=1
+ orbtyp=hao frgtyp=sao
+ int=libcint basis=6-31G(d,p)
+ iscf=1 iprint=3
+ guess=read itmax=200
+$end
+$frag
+1 1 2 2 
+spz 1
+spz 2
+px 1 2
+py 1 2
+$end
+$stru
+ 1 2 
+ 3 3
+ 4 4 
+$end
+$orb
+1*4
+1
+2
+1
+2
+$geo
+  H   -0.00000    0.00000   -0.37    
+  H   -0.00000    0.00000    0.37    
+$end
+$gus
+     3     3     3     3
+# ORBITAL          1  NAO =       3
+ 0.6117891281     1   0.4848106775     2   0.0130890125     5
+# ORBITAL          2  NAO =       3
+ 0.6117888804     6   0.4848109380     7  -0.0130889659    10
+# ORBITAL          3  NAO =       3
+ 0.5619466714     1   0.5331581073     2   0.0741708686     5
+# ORBITAL          4  NAO =       3
+ 0.5619468499     6   0.5331579109     7  -0.0741710631    10
+$end

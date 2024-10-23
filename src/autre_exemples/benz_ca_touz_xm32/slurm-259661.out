@@ -1,0 +1,20 @@
+--------SLURM EXECUTION------ -,date
+Variables
+Running on        : muhka  
+targetdir         : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src/benz_ca_touz_xm32 
+VBDIR            : /home/humbel/xmvb3_2/
+TMPDIR            : /scratch/humbel.259661
+I am in           : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src/benz_ca_touz_xm32
+ BEGIN INT_XMVB_PREINT
+ END INT_XMVB_PREINT
+
+ Error in Reading $STR.
+
+real	0m0.770s
+user	0m0.128s
+sys	0m0.236s
+/scratch/humbel.259661
+total 916
+-rw-r--r-- 1 humbel users  25965 Jul 18 10:34 benz_ca_touz_xm32.xmi
+-rw-r--r-- 1 humbel users      0 Jul 18 10:34 benz_ca_touz_xm32.gus
+cat: benz_ca_touz_xm32.xmo: input file is output file
