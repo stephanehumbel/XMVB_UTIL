@@ -1,1 +1,0 @@
-../src/getvec.py
