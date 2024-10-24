@@ -235,7 +235,39 @@ def compte_AO(vect):
     print()
     return tab_ao  
         
-
+# READ_geom
+def read_geom(file_name):
+    '''
+    read geometry from a gamess .log file
+    '''
+    a0=0.529177 # Bohr radius
+    num,line=detect_keyword(file_name, "TOTAL NUMBER OF ATOMS", 0) 
+    natoms=Read_INT(line,"ATOMS")
+    num,line=detect_keyword(file_name, "ATOM      ATOMIC                      COORDINATES", 0) 
+    with open(file_name, 'r') as file:
+        symbol=[]
+        zat=[]
+        x=[]
+        y=[]
+        z=[]
+        line_num=0
+        for line in file:
+#            print(line[0:2])
+            values=[]
+            line_num+=1
+            if line_num >= num+2:
+                if line_num >= num+natoms+2:
+                    break   
+#                print(line_num, line,num)
+                values = re.split(' +|\n',line)
+#                print('#--',values, len(values),values[2])
+                symbol.append(values[1])
+                zat.append(values[2])
+                x.append(float(values[3])*a0)   
+                y.append(float(values[4])*a0)   
+                z.append(float(values[5])*a0)   
+#    print('read_geom',x,y,z,natoms)
+    return symbol,zat,x,y,z,natoms
 # READ_VEC
 def read_vec(file_path,vectors,start_line):
     '''
@@ -258,7 +290,7 @@ def read_vec(file_path,vectors,start_line):
     
     prev_vector_number=1
     item=1
-    print('|  read_vec from:  ',file_path,' OM ', item, end=' ')
+   # print('|  read_vec from:  ',file_path,' OM ', item, end=' ')
     with open(file_path, 'r') as file:
         values = []
         for line_num, line in enumerate(file, start=1):
@@ -292,8 +324,8 @@ def read_vec(file_path,vectors,start_line):
                    end_index = start_index + 15   # field as nF15.8
                    values.append(float(line[start_index:end_index]))
 #        print('read_vec',vectors)
-        print('-',item,end=' ')   
-        print()
+#        print('-',item,end=' ')   
+#        print()
     return vectors,vector_number
 # 
 def to_array(liste):
@@ -314,7 +346,7 @@ def make_table(coeffs):
     """ returns a table of MO's from  this bizarre tuple thing tableau[i]=coeffs[i][1] from read_vec:
     that I should re write
     """
-    print(" routines.make_table for data conversion (should be rewrite someday)")
+#    print(" routines.make_table for data conversion (should be rewrite someday)")
 #    print('make_table', end=': ')
     tableau = []
     for i in range(len(coeffs)): 
@@ -555,7 +587,7 @@ def write_conf(filename, CONF,COEF):
     if filename == 'screen':
        for ii in range(ssize):
             print(' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
-       print(" \n")
+#       print(" \n")
     else:
        print(ssize, "confs",end='')
        with open(filename, 'w') as f: 

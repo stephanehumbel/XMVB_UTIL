@@ -78,13 +78,16 @@ def Offset_conf(conf,offset):
         k+=1
     i=0
     tampon=[]
-    str_ofset="1:"+str(offset)+'   '
-    #print('str_ofset',str_ofset )
+    if offset>=1:   
+        str_ofset="1:"+str(offset)+'   '
+        #print('str_ofset',str_ofset )
+    else:
+       str_ofset =" "
     while i < len(new_indices):
         tampon.append(str_ofset+new_indices[i])
         i+=1
     #print('new_indices',new_indices)
-    return new_indices
+    return tampon
 
 def Get_CIVECT(CAS_file_name, state):
     offset=4
@@ -283,14 +286,63 @@ if len(sys.argv) == 2:
         print (CAS_file_name+'.log exists must be like $MCSCF CISTEP=GUGA MAXIT=200 QUAD=.F. $END $GUGDIA NSTATE=2 $END $GUGDM2 WSTATE(1)=1.0,0.0 $END')
         CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".log",1)
         toprint=routines.make_conf_from_gamess(CAS_conf)
+        num,line=routines.detect_keyword(CAS_file_name+".log", "SPIN MULTIPLICITY", 0)    
+        MULT=routines.Read_INT(line,"MULTIPLICITY")
         num,line=routines.detect_keyword(CAS_file_name+".log", "NUMBER OF CORE MOL", 0)    
         offset=routines.Read_INT(line,"ORBITALS")
+        num,line=routines.detect_keyword(CAS_file_name+".log", "  NMCC", 0)    
+        nmcc=routines.Read_INT(line,"NMCC")
+        num,line=routines.detect_keyword(CAS_file_name+".log", "  NDOC", 0)    
+        ndoc=routines.Read_INT(line,"NDOC")
+        num,line=routines.detect_keyword(CAS_file_name+".log", "  NALP", 0)    
+        NALP=routines.Read_INT(line,"NALP")
+        nae=ndoc*2+NALP
+        num,line=routines.detect_keyword(CAS_file_name+".log", "              NVAL", 0)    
+        nval=routines.Read_INT(line,"NVAL")
+        nae=ndoc*2+NALP
+        nao=ndoc+NALP+nval
+#        num,line=routines.detect_keyword(CAS_file_name+".log", "TOTAL NUMBER OF ATOMS", 0)    
+#        natoms=routines.Read_INT(line,"ATOMS")
         print('number of core Orbs=',offset,CAS_conf,CAS_vect)
-        if offset > 0:
+        print('other numbers      =',nmcc,ndoc,nval)
+        #get geom
+        symbol,zat, x,y,z,natoms=routines.read_geom(CAS_file_name+".log")
+        basis_set = input('give the basis set (6-31G):')
+        if basis_set == '':
+            basis_set='6-31G'
+        if offset >= 0:
             CAS_conf=Offset_conf(toprint,offset)
+        print('')
+        print('from ',CAS_file_name+'.log ; ',basis_set)
+        print('$ctrl \n str=full nao='+str(nao)+ '  nae='+str(nae)+'   nmul='+str(MULT),' orbtyp=hao frgtyp=sao int=libcint ; nstr='+str(len(CAS_conf)))
+        print(' basis='+basis_set, ' iscf=5 iprint=3 guess=read itmax=0 \n $end')
+        print('$frag \n ', natoms,'\n spxyzdxxyyzzxyxzyzz 1-'+str(natoms)+'\n $end') 
+        norb=nmcc+nao
+        print('$orb \n 1*'+str(norb))
+        for i in range(norb):
+            print(' 1')
+        print('$end')
+        print('$stru  ;',len(CAS_conf),' confs')
         routines.write_conf("screen",CAS_conf,CAS_vect)
+        print('$end') 
+        print('$geo   ; ',natoms,' atoms') 
+        for i in range(natoms):
+            print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
+        print('$end') 
         if os.path.exists(CAS_file_name+'.dat'):
-           print('use getvec.py ', CAS_file_name+'.dat to get the orbs ')
+            input_file=CAS_file_name+'.dat'
+            coeffs=[]
+            print('$gus') 
+            pos,line=routines.detect_keyword(input_file, "VEC", 0)
+#            print('|  read files :\n| ',input_file,end=':')
+#            print (pos+1)
+            coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
+            vect=routines.make_table(coeffs)#
+            norb=nmcc+nval+ndoc+NALP
+            routines.write_orbs("screen",vect,0,norb) 
+            print('$end') 
+
+            print('')
         else:
             print('  ', CAS_file_name+'.dat not found ')
         print('                 ---===---===:::========')

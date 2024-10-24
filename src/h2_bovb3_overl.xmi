@@ -1,0 +1,20 @@
+made by CAS_LEW.py 
+ $ctrl   ; =============3 + 3=============.======+
+  vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G    iprint=-1, nmul=1 nstr=6 guess=read 
+ $end 
+ $struc  ; ============= 
+    1 2    ; VB 10.00162685
+   1 1    ; VB 2-0.99427473
+   2 2    ; VB 30.10686466
+  1:2   3 4     ; CI 1-0.76289343
+  1:2   5 5     ; CI 2-0.14051494
+  1:2   6 6     ; CI 3-0.14051506
+ $end  ; ============= 
+ 
+$orb
+   6   6   3   3
+   1   2   5   6   7  10
+   1   2   5   6   7  10
+   1   2   5
+   6   7  10
+$end

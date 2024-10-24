@@ -1,6 +1,6 @@
 H2
 $ctrl
- nstr=3 nao=2  nae=2   nmul=1
+ nstr=3 nao=4  nae=2   nmul=1
  orbtyp=hao frgtyp=sao
  int=libcint basis=6-31G(d,p)
  iscf=1 iprint=3

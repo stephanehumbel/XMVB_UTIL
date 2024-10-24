@@ -1,0 +1,157 @@
+
+
+    *************************************************************
+                                                               
+        M   M    MM MM    M   M    MMMM        MMMM     MMMM   
+         M M     M M M    M   M    M   M          M        M   
+          M      M M M     M M     MMMM   MMM  MMMM     MMMM   
+         M M     M   M     M M     M   M          M     M      
+        M   M    M   M      M      MMMM        MMMM  M  MMMM   
+                                                               
+    *************************************************************
+                                                               
+                    Released on: Dec 22, 2023                  
+                    Version:     v3.2.1                        
+                                                               
+    Cite this work as:                                         
+                                                               
+    (a) Z. Chen, F. Ying, X. Chen, J. Song, P. Su, L. Song, Y. 
+    Mo, Q. Zhang and W. Wu, Int. J. Quantum. Chem., 2015, 115, 
+    737 (b) L. Song, Y. Mo, Q. Zhang, W. Wu, J. Comput. Chem.  
+    2005, 26, 514.                                             
+
+
+ Job started at Wed Oct 23 17:33:03 2024 with     8 processors.
+ Running command: /home/humbel/xmvb3_2/bin/xmvb.exe h2_cas_noreopt
+ Work Directory at /scratch/humbel.262318   PID =     1275764
+ ---------------Input File---------------
+benzene
+$ctrl
+ str=full nao=2  nae=2   nmul=1
+ orbtyp=hao frgtyp=sao
+ int=libcint basis=6-31G(d,p)
+ iscf=1 iprint=3
+ guess=read itmax=0
+$end
+$stru
+   1 1  ; 1 ...  0.994275
+   1 2  ; 2 ...  -0.0
+   2 2  ; 3 ...  -0.10685
+$end
+$frag
+ 2 2 2
+spz 1 2
+px 1 2
+py 1 2
+$end
+
+$orb
+1*2
+1
+1
+$geo
+  H   -0.00000    0.00000   -0.37
+  H   -0.00000    0.00000    0.37
+$end
+$gus
+   6   6
+# __  Orbital  :      1 write_orbs----NAO=   6
+ 0.3253172080   1  0.2696886630   2  0.0153096238   5  0.3253172080   6
+ 0.2696886630   7 -0.0153096238  10
+# __  Orbital  :      2 write_orbs----NAO=   6
+ 0.7362437270   1  0.5523313800   2 -0.0436243045   5 -0.7362437270   6
+-0.5523313800   7 -0.0436243045  10
+$end
+ ---------------End of Input--------------
+ BEGIN INT_XMVB_PREINT
+  
+ DONE XMVB_PREINT
+  
+ END INT_XMVB_PREINT
+
+Number of   0th ion  structures  is:          1  from          1 to          1
+Number of   0th ion determinants is:          2  from          1 to          2
+Number of   1th ion  structures  is:          2  from          2 to          3
+Number of   1th ion determinants is:          2  from          3 to          4
+Total number of  structures  is:          3
+Total number of determinants is:          4
+  
+  
+ READING INTEGRALS...
+  
+
+ NO ORBITAL OPTIMIZATION
+
+ Number of Structures:           3
+
+ The following structures are used in calculation:  
+
+       1 *****     1   2
+       2 *****     1   1
+       3 *****     2   2
+
+ Nuclear Repulsion Energy:       0.715104
+
+ PRINT INITIAL GUESS INTO XDAT FILE
+
+ ATOM      ATOMIC                      COORDINATES (BOHR)
+           CHARGE         X                   Y                   Z
+ H           1.0    -0.0000000000        0.0000000000       -0.6991986696
+ H           1.0    -0.0000000000        0.0000000000        0.6991986696
+
+     ATOMIC BASIS SET
+     ----------------
+ THE CONTRACTED PRIMITIVE FUNCTIONS HAVE BEEN UNNORMALIZED
+ THE CONTRACTED BASIS FUNCTIONS ARE NOW NORMALIZED TO UNITY
+
+  SHELL TYPE  PRIMITIVE        EXPONENT          CONTRACTION COEFFICIENT(S)
+
+ H       
+
+      1   S       1            18.7311370    0.033494600000
+      1   S       2             2.8253937    0.234726950000
+      1   S       3             0.6401217    0.813757330000
+
+      2   S       4             0.1612778    1.000000000000
+
+      3   P       5             1.1000000    1.000000000000
+
+ H       
+
+      4   S       6            18.7311370    0.033494600000
+      4   S       7             2.8253937    0.234726950000
+      4   S       8             0.6401217    0.813757330000
+
+      5   S       9             0.1612778    1.000000000000
+
+      6   P      10             1.1000000    1.000000000000
+
+ TOTAL NUMBER OF BASIS SET SHELLS             =    6
+ NUMBER OF CARTESIAN GAUSSIAN BASIS FUNCTIONS =   10
+ NUMBER OF ELECTRONS                          =    2
+ CHARGE OF MOLECULE                           =    0
+ SPIN MULTIPLICITY                            =    1
+ TOTAL NUMBER OF ATOMS                        =    2
+ THE INTEGRALS THRESHOLD                      =  0.1000000D-09
+
+ VBDET is applied
+
+--------SLURM EXECUTION------ -,date
+Variables
+Running on        : brusel  
+targetdir         : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src 
+VBDIR            : /home/humbel/xmvb3_2/
+TMPDIR            : /scratch/humbel.262318
+I am in           : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src
+ BEGIN INT_XMVB_PREINT
+ END INT_XMVB_PREINT
+
+ERROR! DSYGV ERROR IN VBENERG  WITH INFO =          4
+
+real	0m0.720s
+user	0m0.086s
+sys	0m0.225s
+/scratch/humbel.262318
+total 40
+-rw-r--r-- 1 humbel users   700 Oct 23 17:33 h2_cas_noreopt.xmi
+-rw-r--r-- 1 humbel users   333 Oct 23 17:33 h2_cas_noreopt.gus
