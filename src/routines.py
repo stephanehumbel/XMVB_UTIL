@@ -235,6 +235,48 @@ def compte_AO(vect):
     print()
     return tab_ao  
         
+# read types in basis
+def reorder_OA(tab):
+   Ntab=len(tab)
+   reord=[]
+   for i in range(Ntab):
+       reord.append(i)
+   for i in range(Ntab):
+       if tab[i] == "XX":
+              #reord the 6 AO's 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'
+              # into            'XX', 'XY', 'XZ', 'YY', 'YZ', 'ZZ'
+              #  0      1      2      3      4      5
+              #  0      3      4      1      5      2   
+              reord[i+1] = i+3   
+              reord[i+2] = i+4   
+              reord[i+3] = i+1   
+              reord[i+4] = i+5   
+              reord[i+5] = i+2   
+              i+=5
+          #    print(i)
+   return reord
+           
+        
+        
+        
+# read types in basis
+def read_basis(file_name):
+   num,line=detect_keyword(file_name, "OPTIMIZED ORBITALS", 0) 
+   with open(file_name, 'r') as file:
+        type=[]
+        line_num=0
+        for line in file:
+#            print(line[0:2])
+            values=[]
+            line_num+=1
+            if line_num >= num+6:
+              #  print(line_num, line,num)
+                if line=='\n':
+                    break
+                values = re.split(' +|\n',line)
+                type.append(values[4])
+   return type
+
 # READ_geom
 def read_geom(file_name):
     '''
@@ -512,7 +554,7 @@ def write_orbs(filename, phis, deb, fin):
         for i in range(deb , fin):
             print() 
             compte=0
-            print("# _._  Orbital  :   ",i+1," write_orbs---",temponao[i], "//" ,end='')
+            print("# _._  Orbital  :   ",i+1," write_orbs---", compte , "//" ,end='')
             for j in range(0  , len(phis[i])):
                 if phis[i][j] != 0:
                     if (compte) % 4 == 0:

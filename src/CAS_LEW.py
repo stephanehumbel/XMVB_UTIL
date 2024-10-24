@@ -331,15 +331,29 @@ if len(sys.argv) == 2:
         print('$end') 
         if os.path.exists(CAS_file_name+'.dat'):
             input_file=CAS_file_name+'.dat'
+            log_file=CAS_file_name+'.log'
+            # GET the MO's from dat
             coeffs=[]
-            print('$gus') 
             pos,line=routines.detect_keyword(input_file, "VEC", 0)
 #            print('|  read files :\n| ',input_file,end=':')
 #            print (pos+1)
             coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
             vect=routines.make_table(coeffs)#
             norb=nmcc+nval+ndoc+NALP
-            routines.write_orbs("screen",vect,0,norb) 
+            type_OA=routines.read_basis(log_file)
+            reord_OA=[]
+            #print(type_OA,reord_OA)
+            reord_OA=routines.reorder_OA(type_OA)
+            #print(reord_OA)
+            new_vect=[]
+            for j in range(len(vect)):
+              new_orb=[]
+              for i in range(len(reord_OA)):
+                new_orb.append(vect[j][reord_OA[i]])
+              new_vect.append(new_orb)
+#            routines.write_orbs("screen",new_vect,norb-2,norb) 
+            print('$gus') 
+            routines.write_orbs("screen",new_vect,0,norb) 
             print('$end') 
 
             print('')
