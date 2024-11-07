@@ -84,8 +84,9 @@ def Offset_conf(conf,offset):
     else:
        str_ofset =" "
     while i < len(new_indices):
-        tampon.append(str_ofset+new_indices[i])
-        i+=1
+       str_ofset =" "
+       tampon.append(str_ofset+new_indices[i])
+       i+=1
     #print('new_indices',new_indices)
     return tampon
 
@@ -448,12 +449,12 @@ if must_write_OVERL:
         file.write(line)   
         #ttt=collect_confs(VB_conf)
         for i in range(len(VB_conf)):
-            line= '  '+ VB_conf[i]+'    ; VB '+str(i+1) + str( VB_vect[i])+'\n'  
+            line= '  '+ VB_conf[i]+'  ; VB '+str(i+1)+' ' + str( VB_vect[i])+'\n'  
             #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
             #print(line)
             file.write(line)   
         for i in range(lenCI):
-            line= '  '+ dec_CI_conf[i]+'    ; CI '+str(i+1) + str( CAS_vect[i])+'\n'  
+            line= '  '+ dec_CI_conf[i]+'  ; CI '+str(i+1)+'   ' + str( CAS_vect[i])+'\n'  
             #print(*['%4.0f' % int(val) for val in dec_CI_conf[i].split()],end=' ')
             #print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CAS_vect[i])
             file.write(line)   
