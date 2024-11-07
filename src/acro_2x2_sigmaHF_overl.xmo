@@ -1,15 +1,42 @@
-made by CAS_LEW.py 
+
+
+    *************************************************************
+                                                               
+        M   M    MM MM    M   M    MMMM        MMMM     MMMM   
+         M M     M M M    M   M    M   M          M        M   
+          M      M M M     M M     MMMM   MMM  MMMM     MMMM   
+         M M     M   M     M M     M   M          M     M      
+        M   M    M   M      M      MMMM        MMMM  M  MMMM   
+                                                               
+    *************************************************************
+                                                               
+                    Released on: Dec 22, 2023                  
+                    Version:     v3.2.1                        
+                                                               
+    Cite this work as:                                         
+                                                               
+    (a) Z. Chen, F. Ying, X. Chen, J. Song, P. Su, L. Song, Y. 
+    Mo, Q. Zhang and W. Wu, Int. J. Quantum. Chem., 2015, 115, 
+    737 (b) L. Song, Y. Mo, Q. Zhang, W. Wu, J. Comput. Chem.  
+    2005, 26, 514.                                             
+
+
+ Job started at Thu Nov  7 08:17:07 2024 with     8 processors.
+ Running command: /home/humbel/xmvb3_2/bin/xmvb.exe acro_2x2_sigmaHF_overl
+ Work Directory at /scratch/humbel.266158   PID =      757318
+ ---------------Input File---------------
+made by CAS_LEW.py
  $ctrl   ; =============1 + 2=============.======+
 vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G(d)
-iprint=-1, nmul=1 nstr=3 guess=read 
- $end 
- $struc  ; ============= 
+iprint=-1, nmul=1 nstr=3 guess=read
+ $end
+ $struc  ; =============
     1:14 15 15    ; VB 11.0
    16:28 29 29 30 30     ; CI 1-1.13010266
    16:28 31 31 32 32     ; CI 20.22433268
- $end  ; ============= 
+ $end  ; =============
 $orb
-68  68  68  68  68  68  68  68  68  68  68  68  68  68  
+68  68  68  68  68  68  68  68  68  68  68  68  68  68
 68  42  51  51  49  52  52  52  52  51  52  52  52  52   8   8
    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
@@ -45,3 +72,21 @@ $end
 
 
 
+ ---------------End of Input--------------
+--------SLURM EXECUTION------ -,date
+Variables
+Running on        : brusel  
+targetdir         : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src 
+VBDIR            : /home/humbel/xmvb3_2/
+TMPDIR            : /scratch/humbel.266158
+I am in           : /home/humbel/bin/GAMESS_UTIL/XMVB_UTIL/src
+ Error in -1,                                                                                                                                                                                                     
+ Integer expected
+
+real	0m0.738s
+user	0m0.046s
+sys	0m0.245s
+/scratch/humbel.266158
+total 28
+-rw-r--r-- 1 humbel users 7291 Nov  7 08:17 acro_2x2_sigmaHF_overl.xmi
+-rw-r--r-- 1 humbel users    0 Nov  7 08:17 acro_2x2_sigmaHF_overl.gus
