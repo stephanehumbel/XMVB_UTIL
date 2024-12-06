@@ -317,7 +317,7 @@ if len(sys.argv) == 2:
         print('from ',CAS_file_name+'.log ; ',basis_set)
         print('$ctrl \n str=full nao='+str(nao)+ '  nae='+str(nae)+'   nmul='+str(MULT),' orbtyp=hao frgtyp=sao int=libcint ; nstr='+str(len(CAS_conf)))
         print(' basis='+basis_set, ' iscf=5 iprint=3 guess=read itmax=0 \n $end')
-        print('$frag \n ', natoms,'\n spxyzdxxyyzzxyxzyzz 1-'+str(natoms)+'\n $end') 
+        print('$frag \n ', natoms,'\n spxyzdxxyyzzxyxzyz 1-'+str(natoms)+'\n $end') 
         norb=nmcc+nao
         print('$orb \n 1*'+str(norb))
         for i in range(norb):
@@ -428,7 +428,7 @@ print()
 ##
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
-    OFFSET=max(collect_confs(VB_conf))  
+    OFFSET=max(collect_confs(CAS_conf))  
     print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CAS_conf)),'-', max(collect_confs(CAS_conf)) ,' CI orbitals      ')
     print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CAS_conf)),' to ',OFFSET+max(collect_confs(CAS_conf)),' and written in ',OVERL_file_orb )
     dec_CI_conf=Offset_conf(CAS_conf,OFFSET)
@@ -481,8 +481,11 @@ if must_write_OVERL:
     routines.write_DOLLARORB(OVERL_file_xmi,OVERL_aos,0,len(OVERL_aos))
     print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
     print('| $end ')
+    print('$gus') 
+    routines.write_orbs(OVERL_file_xmi,OVERL_coeffs,0,len(OVERL_coeffs)) 
+    print('$end') 
     print('- ------------------------------------------------------------------')
-    print('- submit the calculation:',OVERL_file_xmo, ' is required to continue')
+    print('- submit the calculation:',OVERL_file_xmi, '  the xmo is required to continue')
     print('- ------------------------------------------------------------------')
     quit()  
 if not os.path.exists(OVERL_file_xmo):

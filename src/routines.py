@@ -565,7 +565,7 @@ def write_orbs(filename, phis, deb, fin):
             #print()
         print() 
     else:        
-        with open(filename, 'w') as f: 
+        with open(filename, 'a') as f: 
             for i in range(deb , fin):
                 compte=0
                 for j in range(0  , len(phis[i])):
