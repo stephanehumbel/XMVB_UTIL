@@ -12,6 +12,7 @@ def main(input_file):
 #    print(len(sys.argv)," arguments",sys.argv[0] )
     print("+--------getvec.py - SH 2024 ---------------------")
     print('| getvec.py file_w_VEC [file_w_bfi]')
+#    print('| NEEDS a .log to reorder the d orbitals')
     return input_file
 
 
@@ -33,9 +34,18 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
 # met dans lines les lignes entre DATA et END
             with open(input_file, 'r') as file:
                 in_data=False
+                in_atoms=False
                 N_protons=[]
+                basis_set=[]
+                codebas=''
                 for line_num, line in enumerate(file, 1):  
                     if '$END' in line:
+                        if in_data and in_atoms:
+                           basis_set.append(codebas)
+                           if basis_set.count('D') > 0:
+                              print('| Atoms ',N_protons,'\n| Basis set polarization: ',basis_set.count('D'),' atoms',basis_set.pop()) 
+                           else:
+                              print('| Atoms ',N_protons,'\n| No polarization in the basis set: ')
                         in_data=False
                         break
                     if '$DATA' in line.upper():
@@ -45,7 +55,18 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
                     if in_data and len(line.split()) ==5: # 5 mots sur la ligne, c'est un atome et le second champ est le numero atomique
               #          print('*',line.split()[1],end='')
                         N_protons.append(float(line.split()[1]))
-              #      print('|  ',line.upper(),end='_')
+                        if in_atoms:
+                            basis_set.append(codebas)
+                            codebas=''
+                        else : 
+                            in_atoms=True
+                    if in_atoms and len(line.split()) ==2: # 2 mots sur la ligne, c'est une definition de base. si il y a un D alors il faut inverser pour xmvb
+                        if 'D' in line:
+                            codebas+='D'
+                        #    print(line_num,'D  orb',N_protons,codebas) 
+                        #else:
+                        #    print(line_num,'not   orb') 
+              #  print('|  ',line.upper(),end='_')
               #      print('|  ',len(line.split()),line.split())
             NORB_RHF =sum(N_protons)/2
             print('|  there are ',NORB_RHF*2 ,' electrons in the neutral molecule hence best choice is ',NORB_RHF,' orbitals')
@@ -68,8 +89,18 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
         routines.make_bfi(vect)
         print()
 #        routines.write_orbs("screen",vect,0,fin)
-        routines.write_orbs(output_file_name,vect,0,fin) 
+        print('|  ',indices) 
+        for i in range(fin):
+            print('|  MO',i+1,':',end=' ')
+            for j in range(len(vect[i])):
+                if abs(vect[i][j]) > 0.00001:
+                    print('|', j+1, end=' ')
+                    
+            print('')
+            indices.append(list(range(len(vect[i]))))
+        routines.write_orb(output_file_name,vect,indices,0,fin) 
         ao_orb,coeffs_orb=routines.make_orb(vect,indices)
+        print('||  ',indices) 
         # Analyse des orbitales, proposition de bfi
         tab=[]
         pi_orb=[]
@@ -189,7 +220,7 @@ if __name__ == "__main__": # permet d'utiliser comme une librairie qu'on importe
             print('#| writes the',finmos,'VECs to', gamess_output_file)
             routines.wwrite_vec(gamess_output_file,new_MOs,0,finmos) 
             print('#| and those ',compteorbvb,'VB orbs to ', xmvb_output_file)
-            routines.write_orbs(xmvb_output_file,new_coeffs,0,fin) 
+            routines.write_orb(xmvb_output_file,new_coeffs,0,fin) 
             print("#+-  -----------------------------------------------------------------------")
             ao_orb, coeff_orb = routines.make_orb(new_coeffs,indices)
             routines.make_dollarorb(ao_orb,fin)

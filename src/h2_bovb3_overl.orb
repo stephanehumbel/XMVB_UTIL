@@ -1,11 +1,6 @@
-   6   6   3   3
+   6   3
 # ORBITAL    1  NAO =    6      routines.write_orb(h2_bovb3_overl.orb)
- 0.3253172056     1   0.2696886610     2   0.0153096237     5   0.3253172056     6  
- 0.2696886610     7  -0.0153096237    10  
-# ORBITAL    2  NAO =    6      routines.write_orb(h2_bovb3_overl.orb)
- 0.7362436553     1   0.5523313262     2  -0.0436243003     5  -0.7362436553     6  
--0.5523313262     7  -0.0436243003    10  
-# ORBITAL    3  NAO =    3      routines.write_orb(h2_bovb3_overl.orb)
+ 0.3183663597     1   0.2752035291     2   0.0182982370     5   0.3183663579     6  
+ 0.2752035273     7  -0.0182982181    10  
+# ORBITAL    2  NAO =    3      routines.write_orb(h2_bovb3_overl.orb)
  0.6117891281     1   0.4848106775     2   0.0130890125     5  
-# ORBITAL    4  NAO =    3      routines.write_orb(h2_bovb3_overl.orb)
- 0.6117888804     6   0.4848109380     7  -0.0130889659    10  

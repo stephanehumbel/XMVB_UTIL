@@ -7,7 +7,7 @@
 ## $GUGDM2 WSTATE(1)=1.0,0.0 $END
 
 import os
-import cclib
+#import cclib
 import sys
 import re
 import routines
@@ -203,6 +203,95 @@ def read5cols(file_name,length,size,pos,fin):# read a file with 3 blank lines, +
         file.close()
         return Stot
 
+
+def read5OM_LOG(file_name,nOM,nOA,pos,fin):# read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
+       
+#          ------------------------
+#          MCSCF OPTIMIZED ORBITALS
+#POS          ------------------------
+#A   
+#B                      1          2          3          4          5
+#C                  -20.5795   -11.3211   -11.2497   -11.2447    -1.3983
+#D                     A'         A'         A'         A'         A'
+#->  1  C  1  S    0.000006  -0.000049   0.982745  -0.159416  -0.003006
+#    2  C  1  S    0.000037  -0.000252   0.027229  -0.004718   0.007837
+#    3  C  1  X   -0.000020   0.000012  -0.000066   0.000220  -0.003376
+#    4  C  1  Y   -0.000016   0.000146  -0.000088   0.000133  -0.004117
+#    5  C  1  Z   -0.000000   0.000000   0.000000   0.000000   0.000000
+#    6  C  1  S   -0.000085  -0.000083  -0.010422   0.006291   0.005935
+#    7  C  1  X    0.000035  -0.000036   0.000353  -0.001412  -0.002224
+
+    if nOM==-1:
+        # should be able to read undetermined size and length
+        # and the end of the section 
+        nOM=nOA
+        #continue
+  #  nblock= (fin-pos -5)/length
+  #  print('nblock= environ',nblock, (fin-pos -5-3*(nblock-1))/length, (fin-pos -5-3*(nblock-1))//length)
+  #  print('size= environ',  (fin-pos -5-3*(nblock-1))/nblock)
+
+    #print('MO_CAS',nOM,nOA, pos,fin)
+   
+    MO_CAS=np.zeros((nOM,nOA))
+    ioa=0
+    nblock=0
+    line='blanck'
+    space=0
+    firstom=0
+    lenlue=0
+    left_to_read=nOM
+    next_block_size=5
+    with open(file_name, 'r') as file:
+        k=0 # line counter
+        #print('--')
+        while k < pos: # skip the first pos lines
+            line=file.readline() 
+#            print('MO_CAS',line[1:20], k,fin)
+            k+=1
+        #print('MO_CAS',line[1:20], k,fin)
+        while k < fin or left_to_read >0 : # will stop 
+            line = file.readline()
+            #print('MO_CAS',line, k)
+            k+=1
+            if len(line.split()) == 5: #line is the header od a block
+                continue
+            if len(line.split()) == 0: #line is empty=space between block
+                if space==0:                        
+                    line = file.readline() 
+                    #print('MO new block starts, nblock',nblock,end=' ')
+                    firstom=firstom+lenlue
+                    left_to_read=nOM-firstom
+                    next_block_size=left_to_read % 5
+                    if left_to_read > 5: # blocks are normaly 5 colums
+                        next_block_size=5
+                    if left_to_read < 1:
+                        break
+                    #print('MO new block starts, nblock',nblock,left_to_read,next_block_size,end=' ')
+                    ioa=0
+                #print('-')
+                k+=1
+                space+=1
+            else: 
+                if space !=0: # new block
+                    space=0
+                    nblock+=1
+                   # line = file.readline() 
+                    k+=1
+                lenlue=len(line.split() )-4
+                for i, val in enumerate(line.split()[4:4+next_block_size]):
+                    iom=i+firstom
+                   # if left_to_read < 5:
+                   #     print('RRR',line.split()[4:],end=' ')
+                    #print(val,end=' ')
+                    #print('MO(',iom,',',ioa,')','=',val,end=' ')
+                    MO_CAS[iom][ioa] = float(val)
+                ioa+=1
+                #print(ioa,end=' ')
+        print("| ------",iom+1,' columns have been read')
+        file.close()
+        return MO_CAS
+
+
 def Read_CIVECT(file, pos,fin,offset):
     #offset=4 pour .log et 2 pour .xmo
     # indique la position a lire
@@ -285,27 +374,30 @@ if len(sys.argv) == 2:
 #For a  GAMESS log file')
     if CAS_file_ext == '.log' and os.path.exists(CAS_file):
         print (CAS_file_name+'.log exists must be like $MCSCF CISTEP=GUGA MAXIT=200 QUAD=.F. $END $GUGDIA NSTATE=2 $END $GUGDM2 WSTATE(1)=1.0,0.0 $END')
-        CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".log",1)
+        log_file=CAS_file_name+'.log'
+        CAS_conf,CAS_vect=Get_CIVECT(log_file,1)
         toprint=routines.make_conf_from_gamess(CAS_conf)
-        num,line=routines.detect_keyword(CAS_file_name+".log", "SPIN MULTIPLICITY", 0)    
+        num,line=routines.detect_keyword(log_file, "SPIN MULTIPLICITY", 0)    
         MULT=routines.Read_INT(line,"MULTIPLICITY")
-        num,line=routines.detect_keyword(CAS_file_name+".log", "NUMBER OF CORE MOL", 0)    
+        num,line=routines.detect_keyword(log_file, "NUMBER OF CARTESIAN GAUSSIAN", 0)    
+        NBASIS=routines.Read_INT(line,"FUNCTIONS")
+        num,line=routines.detect_keyword(log_file, "NUMBER OF CORE MOL", 0)    
         offset=routines.Read_INT(line,"ORBITALS")
-        num,line=routines.detect_keyword(CAS_file_name+".log", "  NMCC", 0)    
+        num,line=routines.detect_keyword(log_file, "  NMCC", 0)    
         nmcc=routines.Read_INT(line,"NMCC")
-        num,line=routines.detect_keyword(CAS_file_name+".log", "  NDOC", 0)    
+        num,line=routines.detect_keyword(log_file, "  NDOC", 0)    
         ndoc=routines.Read_INT(line,"NDOC")
-        num,line=routines.detect_keyword(CAS_file_name+".log", "  NALP", 0)    
+        num,line=routines.detect_keyword(log_file, "  NALP", 0)    
         NALP=routines.Read_INT(line,"NALP")
         nae=ndoc*2+NALP
-        num,line=routines.detect_keyword(CAS_file_name+".log", "              NVAL", 0)    
+        num,line=routines.detect_keyword(log_file, "              NVAL", 0)    
         nval=routines.Read_INT(line,"NVAL")
         nae=ndoc*2+NALP
         nao=ndoc+NALP+nval
 #        num,line=routines.detect_keyword(CAS_file_name+".log", "TOTAL NUMBER OF ATOMS", 0)    
 #        natoms=routines.Read_INT(line,"ATOMS")
         print('number of core Orbs=',offset,CAS_conf,CAS_vect)
-        print('other numbers      =',nmcc,ndoc,nval)
+        print('other numbers      =',nmcc,ndoc,nval,NBASIS)
         #get geom
         symbol,zat, x,y,z,natoms=routines.read_geom(CAS_file_name+".log")
         basis_set = input('give the basis set (6-31G):')
@@ -332,8 +424,7 @@ if len(sys.argv) == 2:
         print('$end') 
         if os.path.exists(CAS_file_name+'.dat'):
             input_file=CAS_file_name+'.dat'
-            log_file=CAS_file_name+'.log'
-            # GET the MO's from dat
+             # GET the MO's from dat
             coeffs=[]
             pos,line=routines.detect_keyword(input_file, "VEC", 0)
 #            print('|  read files :\n| ',input_file,end=':')
@@ -346,27 +437,28 @@ if len(sys.argv) == 2:
             #print(type_OA,reord_OA)
             reord_OA=routines.reorder_OA(type_OA)
             #print(reord_OA)
-            new_vect=[]
-            for j in range(len(vect)):
-              new_orb=[]
-              for i in range(len(reord_OA)):
-                new_orb.append(vect[j][reord_OA[i]])
-              new_vect.append(new_orb)
-#            routines.write_orbs("screen",new_vect,norb-2,norb) 
-            print('$gus') 
-            routines.write_orbs("screen",new_vect,0,norb) 
-            print('$end') 
-
-            print('')
+ 
         else:
-            print('  ', CAS_file_name+'.dat not found ')
-        print('                 ---===---===:::========')
-        quit()
+            print('  ;;;', CAS_file_name+'.dat not found ')
+            print('  ;;;             ---===---===:::========')
+            log_file=CAS_file_name+'.log'
+            type_OA=routines.read_basis(log_file)
+            reord_OA=[]
+            reord_OA=routines.reorder_OA(type_OA)
+            #new_vect=[]
+            pos,line=routines.detect_keyword(log_file, "MCSCF OPTIMIZED ORBITALS", 0)
+            posfin,line=routines.detect_keyword(log_file,"DONE WITH MCSCF ITERATIONS",pos)
+            pos+=2
+            print('  ;;; read files : ',log_file,pos,posfin,end=':')
+           
+            vect=read5OM_LOG(log_file,norb,NBASIS,pos,posfin)
+
+            #quit()
     elif CAS_file_ext == '.xmo' and os.path.exists(CAS_file):
         print('|  read files :\n| ',CAS_file_name+".xmo",end=':')
         CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".xmo", -1)
-        lenCI=len(CAS_vect)
-        print('',lenCI,end=' CI vect.')
+        lenCAS=len(CAS_vect)
+        print('',lenCAS,end=' CI vect.')
         print('')    
         print('                 ---===---===:::========')    
         routines.write_conf("screen",CAS_conf,CAS_vect)
@@ -374,11 +466,30 @@ if len(sys.argv) == 2:
         print('                 ---===---===:::========')    
     else:   
         print('### >>> ',CAS_file,'  not found <<<<< ##')
+    new_vect=[]
+    #print(' ON EST LAAA', type_OA,reord_OA)
+    #print ('reord_OA')
+    #for jj in range(len(reord_OA)):
+    #    print (reord_OA[jj]+1,end=' ')
+    #routines.write_gus("screen",vect,reord_OA,0,1) 
+    for j in range(len(vect)):
+        new_orb=[]
+        for i in range(len(reord_OA)):
+                new_orb.append(vect[j][reord_OA[i]])
+       #         print('  ',vect[j][reord_OA[i]],i,len(vect),end=' ')
+        new_vect.append(new_orb)
+ #        routines.write_gus("screen",new_vect,norb-2,norb) 
+    print('$gus') 
+#        print('--',reord_OA)
+    routines.write_gus("screen",new_vect,reord_OA,0,norb) 
+    routines.write_gus("GUS",new_vect,reord_OA,0,norb) 
+    print('$end') 
+    print('')
     quit()
 #k=1    
 if len(sys.argv) >= 3: 
-    VB_file = sys.argv[1]
-    CAS_file = sys.argv[2]
+    CAS_file = sys.argv[1]
+    VB_file = sys.argv[2]
     VB_file_name, VB_file_ext = os.path.splitext(VB_file)
     CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
     if not os.path.exists(VB_file_name+'.xmo'):
@@ -401,8 +512,8 @@ if len(sys.argv) >= 3:
 # reads the xmo files
 print('|  read files :\n| ',CAS_file,end=':')
 CAS_conf,CAS_vect=Get_CIVECT(CAS_file, state)
-lenCI=len(CAS_vect)
-print('',lenCI,end=' CI vect, ')
+lenCAS=len(CAS_vect)
+print('',lenCAS,end=' CAS vect, ')
 print(VB_file,end=':')
 try:
     NVBCONF= routines.Read_INTEGER(VB_file, " Number of Structures:",12)  
@@ -429,9 +540,9 @@ print()
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
     OFFSET=max(collect_confs(CAS_conf))  
-    print('|  Largest VB orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(CAS_conf)),'-', max(collect_confs(CAS_conf)) ,' CI orbitals      ')
-    print('|  hence CI orb are now numbered from ',OFFSET+min(collect_confs(CAS_conf)),' to ',OFFSET+max(collect_confs(CAS_conf)),' and written in ',OVERL_file_orb )
-    dec_CI_conf=Offset_conf(CAS_conf,OFFSET)
+    print('|  Largest CAS orb number, ',OFFSET,', is used as offset for the ',min(collect_confs(VB_conf)),'-', max(collect_confs(VB_conf)) ,' VB orbitals      ')
+    print('|  hence VB orb are now numbered from ',OFFSET+min(collect_confs(VB_conf)),' to ',OFFSET+max(collect_confs(VB_conf)),' and written in ',OVERL_file_orb )
+    dec_VBconf=Offset_conf(VB_conf,OFFSET)
     print('-------------------------------------------------')
     with open(VB_file , "r") as file:
         for line in file:
@@ -441,22 +552,22 @@ if must_write_OVERL:
                print('| Multiplicity is ',MULT)
     print('|  filling the ', OVERL_file_xmi,' xmi input file ' )
     with open(OVERL_file_xmi,'w') as file:
-        line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCI)+'=============.======+\n'
+        line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCAS)+'=============.======+\n'
         line=line+'  vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G ' 
-        line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCI)+' guess=read \n $end \n'
+        line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCAS)+' guess=read \n $end \n'
         file.write(line)    
         line= ' $struc  ; ============= \n '
         file.write(line)   
         #ttt=collect_confs(VB_conf)
-        for i in range(len(VB_conf)):
-            line= '  '+ VB_conf[i]+'  ; VB '+str(i+1)+' ' + str( VB_vect[i])+'\n'  
+        for i in range(len(CAS_conf)):
+            line= '  '+ CAS_conf[i]+'  ; CAS '+str(i+1)+' ' + str( CAS_vect[i])+'\n'  
             #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
             #print(line)
             file.write(line)   
-        for i in range(lenCI):
-            line= '  '+ dec_CI_conf[i]+'  ; CI '+str(i+1)+'   ' + str( CAS_vect[i])+'\n'  
-            #print(*['%4.0f' % int(val) for val in dec_CI_conf[i].split()],end=' ')
-            #print('  ',dec_CI_conf[i],'       ; CI ',i+1 , CAS_vect[i])
+        for i in range(len(VB_conf)):
+            line= '  '+ dec_VBconf[i]+'  ; VB '+str(i+1)+'   ' + str( VB_vect[i])+'\n'  
+            #print(*['%4.0f' % int(val) for val in dec_VBconf[i].split()],end=' ')
+            #print('  ',dec_VBconf[i],'       ; CI ',i+1 , CAS_vect[i])
             file.write(line)   
         line= ' $end  ; ============= \n '
         file.write(line)   
@@ -467,23 +578,24 @@ if must_write_OVERL:
      ##   file.write(line)   
     OVERL_coeffs=[]
     OVERL_aos=[]
-    for k in range(len(VB_orb_coeffs)):
+    for k in range(len(CAS_orb_coeffs)):
    #     print('VBcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
-        OVERL_coeffs.append(VB_orb_coeffs[k])
-        OVERL_aos.append(VB_orb_aos[k])
-    for k in range(len(VB_orb_coeffs)):
-   #     print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
         OVERL_coeffs.append(CAS_orb_coeffs[k])
         OVERL_aos.append(CAS_orb_aos[k])
+    for k in range(len(VB_orb_coeffs)):
+   #     print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
+        OVERL_coeffs.append(VB_orb_coeffs[k])
+        OVERL_aos.append(VB_orb_aos[k])
     routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
     print('  ',OVERL_file_orb,' written')   
     
     routines.write_DOLLARORB(OVERL_file_xmi,OVERL_aos,0,len(OVERL_aos))
     print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
     print('| $end ')
-    print('$gus') 
-    routines.write_orbs(OVERL_file_xmi,OVERL_coeffs,0,len(OVERL_coeffs)) 
-    print('$end') 
+    # make the $gus as well
+#    routines.write_gus("screen",OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
+    routines.write_gus(OVERL_file_xmi,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
+
     print('- ------------------------------------------------------------------')
     print('- submit the calculation:',OVERL_file_xmi, '  the xmo is required to continue')
     print('- ------------------------------------------------------------------')
@@ -493,8 +605,8 @@ if not os.path.exists(OVERL_file_xmo):
     quit()
 
 OVERLP_size= routines.Read_INTEGER(OVERL_file_xmo, " Number of Structures:",12)  
-if OVERLP_size != NVBCONF+lenCI           :
-    print('Error in OVERLP_size',OVERLP_size,'instead of ',NVBCONF+lenCI           )
+if OVERLP_size != NVBCONF+lenCAS           :
+    print('Error in OVERLP_size',OVERLP_size,'instead of ',NVBCONF+lenCAS           )
     quit()
 else:
     print('|  OVERLP_size',OVERLP_size,' is OK with VB+CI ')
@@ -509,15 +621,15 @@ print('| In ', OVERL_file_xmo, ' the overlap matrix is (',n,'x',m,')')
 Stot=read5cols(OVERL_file_xmo,OVERLP_size,OVERLP_size,posit,posfin) # read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
 #print_matrix('Stot',Stot)
 #print('CAS_vect[1]',CAS_vect[1])
-Smomo=np.zeros((lenCI,lenCI))
+Smomo=np.zeros((lenCAS,lenCAS))
 Svbvb=np.zeros((NVBCONF,NVBCONF))
 part_SOM=np.zeros((NVBCONF,len(CAS_vect)))
 SOMvb=np.zeros(NVBCONF)
 print('| ' )
 print('| ------------------------------------------------------------')
-print('|  Get the overlaps between each of the CI\'s CSF of ',lenCI,'CAS CSFs with each of the ',NVBCONF,'VB conf')
-for imo in range(lenCI):
-    for jmo in range(lenCI):
+print('|  Get the overlaps between each of the CI\'s CSF of ',lenCAS,'CAS CSFs with each of the ',NVBCONF,'VB conf')
+for imo in range(lenCAS):
+    for jmo in range(lenCAS):
         Smomo[imo][jmo]=Stot[imo+NVBCONF][jmo+NVBCONF] # Smomo is the part that concerns the overlap between each MO configurations of the CI.
 
 for ivb in range(len(VB_conf)):

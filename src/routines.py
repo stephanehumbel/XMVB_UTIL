@@ -538,46 +538,55 @@ def write_vec(file_path, vectors, deb, fin):
              output_file.write('\n')
 
 
-def write_orbs(filename, phis, deb, fin):
-    """ write the table phis table of MO's to a file or screen from deb to fin"""
+def write_gus(filename, phis,indices, deb, fin):
+    seuil=0.0000001
+    """  doesnot work because AO are just 1 2 3 4 etc.  write the table phis table of MO's to a file or screen from deb to fin"""
     temponao=[]
+    # compte le nombre d ao dans chaque Phis
+    for i in range(0 , deb):
+        compte=0
+        temponao.append(compte)
+    for i in range(deb , fin):
+#        print("##",i,end='') 
+        compte=0
+        for j in range(0  , len(phis[i])-1):
+            if abs(phis[i][j])  > seuil:
+                 compte+=1
+        temponao.append(compte)
+  #      print("# _._  Orbital  :   ",i+1," gus---", compte , "//",temponao ,end='')
+  
+ #   print('write_gus',filename,len(phis),indices, "##&&##", deb,fin)   
 #    print('|   write_orbs',end='._._.')
 #    print('write_orbs',filename,len(phis),deb,phis[deb])
     if filename == 'screen':
+        #for i in range(deb , fin):
+        #    print("i=",i,end='')
+        #    print(f"{len(phis[i]):4d}",end='')
         for i in range(deb , fin):
-            compte=0
-            for j in range(0  , len(phis[i])):
-                if phis[i][j] != 0:
-                    compte+=1
-            print(f"{compte:4d}",end='')
-            temponao.append(compte)
-        for i in range(deb , fin):
-            print() 
-            compte=0
-            print("# _._  Orbital  :   ",i+1," write_orbs---", compte , "//" ,end='')
-            for j in range(0  , len(phis[i])):
-                if phis[i][j] != 0:
-                    if (compte) % 4 == 0:
+            print(f"{temponao[i]:4d}",end='')
+        for i in range(deb, fin):
+          compte=0
+          print() 
+          print("# _._  Orbital  :   ",i+1," gus---", temponao[i] , "//" ,end='')
+          for j in range(0  , len(phis[i])-1):
+            if abs(phis[i][j])  > seuil:
+                 if ((compte) % 4) == 0:
                             print()
-                    print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
-                    compte+=1
+                 compte+=1
+                 print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
                 #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
             #print()
         print() 
     else:        
-        with open(filename, 'a') as f: 
+        with open(filename, 'w') as f: 
+            f.write("$gus \n")
             for i in range(deb , fin):
-                compte=0
-                for j in range(0  , len(phis[i])):
-                    if phis[i][j] != 0:
-                        compte+=1
-                f.write(f"{compte:4d}")
-                temponao.append(compte)
+                f.write(f" {temponao[i]:3d}")
                 #print(f"{compte:4d}",end='')
             for i in range(deb , fin):
                 f.write("\n")
                 compte=0
-                f.write(f"# __  Orbital  :   {i+1:4d} write_orbs----NAO={temponao[i]:4d}")
+                f.write(f"# __  Orbital  :   {i+1:4d} gus----NAO={temponao[i]:4d}")
                 for j in range(0  , len(phis[i])):
                     if phis[i][j] != 0:
                         if (compte) % 4 == 0:
@@ -586,6 +595,7 @@ def write_orbs(filename, phis, deb, fin):
                         f.write(f"{float(phis[i][j]):13.10f}{j+1:4d} ")
                         compte+=1
                     #print(f"{float(phis[i][j]):13.10f}{j+1:4d}  ",end='')
+            f.write("\n$end \n")
             #for i in range(len(indices)):
 #    print("-end write_orbs-----") 
 def write_orb(filename, coeffs, indices, deb, fin):
