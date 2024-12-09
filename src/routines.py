@@ -540,16 +540,17 @@ def write_vec(file_path, vectors, deb, fin):
 
 def write_gus(filename, phis,indices, deb, fin):
     seuil=0.0000001
-    """  doesnot work because AO are just 1 2 3 4 etc.  write the table phis table of MO's to a file or screen from deb to fin"""
+    """  doesnot work because AO are just 1 2 3 4 etc.  
+    write the table phis table of MO's to a file or screen from deb to fin"""
     temponao=[]
-    # compte le nombre d ao dans chaque Phis
+    # compte le nombre d ao dans chaque Phis ; va jusqu'à la 1ere
     for i in range(0 , deb):
         compte=0
         temponao.append(compte)
-    for i in range(deb , fin):
-#        print("##",i,end='') 
+    for i in range(deb , fin): # pour chaque orbital dans la zone
+        #print("##",i,phis[i], len(phis[i]) ,end='') 
         compte=0
-        for j in range(0  , len(phis[i])-1):
+        for j in range(0  , len(phis[i])):
             if abs(phis[i][j])  > seuil:
                  compte+=1
         temponao.append(compte)
@@ -567,8 +568,8 @@ def write_gus(filename, phis,indices, deb, fin):
         for i in range(deb, fin):
           compte=0
           print() 
-          print("# _._  Orbital  :   ",i+1," gus---", temponao[i] , "//" ,end='')
-          for j in range(0  , len(phis[i])-1):
+          print("# _._  Orbital  :   ",i+1," gus---", temponao[i] ,len(phis[i]), "//" ,end='')
+          for j in range(0  , len(phis[i])):
             if abs(phis[i][j])  > seuil:
                  if ((compte) % 4) == 0:
                             print()
@@ -633,12 +634,12 @@ def write_orb(filename, coeffs, indices, deb, fin):
                 f.write("\n")
         f.close()
 
-def write_conf(filename, CONF,COEF):
+def write_conf(filename,CORE, CONF,COEF):
     ssize=len(CONF)
 #    print('write_conf',filename,len(CONF),ssize)
     if filename == 'screen':
        for ii in range(ssize):
-            print(' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
+            print('  1:',CORE,' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
 #       print(" \n")
     else:
        print(ssize, "confs",end='')

@@ -400,9 +400,9 @@ if len(sys.argv) == 2:
         print('other numbers      =',nmcc,ndoc,nval,NBASIS)
         #get geom
         symbol,zat, x,y,z,natoms=routines.read_geom(CAS_file_name+".log")
-        basis_set = input('give the basis set (6-31G):')
+        basis_set = input('give the basis set (6-31G(d)):')
         if basis_set == '':
-            basis_set='6-31G'
+            basis_set='6-31G(d)'
         if offset >= 0:
             CAS_conf=Offset_conf(toprint,offset)
         print('')
@@ -416,7 +416,7 @@ if len(sys.argv) == 2:
             print(' 1')
         print('$end')
         print('$stru  ;',len(CAS_conf),' confs')
-        routines.write_conf("screen",CAS_conf,CAS_vect)
+        routines.write_conf("screen",offset,CAS_conf,CAS_vect)
         print('$end') 
         print('$geo   ; ',natoms,' atoms') 
         for i in range(natoms):
@@ -467,11 +467,12 @@ if len(sys.argv) == 2:
     else:   
         print('### >>> ',CAS_file,'  not found <<<<< ##')
     new_vect=[]
-    #print(' ON EST LAAA', type_OA,reord_OA)
+    #print(' ON EST LAAA', vect,type_OA,reord_OA)
     #print ('reord_OA')
     #for jj in range(len(reord_OA)):
     #    print (reord_OA[jj]+1,end=' ')
-    #routines.write_gus("screen",vect,reord_OA,0,1) 
+    #print('oihoihrhipiuh', len(vect[12]),vect[12],norb)
+   
     for j in range(len(vect)):
         new_orb=[]
         for i in range(len(reord_OA)):
