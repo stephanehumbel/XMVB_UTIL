@@ -160,18 +160,12 @@ def make_dollarorb(ao_orb,fin): # writes the $orb of vect
     print()
     print('$end')
 
-def make_dolorb(vect,fin): # writes the $orb of vect
-    print( '$orb')
+def make_dollarorb_nonzero(vect, fin):  # writes the $orb of vect
+    print("$orb")
     for numorb in range(fin):
-        make_oneorb(vect,numorb)    
-        print()
-    print( '$end')
-
-
-def make_oneorb(vect,numorb): # writes the ao's of an orbital for the $orb
-    for i in range(len(vect)):
-        if vect[numorb][i] != 0:
-            print(f"{i+1} ",end='') 
+        nonzero_indices = [i + 1 for i, coeff in enumerate(vect[numorb]) if coeff != 0]
+        print(" ".join(map(str, nonzero_indices))) #transforme la liste nonzero_indices en indices sur 1 ligne séparés par des espaces
+    print("$end")
 
 def make_bfi(vect): # make an all electron bfi
     print(' $bfi')
