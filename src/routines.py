@@ -96,43 +96,31 @@ def read_orb(file_name):
     Returns:
         the tables all_coeffs and all_aos
     '''
-    all_coeffs = []
-    all_aos = []
-    coef=[]
-    ao=[]
-    iom=0
+    all_coeffs = []  
+    all_aos = []     
+    coef = []  
+    ao = []
+    om1 = False  
     with open(file_name, 'r') as file:
-      noa = []
-      for  line in file:
-          values = []
-          if ("#" in line):
-             if iom > 0:
-                 all_coeffs.append(coef)
-                 all_aos.append(ao)
-                 #print(iom,'zz',len(all_coeffs),all_aos,all_coeffs)
-                 iom+=1
-                 coef=[]
-                 ao=[]
-             else:
-                 iom+=1
+        for line in file:
+            line = line.strip()
+            if line.startswith("#"):
+                om1 = True  # Starting processing data after the 1st "#"
+                if coef:  
+                    all_coeffs.append(coef)
+                    all_aos.append(ao)
+                    coef = []  
+                    current_aos = []
+            elif om1 and line:
+                values = line.split()
+                for i in range(0, len(values), 2):
+                    coef.append(float(values[i])) # add the last to vectors
+                    ao.append(int(values[i + 1]))
 
-          if not("#" in line):
-             values=line.split()
-             if iom==0:
-                 noa.append(values)
-             else:
-                 #print("||",values[0], len(values))
-                 toread=len(values)//2
-                 for i in range(toread):
-                 #   print(i,end='')
-                    coef.append(float(values[2*i]))  # add the last to vectors
-                    ao.append(int(values[2*i+1]))
+        # last orb must be updated        
+        all_coeffs.append(coef)
+        all_aos.append(ao)
 
-      # last orb must be updated
-
-    all_coeffs.append(coef)
-    all_aos.append(ao)
-    #print('rr',len(all_coeffs),all_aos,all_coeffs)
     return all_coeffs, all_aos
 
 def make_dollarorb_file(ao_orb,fin,filename): # writes the $orb of vect
