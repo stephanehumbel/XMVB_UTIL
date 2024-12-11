@@ -579,7 +579,7 @@ def write_gus(filename, phis,indices, deb, fin):
             #print()
         print() 
     else:        
-        with open(filename, 'w') as f: 
+        with open(filename, 'a') as f: 
             f.write("$gus \n")
             for i in range(deb , fin):
                 f.write(f" {temponao[i]:3d}")
