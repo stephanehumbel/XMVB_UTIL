@@ -602,6 +602,33 @@ def write_orb(filename, coeffs, indices, deb, fin):
                 f.write("\n")
         f.close()
 
+def write_orb2(filename, coefficients, orbital_indices, start, end):
+#    print('write_orb',filename,len(coeffs),len(indices))
+    def format_orbital(index, coeffs, indices):
+        """Formats the orbital data as a string."""
+        result = [f"# ORBITAL {index + 1:4d}  NAO = {len(indices):4d}"]
+        for j in range(len(indices)):
+            result.append(f"{coeffs[j]:13.10f}{indices[j]:6d}  ")
+            if (j + 1) % 4 == 0 and j != len(indices) - 1:
+                result.append("\n")
+        result.append("\n")
+        return "".join(result)
+
+    if filename == 'screen':
+        print("$orb")
+        print(" ".join(f"{len(orbital_indices[i]):4d}" for i in range(start, end)))
+        for i in range(start, end):
+            print(format_orbital(i, coefficients[i], orbital_indices[i]), end="")
+        print("$end")
+    else:
+        with open(filename, 'w') as file:
+            file.write("$orb\n")
+            file.write(" ".join(f"{len(orbital_indices[i]):4d}" for i in range(start, end)))
+            file.write("\n")
+            for i in range(start, end):
+                file.write(format_orbital(i, coefficients[i], orbital_indices[i]))
+            file.write("$end\n")
+
 def write_conf(filename,CORE, CONF,COEF):
     ssize=len(CONF)
 #    print('write_conf',filename,len(CONF),ssize)
