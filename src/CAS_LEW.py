@@ -10,7 +10,7 @@ import os
 #import cclib
 import sys
 import re
-import routines
+import ee
 import numpy as np
 
 
