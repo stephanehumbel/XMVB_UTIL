@@ -69,8 +69,6 @@ def Read_INTEGER(file_path, STRING, size):
         #print(STRING,':',col1,':::',num)
         return int(num)
 
-
-
 def detect_blank(file_path, start_line):
     '''
     Description: Get the position of the next blank line in the file.
@@ -96,43 +94,32 @@ def read_orb(file_name):
     Returns:
         the tables all_coeffs and all_aos
     '''
-    all_coeffs = []
-    all_aos = []
-    coef=[]
-    ao=[]
-    iom=0
+    all_coeffs = []  
+    all_aos = []     
+    coef = []  
+    ao = []
+    om1 = False  
     with open(file_name, 'r') as file:
-      noa = []
-      for  line in file:
-          values = []
-          if ("#" in line):
-             if iom > 0:
-                 all_coeffs.append(coef)
-                 all_aos.append(ao)
-                 #print(iom,'zz',len(all_coeffs),all_aos,all_coeffs)
-                 iom+=1
-                 coef=[]
-                 ao=[]
-             else:
-                 iom+=1
+        for line in file:
+            line = line.strip()
+            if ("#" in line):
+                if om1:  
+                    all_coeffs.append(coef)
+                    all_aos.append(ao)
+                    coef = []  
+                    ao = []
+                else :
+                    om1 = True
+            elif om1 :
+                values = line.split()
+                for i in range(0, len(values), 2):
+                    coef.append(float(values[i])) # add the last to vectors
+                    ao.append(int(values[i + 1]))
 
-          if not("#" in line):
-             values=line.split()
-             if iom==0:
-                 noa.append(values)
-             else:
-                 #print("||",values[0], len(values))
-                 toread=len(values)//2
-                 for i in range(toread):
-                 #   print(i,end='')
-                    coef.append(float(values[2*i]))  # add the last to vectors
-                    ao.append(int(values[2*i+1]))
+        # last orb must be updated        
+        all_coeffs.append(coef)
+        all_aos.append(ao)
 
-      # last orb must be updated
-
-    all_coeffs.append(coef)
-    all_aos.append(ao)
-    #print('rr',len(all_coeffs),all_aos,all_coeffs)
     return all_coeffs, all_aos
 
 def make_dollarorb_file(ao_orb,fin,filename): # writes the $orb of vect
@@ -172,18 +159,12 @@ def make_dollarorb(ao_orb,fin): # writes the $orb of vect
     print()
     print('$end')
 
-def make_dolorb(vect,fin): # writes the $orb of vect
-    print( '$orb')
+def make_dollarorb_nonzero(vect, fin):  # writes the $orb of vect
+    print("$orb")
     for numorb in range(fin):
-        make_oneorb(vect,numorb)    
-        print()
-    print( '$end')
-
-
-def make_oneorb(vect,numorb): # writes the ao's of an orbital for the $orb
-    for i in range(len(vect)):
-        if vect[numorb][i] != 0:
-            print(f"{i+1} ",end='') 
+        nonzero_indices = [i + 1 for i, coeff in enumerate(vect[numorb]) if coeff != 0]
+        print(" ".join(map(str, nonzero_indices))) #transforme la liste nonzero_indices en indices sur 1 ligne séparés par des espaces
+    print("$end")
 
 def make_bfi(vect): # make an all electron bfi
     print(' $bfi')
@@ -234,48 +215,33 @@ def compte_AO(vect):
         print(len(tab_ao[i]),end=' ')   
     print()
     return tab_ao  
-        
-# read types in basis
+                  
 def reorder_OA(tab):
-   Ntab=len(tab)
-   reord=[]
-   for i in range(Ntab):
-       reord.append(i)
-   for i in range(Ntab):
-       if tab[i] == "XX":
+    reord = list(range(len(tab)))  # initial indices
+    for i in range(len(tab)):
+        if tab[i] == "XX" :
               #reord the 6 AO's 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'
               # into            'XX', 'XY', 'XZ', 'YY', 'YZ', 'ZZ'
               #  0      1      2      3      4      5
-              #  0      3      4      1      5      2   
-              reord[i+1] = i+3   
-              reord[i+2] = i+4   
-              reord[i+3] = i+1   
-              reord[i+4] = i+5   
-              reord[i+5] = i+2   
-              i+=5
-          #    print(i)
-   return reord
-           
-        
-        
-        
+              #  0      3      4      1      5      2
+            reord[i + 1:i + 6] = [i + 3, i + 4, i + 1, i + 5, i + 2]
+            i+=5
+    return reord       
+               
 # read types in basis
 def read_basis(file_name):
-   num,line=detect_keyword(file_name, "OPTIMIZED ORBITALS", 0) 
-   with open(file_name, 'r') as file:
-        type=[]
-        line_num=0
-        for line in file:
-#            print(line[0:2])
-            values=[]
-            line_num+=1
-            if line_num >= num+6:
-              #  print(line_num, line,num)
-                if line=='\n':
+    num, _ = detect_keyword(file_name, "OPTIMIZED ORBITALS", 0)
+    types = []
+
+    with open(file_name, 'r') as file:
+        for line_num, line in enumerate(file, start=1):
+            if line_num >= num + 6:
+                if line.strip() == '':
                     break
-                values = re.split(' +|\n',line)
-                type.append(values[4])
-   return type
+                values = re.split(r'\s+', line.strip())
+                types.append(values[4])
+
+    return types
 
 # READ_geom
 def read_geom(file_name):
@@ -310,6 +276,7 @@ def read_geom(file_name):
                 z.append(float(values[5])*a0)   
 #    print('read_geom',x,y,z,natoms)
     return symbol,zat,x,y,z,natoms
+
 # READ_VEC
 def read_vec(file_path,vectors,start_line):
     '''
@@ -599,6 +566,7 @@ def write_gus(filename, phis,indices, deb, fin):
             f.write("\n$end \n")
             #for i in range(len(indices)):
 #    print("-end write_orbs-----") 
+
 def write_orb(filename, coeffs, indices, deb, fin):
 #    print('write_orb',filename,len(coeffs),len(indices))
     if filename == 'screen':
@@ -633,6 +601,33 @@ def write_orb(filename, coeffs, indices, deb, fin):
                         f.write("\n")
                 f.write("\n")
         f.close()
+
+def write_orb2(filename, coefficients, orbital_indices, start, end):
+#    print('write_orb',filename,len(coeffs),len(indices))
+    def format_orbital(index, coeffs, indices):
+        """Formats the orbital data as a string."""
+        result = [f"# ORBITAL {index + 1:4d}  NAO = {len(indices):4d}"]
+        for j in range(len(indices)):
+            result.append(f"{coeffs[j]:13.10f}{indices[j]:6d}  ")
+            if (j + 1) % 4 == 0 and j != len(indices) - 1:
+                result.append("\n")
+        result.append("\n")
+        return "".join(result)
+
+    if filename == 'screen':
+        print("$orb")
+        print(" ".join(f"{len(orbital_indices[i]):4d}" for i in range(start, end)))
+        for i in range(start, end):
+            print(format_orbital(i, coefficients[i], orbital_indices[i]), end="")
+        print("$end")
+    else:
+        with open(filename, 'w') as file:
+            file.write("$orb\n")
+            file.write(" ".join(f"{len(orbital_indices[i]):4d}" for i in range(start, end)))
+            file.write("\n")
+            for i in range(start, end):
+                file.write(format_orbital(i, coefficients[i], orbital_indices[i]))
+            file.write("$end\n")
 
 def write_conf(filename,CORE, CONF,COEF):
     ssize=len(CONF)
