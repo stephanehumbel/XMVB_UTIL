@@ -608,7 +608,7 @@ if must_write_OVERL:
     ##routines.write_gus(OVERL_file_xmi,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
     ## bugg car ecrit les OA 1 2 3 4 5 6 7 8 9 10 11 12 13
     with open(OVERL_file_xmi,'a') as file:
-        line="\n $gus"
+        line="\n $gus\n"
         file.write(line)  
     routines.write_orb(OVERL_file_xmi,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
     with open(OVERL_file_xmi,'a') as file:

@@ -726,7 +726,7 @@ def write_conf(filename,CORE, CONF,COEF):
 
 def write_DOLLARORB(filename, AOS, deb, fin):
     if filename == 'screen':
-        print('$orb')
+        print(' $orb')
         for i in range(len(AOS)):
             #print(*['%4.0f' % int(val) for val in VB_conf[i].split()],end=' ')
             print('',len(AOS[i]),end='')
@@ -735,7 +735,7 @@ def write_DOLLARORB(filename, AOS, deb, fin):
             for j in range(len(AOS[i])):
                 print(' ',AOS[i][j],end='')
         print()
-        print('$end')
+        print(' $end')
     else:        
         with open(filename, 'a') as f: 
             f.write("\n")
