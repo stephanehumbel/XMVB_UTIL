@@ -279,7 +279,7 @@ def print_geom(filename,symbol,x,y,z):
             f.write("\n")
             f.write(' $geo')
             f.write("\n")
-            for i in range (1,natoms):
+            for i in range (natoms):
                 f.write(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
                 f.write("\n")
             f.write(' $end')
