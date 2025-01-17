@@ -559,7 +559,7 @@ if must_write_OVERL:
     with open(OVERL_file_xmi,'w') as file:
         line='made by CAS_LEW.py \n $ctrl   ; ============='+str(NVBCONF)+' + '+str(lenCAS)+'=============.======+\n'
         line=line+'  vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G(d) ' 
-        line=line+'   iprint=-1, nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCAS)+' guess=read \n $end \n'
+        line=line+'   iprint=-1 nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCAS)+' guess=read \n $end \n'
         file.write(line)    
         line= ' $struc  ; ============= \n '
         file.write(line)   
