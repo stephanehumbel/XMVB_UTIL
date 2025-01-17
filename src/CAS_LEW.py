@@ -418,10 +418,11 @@ if len(sys.argv) == 2:
         print('$stru  ;',len(CAS_conf),' confs')
         routines.write_conf("screen",offset,CAS_conf,CAS_vect)
         print('$end') 
-        print('$geo   ; ',natoms,' atoms') 
-        for i in range(natoms):
-            print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
-        print('$end') 
+        routines.print_geom(symbol,x,y,z)
+    #    print('$geo   ; ',natoms,' atoms') 
+    #    for i in range(natoms):
+    #        print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
+    #   print('$end') 
         if os.path.exists(CAS_file_name+'.dat'):
             input_file=CAS_file_name+'.dat'
              # GET the MO's from dat
@@ -480,6 +481,7 @@ if len(sys.argv) == 2:
        #         print('  ',vect[j][reord_OA[i]],i,len(vect),end=' ')
         new_vect.append(new_orb)
  #        routines.write_gus("screen",new_vect,norb-2,norb) 
+    
     print('$gus') 
 #        print('--',reord_OA)
     #routines.write_gus("screen",new_vect,reord_OA,0,norb) 
@@ -537,7 +539,7 @@ file_orb_VB=VB_file_name+'.orb'
 print(file_orb_VB,end=':')
 VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_VB)
 print(len(VB_orb_coeffs),' VB orbs','VBfile=',VB_file)   
-print("HHH ",VB_orb_coeffs,VB_orb_aos)
+#print("HHH ",VB_orb_coeffs,VB_orb_aos)
 print("============================")##
 ##
 if must_write_OVERL:
@@ -574,6 +576,10 @@ if must_write_OVERL:
             file.write(line)   
         line= ' $end  ; ============= \n '
         file.write(line)   
+    symbol, x,y,z=routines.read_geom_xmo(CAS_file)
+   # routines.print_geom("screen",symbol,x,y,z)
+    routines.print_geom(OVERL_file_xmi,symbol,x,y,z)
+
     ##   pos, line=routines.detect_keyword(VB_file, "$bfi", 0)
     ##   bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(VB_file,pos)
     ##   line= ' $bfi  ; ============= \n '
@@ -589,7 +595,7 @@ if must_write_OVERL:
    #    print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
         OVERL_coeffs.append(VB_orb_coeffs[k])
         OVERL_aos.append(VB_orb_aos[k])
-    print('|  OVER_aos',OVERL_aos)   
+    #print('|  OVER_aos',OVERL_aos)   
     routines.write_orb(OVERL_file_orb,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs))
     print('  ',OVERL_file_orb,' written')   
     
@@ -602,11 +608,11 @@ if must_write_OVERL:
     ##routines.write_gus(OVERL_file_xmi,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
     ## bugg car ecrit les OA 1 2 3 4 5 6 7 8 9 10 11 12 13
     with open(OVERL_file_xmi,'a') as file:
-        line="$gus"
+        line="\n $gus"
         file.write(line)  
     routines.write_orb(OVERL_file_xmi,OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
     with open(OVERL_file_xmi,'a') as file:
-        line="$end"
+        line=" $end"
         file.write(line)  
 
     print('- ------------------------------------------------------------------')

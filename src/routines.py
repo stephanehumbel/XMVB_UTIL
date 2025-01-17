@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 import copy 
 import numpy as np 
 import re       
@@ -27,7 +27,30 @@ def Read_INT(line, keyword):
     words = re.split(' +|=+|\n',strin)
     index = words.index(keyword)
     integer = int(words[index + 1])
-    return integer
+    return
+
+def detect_next_keyword(file_path, keyword, start_line):
+    '''
+    Description : get the line number of the *next* occurence of keyword in file_path.
+    Args:
+        parameter (file_path): name of the file (possibly the path?).
+        parameter (keyword): string to find
+        parameter (start_line): the line the search starts from
+
+    Returns:
+        type: returns the line number (lin_num) of the *next* occurence of keyword or -1 if keyword is not found
+    '''
+#    print('detect_keyword',file_path,keyword,start_line)
+    with open(file_path, 'r') as file:
+        ret_num = -1                # not found
+        ret_line=''                      # not found
+        for line_num, line in enumerate(file, 1):  
+            if line_num >= start_line and keyword in line:
+                ret_line = line
+                ret_num = line_num
+                break
+    return ret_num, ret_line 
+
 
 def detect_keyword(file_path, keyword, start_line):
     '''
@@ -243,7 +266,62 @@ def read_basis(file_name):
 
     return types
 
-# READ_geom
+def print_geom(filename,symbol,x,y,z):
+    #print('print_geom',symbol,x,y,z,natoms)
+    natoms=len(symbol)
+    if filename == 'screen':
+        print(' $geo   ; ',natoms,' atoms') 
+        for i in range(natoms):
+            print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
+        print(' $end') 
+    else:        
+        with open(filename, 'a') as f: 
+            f.write("\n")
+            f.write(' $geo')
+            f.write("\n")
+            for i in range (1,natoms):
+                f.write(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
+                f.write("\n")
+            f.write(' $end')
+        f.close()
+
+# READ_geom xmo
+def read_geom_xmo(file_name):
+    '''
+    read geometry from a xmvb .xmo file that has a $geo section
+    '''
+    num_fin=0
+    num,line=detect_keyword(file_name, "$geo", 0) 
+    #print(line,'num',num,num_fin)
+    num_fin,line=detect_next_keyword(file_name, "$end", num) 
+    #print(line,'num_fin',num,num_fin)
+    with open(file_name, 'r') as file:
+        symbol=[]
+        x=[]
+        y=[]
+        z=[]
+        line_num=0
+        for line in file:
+            line_num+=1
+            if line_num <= num:
+                continue
+            else:
+              if line_num >= num_fin:
+                    break   
+          #  print(line[0:2])
+              values=[]
+             # print(line_num,'|||', line,num)
+              values = re.split(' +|\n',line)
+             # print('#--',values, len(values))
+              symbol.append(values[1])
+              x.append(float(values[2]))   
+              y.append(float(values[3]))   
+              z.append(float(values[4]))   
+#    print('read_geom',x,y,z,natoms)
+    return symbol,x,y,z
+
+
+# READ_geom GAMESS
 def read_geom(file_name):
     '''
     read geometry from a gamess .log file
