@@ -10,7 +10,7 @@ import os
 #import cclib
 import sys
 import re
-import routines
+#import ee
 import numpy as np
 
 
@@ -493,14 +493,14 @@ if len(sys.argv) == 2:
 if len(sys.argv) >= 3: 
     CAS_file = sys.argv[1]
     VB_file = sys.argv[2]
-    CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
     VB_file_name, VB_file_ext = os.path.splitext(VB_file)
-    if not os.path.exists(CAS_file_name+'.xmo'):
-        ext_error='### >>> ',CAS_file_name+'.xmo not found <<<<< ## '
-        quit(ext_error)
+    CAS_file_name, CAS_file_ext = os.path.splitext(CAS_file)
     if not os.path.exists(VB_file_name+'.xmo'):
         ext_error='### >>> ',VB_file_name+'.xmo not found <<<<< ## '
         quit(ext_error) 
+    if not os.path.exists(CAS_file_name+'.xmo'):
+        ext_error='### >>> ',CAS_file_name+'.xmo not found <<<<< ## '
+        quit(ext_error)
     state = -1  # xmo file only 1 state
     if len(sys.argv) ==4:
         must_write_OVERL=False  
@@ -536,9 +536,9 @@ print(len(CAS_orb_coeffs),end=' CAS orbs, ')
 file_orb_VB=VB_file_name+'.orb'
 print(file_orb_VB,end=':')
 VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_VB)
-print(len(VB_orb_coeffs),' VB orbs','VBfile=',VB_file)   
-print("HHH ",VB_orb_coeffs,VB_orb_aos)
-print("============================")##
+print(len(VB_orb_coeffs),end=' VB orbs')
+print()
+##
 ##
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
