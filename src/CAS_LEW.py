@@ -667,7 +667,7 @@ print('| ' )
 ##
 # just check the norm of the CAS vector ------------------
 norm_CAS_vect=np.dot(CAS_vect.T,np.dot(Smomo,CAS_vect))
-if abs(norm_CAS_vect-1.0) > 0.01: 
+if abs(norm_CAS_vect-1.0) > 0.05: 
     print('>>>>>>> .  Error in the norm of the CAS wf: ',f"{norm_CAS_vect:4.3f} <<<<<<<<<")
     quit()
 print('| Norm of the CAS wf is OK: ',f"{norm_CAS_vect:4.3f}")

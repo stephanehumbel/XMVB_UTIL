@@ -1,7 +1,7 @@
 from  b_d.log ;  6-31G(d)
 $ctrl 
- str=full nao=6  nae=6   nmul=1  orbtyp=hao frgtyp=sao int=libcint ; nstr=7
- basis=6-31G(d)  iscf=5 iprint=3 guess=read itmax=0 
+ nstr=7 nao=6  nae=6   nmul=1  orbtyp=hao frgtyp=sao int=libcint ; nstr=7
+ basis=6-31G(d)  iscf=1 iprint=3 guess=read itmax=0 
  $end
 $frag 
   12 
