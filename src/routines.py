@@ -742,10 +742,16 @@ def write_DOLLARORB(filename, AOS, deb, fin):
             f.write('$orb')
             f.write("\n")
             for i in range ( deb , fin):
+                # si on a plus de 50 valeurs, on saute une ligne
+                if (i + 1) % 50 == 0:
+                    f.write("\n")
                 f.write(f"{len(AOS[i]):4d}")
+                
             for i in range(len(AOS)):
                 f.write("\n")
                 for j in range(len(AOS[i])):
+                    if (j+1) % 50 == 0:
+                        f.write("\n")
                     f.write(f"{AOS[i][j]:4d}")
             f.write("\n")
             f.write("$end")
