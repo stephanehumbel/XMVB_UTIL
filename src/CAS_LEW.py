@@ -20,8 +20,8 @@ def print_lin_matrix(title,matrix):
     for i in range(len(matrix)):
         print(title,'[',f"{i:4d}",']',end="\t")
         for j in range(len(matrix[i])):
-            print(f"{matrix[i][j]:7.4f}", end="\t")
-            if (j + 1) % 5 == 0:
+            print(f"{matrix[i][j]:7.3f}", end="\t")
+            if (j + 1) % 10 == 0:
                 print()
         print()
 
@@ -31,8 +31,8 @@ def print_matrix(title,matrix):
     for i in range(len(matrix)):
         print(title,'[',f"{i:4d}",']',end="\t")
         for j in range(len(matrix[i])):
-            print(f"{matrix[i][j]:7.4f}", end="\t")
-            if (j + 1) % 5 == 0:
+            print(f"{matrix[i][j]:7.3f}", end="\t")
+            if (j + 1) % 10 == 0:
                 print()
         print()
 
@@ -639,7 +639,7 @@ Stot=[]
 print('| In ', OVERL_file_xmo, ' the overlap matrix is (',n,'x',m,')')
 Stot=read5cols(OVERL_file_xmo,OVERLP_size,OVERLP_size,posit,posfin) # read a file with 3 blank lines, +1 to skip, then blocks of columns of length lines
 #print_matrix('Stot',Stot)
-#print('CAS_vect[1]',CAS_vect[1])
+#print('CAS_vect[]',CAS_vect)
 Smomo=np.zeros((lenCAS,lenCAS))
 Svbvb=np.zeros((NVBCONF,NVBCONF))
 part_SOM=np.zeros((NVBCONF,len(CAS_vect)))
@@ -649,25 +649,26 @@ print('| ------------------------------------------------------------')
 print('|  Get the overlaps between each of the CI\'s CSF of ',lenCAS,'CAS CSFs with each of the ',NVBCONF,'VB conf')
 for imo in range(lenCAS):
     for jmo in range(lenCAS):
-        Smomo[imo][jmo]=Stot[imo+NVBCONF][jmo+NVBCONF] # Smomo is the part that concerns the overlap between each MO configurations of the CI.
+        Smomo[imo][jmo]=Stot[imo][jmo] # Smomo is the part that concerns the overlap between each MO configurations of the CI.
 
 for ivb in range(len(VB_conf)):
     for jvb in range(len(VB_vect)):
-        Svbvb[ivb][jvb]=Stot[ivb][jvb]
+        Svbvb[ivb][jvb]=Stot[ivb+lenCAS][jvb+lenCAS]
     for jmo in range(len(CAS_vect)):
-        part_SOM[ivb][jmo]=Stot[ivb][jmo+NVBCONF] # part_SOM is the part that concerns the overlap between each MO configurations of the CI and each VB configurations.
+        part_SOM[ivb][jmo]=Stot[ivb+lenCAS][jmo] # part_SOM is the part that concerns the overlap between each MO configurations of the CI and each VB configurations.
 
 #print_lin_matrix('S_CI/CI',Smomo)
 #print_lin_matrix('S_CI/VB^T',part_SOM.T)
 #print('| The vector of the overlap between ',NVBCONF,' VB CSF\' (structure) ')
 #print_lin_matrix('S_VB/VB',Svbvb)
-print('| ' )
+#print('| ' )
 #print('| ------------------------------------------------------------')
 #print('| The CI vector of this state ',CAS_vect,' has the following overlaps with each VB\'s structures')
 ##
 # just check the norm of the CAS vector ------------------
+treshold=0.01
 norm_CAS_vect=np.dot(CAS_vect.T,np.dot(Smomo,CAS_vect))
-if abs(norm_CAS_vect-1.0) > 0.05: 
+if abs(norm_CAS_vect-1.0) > treshold: 
     print('>>>>>>> .  Error in the norm of the CAS wf: ',f"{norm_CAS_vect:4.3f} <<<<<<<<<")
     quit()
 print('| Norm of the CAS wf is OK: ',f"{norm_CAS_vect:4.3f}")
@@ -704,16 +705,19 @@ for i in range(len(sol)):
     print('|  ',f"{i+1:3d}",'',f"{VB_vect[i]:7.3f}",f"{sol[i]:7.3f}",f"{w[i]*100:7.2f}",'%     ',f"{SOMvb[i]:7.3f}",'  ')
 
 #print(f"{matrix[i][j]:7.4f}", end="\t")
-yes=input('Do you want to print the CI/VB overlaps ? (y/n)')
+yes=input('Do you want to print the main CI/VB overlaps ? (y/n)')
 if yes != 'n':
-    print('|  VB[i]     C[i]   ',end=' ')   
-    for i in range(len(CAS_vect)):
-        print('   CI',f"{i:2d}",end='  ')
-    print()
+    #print('|  VB[i]     C[i] ',end=' ')   
+    #for i in range(len(CAS_vect)):
+    #    print("CI",f"{i:0d}",end=' ')
+    #print()
     for i in range(len(sol)):
-        print('|  ',f"{i+1:3d}",'  ',f"{VB_vect[i]:7.3f}",end=' ')
+        #print()
+        #print('|',f"{i+1:1d}",' ',f"{VB_vect[i]:4.2f}",end=' ')
         for j in range(len(CAS_vect)):
-            print(' ',f"{part_SOM[i][j]:7.4f}",end=' ') 
+            if part_SOM[i][j] > treshold:
+                print('S(',i+1,',',j,')=',f"{part_SOM[i][j]:4.2f}",end=' ')
+            #print(' ',f"{part_SOM[i][j]:4.2f}",end=' ') 
         print()
 
 quit()
