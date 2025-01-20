@@ -651,6 +651,9 @@ def write_orb(filename, coeffs, indices, deb, fin):
         print('write_orb:',end=''  )
         for i in range(deb , fin):
             print(f"{len(indices[i]):4d}",end='')
+            if (i+1) % 20 == 0:
+                print() 
+            # si on a plus de 50 valeurs, on saute une ligne
         print()
         for i in range(deb , fin):
             print(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}")
@@ -666,6 +669,9 @@ def write_orb(filename, coeffs, indices, deb, fin):
         with open(filename, 'a') as f: 
             for i in range ( deb , fin):
                 f.write(f"{len(indices[i]):4d}")
+                if (i +1) % 20 == 0:
+                         f.write("\n")
+
             f.write("\n")
             for i in range (deb , fin):
                 f.write(f"# ORBITAL {i+1:4d}  NAO = {len(indices[i]):4d}      routines.write_orb({filename})\n")
@@ -743,16 +749,18 @@ def write_DOLLARORB(filename, AOS, deb, fin):
             f.write("\n")
             for i in range ( deb , fin):
                 # si on a plus de 50 valeurs, on saute une ligne
-                if (i + 1) % 50 == 0:
+               f.write(f"{len(AOS[i]):4d}")
+               if (i + 1) % 50 == 0:
                     f.write("\n")
-                f.write(f"{len(AOS[i]):4d}")
-                
+                 
             for i in range(len(AOS)):
                 f.write("\n")
+                if (i + 1) % 50 == 0:
+                    f.write("\n")
                 for j in range(len(AOS[i])):
+                    f.write(f"{AOS[i][j]:4d}")
                     if (j+1) % 50 == 0:
                         f.write("\n")
-                    f.write(f"{AOS[i][j]:4d}")
             f.write("\n")
             f.write("$end")
         f.close()
