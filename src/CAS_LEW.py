@@ -419,42 +419,24 @@ if len(sys.argv) == 2:
         routines.write_conf("screen",offset,CAS_conf,CAS_vect)
         print('$end') 
         routines.print_geom("screen",symbol,x,y,z)
-    #    print('$geo   ; ',natoms,' atoms') 
-    #    for i in range(natoms):
-    #        print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
-    #   print('$end') 
-        if os.path.exists(CAS_file_name+'.dat'):
-            input_file=CAS_file_name+'.dat'
-             # GET the MO's from dat
-            coeffs=[]
-            pos,line=routines.detect_keyword(input_file, "VEC", 0)
-#            print('|  read files :\n| ',input_file,end=':')
-#            print (pos+1)
-            coeffs,nvect = routines.read_vec(input_file,coeffs,pos+1)
-            vect=routines.make_table(coeffs)#
-            norb=nmcc+nval+ndoc+NALP
-            type_OA=routines.read_basis(log_file)
-            reord_OA=[]
-            #print(type_OA,reord_OA)
-            reord_OA=routines.reorder_OA(type_OA)
-            #print(reord_OA)
- 
-        else:
-            print('  ;;;', CAS_file_name+'.dat not found ')
-            print('  ;;;             ---===---===:::========')
-            log_file=CAS_file_name+'.log'
-            type_OA=routines.read_basis(log_file)
-            reord_OA=[]
-            reord_OA=routines.reorder_OA(type_OA)
-            #new_vect=[]
-            pos,line=routines.detect_keyword(log_file, "MCSCF OPTIMIZED ORBITALS", 0)
-            posfin,line=routines.detect_keyword(log_file,"DONE WITH MCSCF ITERATIONS",pos)
-            pos+=2
-            print('  ;;; read files : ',log_file,pos,posfin,end=':')
+        
+#        if os.path.exists(CAS_file_name+'.log'):
+        #print('  ;;;             ---===---===:::========')
+        reord_OA=[]
+        log_file=CAS_file_name+'.log'
+        type_OA=routines.read_basis(log_file)
+        reord_OA=[]
+        reord_OA=routines.reorder_OA(type_OA)
+        print(type_OA,reord_OA)
+        #new_vect=[]
+        pos,line=routines.detect_keyword(log_file, "MCSCF OPTIMIZED ORBITALS", 0)
+        posfin,line=routines.detect_keyword(log_file,"DONE WITH MCSCF ITERATIONS",pos)
+        pos+=2
+        print('  ;;; read files : ',log_file,pos,posfin,end=':')
            
-            vect=read5OM_LOG(log_file,norb,NBASIS,pos,posfin)
+        vect=read5OM_LOG(log_file,norb,NBASIS,pos,posfin)
 
-            #quit()
+        #quit()
     elif CAS_file_ext == '.xmo' and os.path.exists(CAS_file):
         print('|  read files :\n| ',CAS_file_name+".xmo",end=':')
         CAS_conf,CAS_vect=Get_CIVECT(CAS_file_name+".xmo", -1)

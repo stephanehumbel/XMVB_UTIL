@@ -262,7 +262,7 @@ def read_basis(file_name):
                 if line.strip() == '':
                     break
                 values = re.split(r'\s+', line.strip())
-                types.append(values[4])
+                types.append(values[3])
 
     return types
 
