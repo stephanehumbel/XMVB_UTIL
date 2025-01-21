@@ -696,7 +696,7 @@ for i in range(len(sol)):
     print('|  ',f"{i+1:3d}",'',f"{VB_vect[i]:7.3f}",f"{sol[i]:7.3f}",f"{w[i]*100:7.2f}",'%     ',f"{SOMvb[i]:7.3f}",'  ')
 
 #print(f"{matrix[i][j]:7.4f}", end="\t")
-yes=input('Do you want to print the main CI/VB overlaps ? (y/n)')
+yes=input('Do you want to print the main S(VB,CI) overlaps ? (y/n)')
 if yes != 'n':
     #print('|  VB[i]     C[i] ',end=' ')   
     #for i in range(len(CAS_vect)):
