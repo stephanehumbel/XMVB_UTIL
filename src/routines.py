@@ -666,7 +666,7 @@ def write_orb(filename, coeffs, indices, deb, fin):
                     print()
             print()
     else:        
-        with open(filename, 'a') as f: 
+        with open(filename, 'w') as f: 
             for i in range ( deb , fin):
                 f.write(f"{len(indices[i]):4d}")
                 if (i +1) % 20 == 0:

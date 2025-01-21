@@ -484,10 +484,8 @@ if len(sys.argv) == 2:
     
     print('$gus') 
 #        print('--',reord_OA)
-    #routines.write_gus("screen",new_vect,reord_OA,0,norb) 
-    #routines.write_gus("GUS",new_vect,reord_OA,0,norb) 
-    routines.write_orb("screen",new_vect,reord_OA,0,norb) 
-    routines.write_orb("GUS",new_vect,reord_OA,0,norb) 
+    routines.write_gus("screen",new_vect,reord_OA,0,norb) 
+    routines.write_gus("GUS",new_vect,reord_OA,0,norb) 
     print('$end') 
     print('')
     quit()
@@ -539,8 +537,7 @@ file_orb_VB=VB_file_name+'.orb'
 print(file_orb_VB,end=':')
 VB_orb_coeffs,VB_orb_aos=routines.read_orb(file_orb_VB)
 print(len(VB_orb_coeffs),' VB orbs','VBfile=',VB_file)   
-#print("HHH ",VB_orb_coeffs,VB_orb_aos)
-print("============================")##
+#print()
 ##
 if must_write_OVERL:
 # offset the MCSCF conf by the largest MO in VB conf
@@ -577,22 +574,16 @@ if must_write_OVERL:
         line= ' $end  ; ============= \n '
         file.write(line)   
     symbol, x,y,z=routines.read_geom_xmo(CAS_file)
-   # routines.print_geom("screen",symbol,x,y,z)
     routines.print_geom(OVERL_file_xmi,symbol,x,y,z)
 
-    ##   pos, line=routines.detect_keyword(VB_file, "$bfi", 0)
-    ##   bfi_nom,bfi_noa,list_om,list_oa=routines.read_bfi(VB_file,pos)
-    ##   line= ' $bfi  ; ============= \n '
-    ##   line=line+' '+str(bfi_nom)+' '+str(bfi_noa)+ '\n   '+routines.makeSTR(list_om)+'\n   '+routines.makeSTR(list_oa)+'\n $end \n'
-    ##   file.write(line)   
     OVERL_coeffs=[]
     OVERL_aos=[]
     for k in range(len(CAS_orb_coeffs)):
-   #    print('VBcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
+   #     print('VBcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
         OVERL_coeffs.append(CAS_orb_coeffs[k])
         OVERL_aos.append(CAS_orb_aos[k])
     for k in range(len(VB_orb_coeffs)):
-   #    print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
+   #     print('ICcoeffs', k, len(VB_orb_coeffs[k]),end=' ')
         OVERL_coeffs.append(VB_orb_coeffs[k])
         OVERL_aos.append(VB_orb_aos[k])
     #print('|  OVER_aos',OVERL_aos)   
@@ -600,8 +591,8 @@ if must_write_OVERL:
     print('  ',OVERL_file_orb,' written')   
     
     routines.write_DOLLARORB(OVERL_file_xmi,OVERL_aos,0,len(OVERL_aos))
-    print('| $orb section, with ',len(OVERL_aos),' orbitals written in ',OVERL_file_xmi)
-    # print('| $end ')
+    print('| $orb section, with ',len(OVERL_aos),' orbitals is to get in ORBB    ')
+    print('| $end ')
     # make the $gus as well
     # routines.write_gus("screen",OVERL_coeffs,OVERL_aos,0,len(OVERL_coeffs)) 
     
