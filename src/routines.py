@@ -26,8 +26,8 @@ def Read_INT(line, keyword):
     strin=' '.join(words) # twice to remove all the empty strings 
     words = re.split(' +|=+|\n',strin)
     index = words.index(keyword)
-    integer = int(words[index + 1])
-    return
+    inte = int(words[index + 1])
+    return inte
 
 def detect_next_keyword(file_path, keyword, start_line):
     '''
