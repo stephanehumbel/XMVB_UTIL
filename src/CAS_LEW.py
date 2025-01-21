@@ -418,7 +418,7 @@ if len(sys.argv) == 2:
         print('$stru  ;',len(CAS_conf),' confs')
         routines.write_conf("screen",offset,CAS_conf,CAS_vect)
         print('$end') 
-        routines.print_geom("screen",symbol,x,y,z)
+        routines.print_geom(symbol,x,y,z)
     #    print('$geo   ; ',natoms,' atoms') 
     #    for i in range(natoms):
     #        print(f"   {symbol[i]:5}{x[i]:18.9f}{y[i]:18.9f}{z[i]:18.9f}")
