@@ -1,0 +1,44 @@
+#!/bin/sh
+# Script genere automatiquement a partir de subgms
+# reserve 48Go de memoire \#SBATCH --mem=18000
+#$ -N b_d_HF
+#
+#SBATCH --mem=48000
+#$ -cwd
+#$ -S /bin/sh
+ hhomedir=`pwd`
+ nnode=`hostname`
+echo "Variables"
+echo "Running on        : $nnode  "
+echo "targetdir         : $hhomedir "
+echo "TMPDIR            : $TMPDIR"
+echo "I am in           : $PWD"
+
+# source /usr/share/Modules/init/sh
+
+if [ -e b_d_HF.xmo ] ; then
+ set  echo
+   cp b_d_HF.xmo b_d_HF.xmo~
+ unset  echo
+fi
+if [ -e b_d_HF.log ] ; then
+ set  echo
+   cp b_d_HF.log b_d_HF.log~
+ unset  echo
+fi
+
+set echo
+#time (/share/programs/GAMESS/rungms   b_d_HF xmvb 1  > b_d_HF.log)
+#time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms/rungms          b_d_HF xmvb 1  > b_d_HF.log)
+time (/home/humbel/fuming/softwares/gamess/2020-R2//rungms        b_d_HF xmvb 1  > b_d_HF.log)
+#time (rungms_                     b_d_HF xmvb 1  > b_d_HF.log)
+# On doit rappatrier à la main le .xmo .gus et les wfn (si necessaire)
+#cp  $TMPDIR/*.wfn  $HOMEDIR/
+#cp  $TMPDIR/b_d_HF.gus  $HOMEDIR/
+cp  $TMPDIR/b_d_HF.xmo  $HOMEDIR/
+if [ -s b_d_HF.wfn ] ; then
+ set  echo
+cp  $TMPDIR/b_d_HF.wfn  $HOMEDIR/
+ unset  echo
+fi
+unset echo
