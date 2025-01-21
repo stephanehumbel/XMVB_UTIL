@@ -718,7 +718,8 @@ def write_conf(filename,CORE, CONF,COEF):
 #    print('write_conf',filename,len(CONF),ssize)
     if filename == 'screen':
        for ii in range(ssize):
-            print('  1:',CORE,' ', CONF[ii],';',ii+1,'... ',COEF[ii])    
+            charCORE = ' 1:'+str(CORE)+' '
+            print(charCORE,'  ', CONF[ii],';',ii+1,'... ',COEF[ii])    
 #       print(" \n")
     else:
        print(ssize, "confs",end='')

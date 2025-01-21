@@ -419,7 +419,7 @@ if len(sys.argv) == 2:
         routines.write_conf("screen",offset,CAS_conf,CAS_vect)
         print('$end') 
         routines.print_geom("screen",symbol,x,y,z)
-        
+
 #        if os.path.exists(CAS_file_name+'.log'):
         #print('  ;;;             ---===---===:::========')
         reord_OA=[]
@@ -540,7 +540,7 @@ if must_write_OVERL:
         line=line+'  vbftyp=det WFNTYP=struc iscf=1 itmax=0 int=libcint basis=6-31G(d) ' 
         line=line+'   iprint=-1 nmul='+str(MULT)+' nstr='+str(NVBCONF+lenCAS)+' guess=read \n $end \n'
         file.write(line)    
-        line= ' $struc  ; ============= \n '
+        line= ' $struc  ; ============= \n'
         file.write(line)   
         #ttt=collect_confs(VB_conf)
         for i in range(len(CAS_conf)):
