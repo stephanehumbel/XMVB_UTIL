@@ -1,9 +1,9 @@
 #!/bin/sh
 # Script genere automatiquement a partir de subgms
 #
-#$ -N b_d_HF
+#$ -N TEST_HF
 #
-#SBATCH --job-name=b_d_HF
+#SBATCH --job-name=TEST_HF
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=40000
 #***************************
@@ -28,44 +28,46 @@ echo "I am in           : $PWD"
 
 # source /usr/share/Modules/init/sh
 # save previous run
-if [ -s b_d_HF.orb ] ; then
+if [ -s TEST_HF.orb ] ; then
  set  echo
-   cp b_d_HF.orb b_d_HF.orb~
+   cp TEST_HF.orb TEST_HF.orb~
  unset  echo
 fi
-if [ -s b_d_HF.xmo ] ; then
+if [ -s TEST_HF.xmo ] ; then
  set  echo
-   cp b_d_HF.xmo b_d_HF.xmo~
+   cp TEST_HF.xmo TEST_HF.xmo~
  unset  echo
 fi
-if [ -s b_d_HF.log ] ; then
+if [ -s TEST_HF.log ] ; then
  set  echo
-   cp b_d_HF.log b_d_HF.log~
+   cp TEST_HF.log TEST_HF.log~
  unset  echo
 fi
 
 set echo
 export OMP_NUM_THREADS=8
 export OMP_STACKSIZE=10000
-cp  $HOMEDIR/b_d_HF.xmi  $TMPDIR/b_d_HF.xmi
-if [ -s b_d_HF.gus ] ; then
-    cp  $HOMEDIR/b_d_HF.gus  $TMPDIR/b_d_HF.gus
+cp  $HOMEDIR/TEST_HF.xmi  $TMPDIR/TEST_HF.xmi
+touch $TMPDIR/TEST_HF.orb
+touch $HOMEDIR/TEST_HF.orb
+if [ -s TEST_HF.gus ] ; then
+    cp  $HOMEDIR/TEST_HF.gus  $TMPDIR/TEST_HF.gus
 else 
 # use .orb as a .gus
-    cp  $HOMEDIR/b_d_HF.orb  $TMPDIR/b_d_HF.gus
+    cp  $HOMEDIR/TEST_HF.orb  $TMPDIR/TEST_HF.gus
 fi
 
 cd $TMPDIR 
-#time (/home/humbel/xmvb3_2//bin/preint                 b_d_HF                      )
+#time (/home/humbel/xmvb3_2//bin/preint                 TEST_HF                      )
 #pwd;ls -lrt |head -3
-time (/home/humbel/xmvb3_2//bin/xmvb                   b_d_HF                      )
+time (/home/humbel/xmvb3_2//bin/xmvb                   TEST_HF                      )
 pwd;ls -lrt |head -3
 cd $HOMEDIR 
-#time (rungms_                     b_d_HF  1  > b_d_HF.log)
+#time (rungms_                     TEST_HF  1  > TEST_HF.log)
 # On doit rappatrier à la main le .xmo et les wfn (si necessaire)
-cp  $TMPDIR/b_d_HF.orb  $HOMEDIR/
-cp  $TMPDIR/b_d_HF.xmo  $HOMEDIR/
-cp  $TMPDIR/b_d_HF.xdat  $HOMEDIR/
+cp  $TMPDIR/TEST_HF.orb  $HOMEDIR/
+cp  $TMPDIR/TEST_HF.xmo  $HOMEDIR/
+cp  $TMPDIR/TEST_HF.xdat  $HOMEDIR/
 # join slurm and xmo
-cat slurm-${SLURM_JOB_ID}.out b_d_HF.xmo >> b_d_HF.xmo
+cat slurm-${SLURM_JOB_ID}.out TEST_HF.xmo >> TEST_HF.xmo
 unset echo
