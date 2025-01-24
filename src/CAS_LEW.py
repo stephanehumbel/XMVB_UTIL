@@ -225,14 +225,21 @@ def read5OM_LOG(file_name,nOM,nOA,pos,fin):# read a file with 3 blank lines, +1 
         # should be able to read undetermined size and length
         # and the end of the section 
         nOM=nOA
+        if nOM<5:
+            nOM=5
+
         #continue
   #  nblock= (fin-pos -5)/length
   #  print('nblock= environ',nblock, (fin-pos -5-3*(nblock-1))/length, (fin-pos -5-3*(nblock-1))//length)
   #  print('size= environ',  (fin-pos -5-3*(nblock-1))/nblock)
 
     #print('MO_CAS',nOM,nOA, pos,fin)
-   
-    MO_CAS=np.zeros((nOM,nOA))
+    #truc sale pour lire moins que 5 orbitales, 
+    if nOM<5:
+            nOM=5
+
+  
+    MO_CAS=np.zeros((nOM+1,nOA+1))
     ioa=0
     nblock=0
     line='blanck'
@@ -253,7 +260,7 @@ def read5OM_LOG(file_name,nOM,nOA,pos,fin):# read a file with 3 blank lines, +1 
             line = file.readline()
             #print('MO_CAS',line, k)
             k+=1
-            if len(line.split()) == 5: #line is the header od a block
+            if len(line.split()) == 5: #line is the header of a block
                 continue
             if len(line.split()) == 0: #line is empty=space between block
                 if space==0:                        
@@ -282,7 +289,8 @@ def read5OM_LOG(file_name,nOM,nOA,pos,fin):# read a file with 3 blank lines, +1 
                     iom=i+firstom
                    # if left_to_read < 5:
                    #     print('RRR',line.split()[4:],end=' ')
-                    #print(val,end=' ')
+                   # print('|%|',nOM,f"{float(val):7.3f}",end=' ')
+                    #print(f"{float(val):7.3f}))",end=' ')
                     #print('MO(',iom,',',ioa,')','=',val,end=' ')
                     MO_CAS[iom][ioa] = float(val)
                 ioa+=1
