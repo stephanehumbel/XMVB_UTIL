@@ -1,7 +1,15 @@
-from  b_d.log ;  6-31G(d)
++--------project.py - SH 2024 ---------------------
+| CAS_LEW.py file_CAS file_VB  2 arguments
++- must have .orb and .xmo of both              ---
++--------                     ---------------------
+b_d.log exists must be like $MCSCF CISTEP=GUGA MAXIT=200 QUAD=.F. $END $GUGDIA NSTATE=2 $END $GUGDM2 WSTATE(1)=1.0,0.0 $END
+number of core Orbs= 18 ['222000', '112011', '202020', '121101', '211110', '211110', '220200'] [ 0.939996  0.109831 -0.148489 -0.109831  0.13764   0.114604 -0.148491]
+other numbers      = 18 3 3 102
+give the basis set (6-31G(d)):
+from  b_d.log ;  d
 $ctrl 
  str=full nao=6  nae=6   nmul=1  orbtyp=hao frgtyp=sao int=libcint ; nstr=7
- basis=6-31G(d)  iscf=5 iprint=3 guess=read itmax=0 
+ basis=d  iscf=5 iprint=3 guess=read itmax=0 
  $end
 $frag 
   12 
@@ -57,6 +65,8 @@ $end
    H          -0.542779744       3.354538420       0.000000000
    H          -0.542739744      -0.940069557       0.000000000
  $end
+['S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'X', 'Y', 'Z', 'S', 'X', 'Y', 'Z', 'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'] [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 10, 14, 11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 25, 29, 26, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42, 43, 40, 44, 41, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 57, 58, 55, 59, 56, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 72, 73, 70, 74, 71, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 87, 88, 85, 89, 86, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101]
+  ;;; read files :  b_d.log 1464 3690:| ------ 24  columns have been read
 $gus
   74  78  78  78  78  74  73  78  78  78  78  73  76  61  78  78  78  78  22  24  24  24  24  22
 # _._  Orbital  :    1  gus--- 74 102 //

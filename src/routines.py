@@ -610,6 +610,8 @@ def write_gus(filename, phis,indices, deb, fin):
         #    print(f"{len(phis[i]):4d}",end='')
         for i in range(deb , fin):
             print(f"{temponao[i]:4d}",end='')
+            if (i+1) % 20 == 0:
+                print()
         for i in range(deb, fin):
           compte=0
           print() 
