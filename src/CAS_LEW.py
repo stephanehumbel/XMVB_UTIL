@@ -231,7 +231,7 @@ def read5OM_LOG(file_name,nOM,nOA,pos,fin):# read a file with 3 blank lines, +1 
   #  print('size= environ',  (fin-pos -5-3*(nblock-1))/nblock)
 
     #print('MO_CAS',nOM,nOA, pos,fin)
-    #truc sale pour lire multiple de 5  orbitales,
+    #truc sale dirty pour lire multiple de 5  orbitales,
     if nOM % 5 == 0 :
             print(nOM%5,"quick and dirty fix")
             nOM=nOM+1
